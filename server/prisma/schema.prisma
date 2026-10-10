@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Vino {
+  id          Int    @id @default(autoincrement())
+  coleccion   String
+  anio        Int
+  variedad    String
+  tipo        String
+  descripcion String @db.Text
+}
