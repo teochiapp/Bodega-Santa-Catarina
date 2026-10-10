@@ -46,3 +46,8 @@ build
 
 # System/Other
 .gemini
+
+# Context files
+RULES.md
+SiteMap.md
+data.md
