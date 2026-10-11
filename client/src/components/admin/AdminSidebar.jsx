@@ -1,63 +1,18 @@
 import styled, { keyframes } from 'styled-components';
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import useAuth from '../../hooks/useAuth';
-
-// ── Iconos SVG inline (línea, 17×17, strokeWidth 1.7) ────────────────────────
-
-const IconVinos = () => (
-  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M8 2h8l2 6a6 6 0 0 1-12 0L8 2z"/>
-    <path d="M12 14v8"/>
-    <path d="M9 22h6"/>
-  </svg>
-);
-
-const IconReservas = () => (
-  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="4" width="18" height="18" rx="0"/>
-    <line x1="16" y1="2" x2="16" y2="6"/>
-    <line x1="8" y1="2" x2="8" y2="6"/>
-    <line x1="3" y1="10" x2="21" y2="10"/>
-  </svg>
-);
-
-const IconTarjetas = () => (
-  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="5" width="20" height="14" rx="0"/>
-    <line x1="2" y1="10" x2="22" y2="10"/>
-  </svg>
-);
-
-const IconEmails = () => (
-  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-    <polyline points="22,6 12,13 2,6"/>
-  </svg>
-);
-
-const IconMenu = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
-    <line x1="3" y1="6" x2="21" y2="6"/>
-    <line x1="3" y1="12" x2="21" y2="12"/>
-    <line x1="3" y1="18" x2="21" y2="18"/>
-  </svg>
-);
-
-const IconClose = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
-    <line x1="18" y1="6" x2="6" y2="18"/>
-    <line x1="6" y1="6" x2="18" y2="18"/>
-  </svg>
-);
-
-const IconLogout = () => (
-  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-    <polyline points="16 17 21 12 16 7"/>
-    <line x1="21" y1="12" x2="9" y2="12"/>
-  </svg>
-);
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  Wine,
+  Sparkles,
+  UtensilsCrossed,
+  CalendarHeart,
+  Newspaper,
+  Gift,
+  Settings,
+  Menu,
+  X,
+} from 'lucide-react';
 
 // ── Animaciones ───────────────────────────────────────────────────────────────
 
@@ -102,38 +57,49 @@ const SidebarHeader = styled.div`
   border-bottom: 2px solid var(--tn-rule);
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 12px;
+  padding: 0 14px;
   flex-shrink: 0;
-  overflow: hidden;
-`;
-
-const SidebarLogo = styled.div`
-  width: 30px;
-  height: 30px;
-  background: var(--tn-acc);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-
-  span {
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-  }
-`;
-
-const SidebarLogoName = styled.span`
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--tn-text);
-  white-space: nowrap;
   overflow: hidden;
 
   @media (max-width: 1099px) {
+    padding: 0 8px;
+    justify-content: center;
+  }
+`;
+
+const LogoLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  max-width: 100%;
+
+  @media (max-width: 1099px) {
+    justify-content: center;
+    width: 100%;
+  }
+`;
+
+const FullLogoImg = styled.img`
+  height: 36px;
+  max-width: 185px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  display: block;
+
+  @media (max-width: 1099px) {
     display: none;
+  }
+`;
+
+const CompactLogoImg = styled.img`
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  display: none;
+
+  @media (max-width: 1099px) {
+    display: block;
   }
 `;
 
@@ -367,17 +333,36 @@ const DrawerSideLinkEl = styled(SideLinkEl)`
 
 const NAV = [
   {
-    group: 'Catálogo',
+    group: 'General',
     items: [
-      { icon: <IconVinos />, label: 'Vinos', path: '/admin', disabled: false },
+      { icon: <LayoutDashboard size={17} strokeWidth={1.8} />, label: 'Dashboard & Métricas', path: '/admin', disabled: false },
     ],
   },
   {
-    group: 'Operaciones',
+    group: 'Catálogo',
     items: [
-      { icon: <IconReservas />, label: 'Reservas', path: '/admin/reservas', disabled: true },
-      { icon: <IconTarjetas />, label: 'Tarjetas de regalo', path: '/admin/tarjetas', disabled: true },
-      { icon: <IconEmails />,   label: 'Emails',   path: '/admin/emails',   disabled: true },
+      { icon: <Wine size={17} strokeWidth={1.8} />, label: 'Vinos', path: '/admin/vinos', disabled: false },
+    ],
+  },
+  {
+    group: 'Enoturismo & Visitas',
+    items: [
+      { icon: <Sparkles size={17} strokeWidth={1.8} />, label: 'Catas y Degustaciones', path: '/admin/catas', disabled: false },
+      { icon: <UtensilsCrossed size={17} strokeWidth={1.8} />, label: 'Menús Gastronómicos', path: '/admin/menus', disabled: false },
+      { icon: <CalendarHeart size={17} strokeWidth={1.8} />, label: 'Eventos y Bodas', path: '/admin/eventos', disabled: false },
+    ],
+  },
+  {
+    group: 'Contenido & Tienda',
+    items: [
+      { icon: <Newspaper size={17} strokeWidth={1.8} />, label: 'Blog & Novedades', path: '/admin/blog', disabled: false },
+      { icon: <Gift size={17} strokeWidth={1.8} />, label: 'Tarjetas de Regalo', path: '/admin/tarjetas', disabled: false },
+    ],
+  },
+  {
+    group: 'Sistema',
+    items: [
+      { icon: <Settings size={17} strokeWidth={1.8} />, label: 'Configuración General', path: '/admin/configuracion', disabled: false },
     ],
   },
 ];
@@ -430,7 +415,6 @@ const AdminSidebar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout } = useAuth();
 
   // Cerrar drawer con Escape
   useEffect(() => {
@@ -439,24 +423,15 @@ const AdminSidebar = () => {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // Cerrar drawer al navegar
-  const handleNav = (path) => {
-    navigate(path);
-    setDrawerOpen(false);
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate('/admin/login');
-  };
-
   return (
     <>
       {/* ── Sidebar desktop ── */}
       <SidebarRoot>
         <SidebarHeader>
-          <SidebarLogo><span>SC</span></SidebarLogo>
-          <SidebarLogoName>Santa Catarina</SidebarLogoName>
+          <LogoLink to="/admin" title="Bodega Santa Catarina - Administración">
+            <FullLogoImg src="/logo-santacatarina.png" alt="Bodega Santa Catarina" />
+            <CompactLogoImg src="/isologo.png" alt="Santa Catarina" />
+          </LogoLink>
         </SidebarHeader>
 
         <NavContent
@@ -480,7 +455,7 @@ const AdminSidebar = () => {
         aria-label="Abrir menú"
         id="btn-hamburguesa-admin"
       >
-        <IconMenu />
+        <Menu size={20} strokeWidth={1.8} />
       </HamburgerBtn>
 
       {/* ── Drawer mobile ── */}
@@ -489,15 +464,18 @@ const AdminSidebar = () => {
           <Overlay onClick={() => setDrawerOpen(false)} />
           <Drawer>
             <DrawerHeader>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <SidebarLogo><span>SC</span></SidebarLogo>
-                <SidebarLogoName style={{ display: 'block' }}>Santa Catarina</SidebarLogoName>
-              </div>
+              <LogoLink to="/admin" title="Bodega Santa Catarina - Administración" onClick={() => setDrawerOpen(false)}>
+                <img
+                  src="/logo-santacatarina.png"
+                  alt="Bodega Santa Catarina"
+                  style={{ height: '36px', maxWidth: '180px', objectFit: 'contain', mixBlendMode: 'multiply', display: 'block' }}
+                />
+              </LogoLink>
               <DrawerCloseBtn
                 onClick={() => setDrawerOpen(false)}
                 aria-label="Cerrar menú"
               >
-                <IconClose />
+                <X size={18} strokeWidth={1.8} />
               </DrawerCloseBtn>
             </DrawerHeader>
 

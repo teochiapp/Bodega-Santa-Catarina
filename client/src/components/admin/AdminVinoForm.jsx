@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { X, Save } from 'lucide-react';
 
 // ── Animaciones ───────────────────────────────────────────────────────────────
 
@@ -30,13 +31,13 @@ const Overlay = styled.div`
 const ModalBox = styled.div`
   background: var(--tn-bg);
   width: 100%;
-  max-width: 500px;
+  max-width: 680px;
   border: 1px solid var(--tn-rule);
   box-shadow: var(--tn-shadow-lg);
   animation: ${rise} 200ms ease;
   display: flex;
   flex-direction: column;
-  max-height: 90vh;
+  max-height: 92vh;
 `;
 
 const ModalHeader = styled.div`
@@ -82,15 +83,22 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.label`
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.09em;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--tn-muted);
 `;
 
+const SubHelper = styled.span`
+  font-size: 11px;
+  color: var(--tn-muted);
+  font-weight: 400;
+  text-transform: none;
+`;
+
 const Input = styled.input`
-  height: 36px;
+  height: 38px;
   padding: 0 12px;
   border: 1px solid var(--tn-rule);
   border-radius: 0;
@@ -117,14 +125,14 @@ const Textarea = styled.textarea`
   border: 1px solid var(--tn-rule);
   border-radius: 0;
   font-family: var(--tn-font);
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--tn-text);
   background: var(--tn-bg);
   outline: none;
   transition: border-color 150ms ease, box-shadow 150ms ease;
   width: 100%;
   resize: vertical;
-  min-height: 80px;
+  min-height: ${(p) => p.$minHeight || '76px'};
 
   &:hover {
     border-color: var(--tn-n-400);
@@ -140,6 +148,22 @@ const Row = styled.div`
   display: flex;
   gap: 16px;
   > * { flex: 1; }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 12px;
+  }
+`;
+
+const SectionSeparator = styled.div`
+  border-top: 1px dashed var(--tn-rule);
+  padding-top: 12px;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tn-gold-700);
 `;
 
 const BtnSecondary = styled.button`
@@ -198,10 +222,19 @@ const AdminVinoForm = ({ onClose, onSave, vinoAEditar = null }) => {
   const isEditing = !!vinoAEditar;
   
   const [formData, setFormData] = useState({
+    titulo: vinoAEditar?.titulo ?? '',
     coleccion: vinoAEditar?.coleccion ?? '',
     anio: vinoAEditar?.anio ?? '',
     variedad: vinoAEditar?.variedad ?? '',
-    tipo: vinoAEditar?.tipo ?? '',
+    tipo: vinoAEditar?.tipo ?? 'Tinto',
+    portada: vinoAEditar?.portada ?? '',
+    categorias: Array.isArray(vinoAEditar?.categorias)
+      ? vinoAEditar.categorias.join(', ')
+      : (typeof vinoAEditar?.categorias === 'string' ? vinoAEditar.categorias : ''),
+    notaCata: vinoAEditar?.notaCata ?? '',
+    maridaje: vinoAEditar?.maridaje ?? '',
+    reconocimientos: vinoAEditar?.reconocimientos ?? '',
+    fichaTecnica: vinoAEditar?.fichaTecnica ?? '',
     descripcion: vinoAEditar?.descripcion ?? '',
   });
   
@@ -217,15 +250,23 @@ const AdminVinoForm = ({ onClose, onSave, vinoAEditar = null }) => {
     e.preventDefault();
     setError('');
     
-    if (!formData.coleccion || !formData.anio || !formData.variedad || !formData.tipo || !formData.descripcion) {
-      setError('Todos los campos son obligatorios.');
+    if (!formData.coleccion || !formData.variedad || !formData.descripcion) {
+      setError('Colección, Variedad y Descripción son obligatorios.');
       return;
     }
 
+    const payload = {
+      ...formData,
+      titulo: formData.titulo.trim() || `${formData.variedad} ${formData.anio || ''}`.trim(),
+      anio: formData.anio ? parseInt(formData.anio, 10) : null,
+      categorias: formData.categorias
+        ? formData.categorias.split(',').map((c) => c.trim()).filter(Boolean)
+        : [],
+    };
+
     setCargando(true);
     try {
-      // Siempre pasamos solo formData, AdminVinosList ya sabe el ID si está editando
-      await onSave(formData);
+      await onSave(payload);
       onClose();
     } catch (err) {
       setError(err.message || `Error al ${isEditing ? 'editar' : 'crear'} el vino`);
@@ -239,6 +280,14 @@ const AdminVinoForm = ({ onClose, onSave, vinoAEditar = null }) => {
       <ModalBox className="admin-scope" onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
           <Title>{isEditing ? 'Editar Vino' : 'Agregar Vino'}</Title>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Cerrar modal"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--tn-muted)' }}
+          >
+            <X size={18} strokeWidth={1.8} />
+          </button>
         </ModalHeader>
         
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -247,36 +296,48 @@ const AdminVinoForm = ({ onClose, onSave, vinoAEditar = null }) => {
             
             <Row>
               <FormGroup>
-                <Label htmlFor="vino-coleccion">Colección</Label>
+                <Label htmlFor="vino-titulo">Título del Vino</Label>
                 <Input
-                  id="vino-coleccion"
-                  name="coleccion"
-                  placeholder="Ej: Reserva"
-                  value={formData.coleccion}
+                  id="vino-titulo"
+                  name="titulo"
+                  placeholder="Ej: Santa Catarina Reserva Merlot"
+                  value={formData.titulo}
                   onChange={handleChange}
                 />
               </FormGroup>
               <FormGroup>
-                <Label htmlFor="vino-anio">Año</Label>
+                <Label htmlFor="vino-coleccion">Colección / Gama *</Label>
                 <Input
-                  id="vino-anio"
-                  name="anio"
-                  type="number"
-                  placeholder="Ej: 2022"
-                  value={formData.anio}
+                  id="vino-coleccion"
+                  name="coleccion"
+                  placeholder="Ej: Gama sta, Colección Surant..."
+                  value={formData.coleccion}
                   onChange={handleChange}
+                  required
                 />
               </FormGroup>
             </Row>
 
             <Row>
               <FormGroup>
-                <Label htmlFor="vino-variedad">Variedad</Label>
+                <Label htmlFor="vino-variedad">Variedad de Uva *</Label>
                 <Input
                   id="vino-variedad"
                   name="variedad"
-                  placeholder="Ej: Merlot"
+                  placeholder="Ej: 100% Manto Negro / Merlot"
                   value={formData.variedad}
+                  onChange={handleChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="vino-anio">Año / Cosecha</Label>
+                <Input
+                  id="vino-anio"
+                  name="anio"
+                  type="number"
+                  placeholder="Ej: 2023"
+                  value={formData.anio}
                   onChange={handleChange}
                 />
               </FormGroup>
@@ -285,30 +346,112 @@ const AdminVinoForm = ({ onClose, onSave, vinoAEditar = null }) => {
                 <Input
                   id="vino-tipo"
                   name="tipo"
-                  placeholder="Ej: Tinto"
+                  placeholder="Ej: Tinto, Blanco, Rosado"
                   value={formData.tipo}
                   onChange={handleChange}
                 />
               </FormGroup>
             </Row>
 
+            <Row>
+              <FormGroup>
+                <Label htmlFor="vino-portada">
+                  Portada <SubHelper>(URL de la imagen o botella)</SubHelper>
+                </Label>
+                <Input
+                  id="vino-portada"
+                  name="portada"
+                  placeholder="https://... o /images/vinos/..."
+                  value={formData.portada}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="vino-categorias">
+                  Categorías <SubHelper>(separadas por coma)</SubHelper>
+                </Label>
+                <Input
+                  id="vino-categorias"
+                  name="categorias"
+                  placeholder="Tintos, Barrica, Selección Especial"
+                  value={formData.categorias}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+            </Row>
+
+            <SectionSeparator>Enología & Notas</SectionSeparator>
+
             <FormGroup>
-              <Label htmlFor="vino-descripcion">Descripción</Label>
+              <Label htmlFor="vino-descripcion">Descripción General *</Label>
               <Textarea
                 id="vino-descripcion"
                 name="descripcion"
-                placeholder="Descripción del vino..."
+                placeholder="Historia, origen y descripción general del vino..."
                 value={formData.descripcion}
                 onChange={handleChange}
+                required
               />
             </FormGroup>
+
+            <Row>
+              <FormGroup>
+                <Label htmlFor="vino-notaCata">Nota de Cata</Label>
+                <Textarea
+                  id="vino-notaCata"
+                  name="notaCata"
+                  placeholder="Fase visual, olfativa y en boca..."
+                  value={formData.notaCata}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="vino-maridaje">Maridaje</Label>
+                <Textarea
+                  id="vino-maridaje"
+                  name="maridaje"
+                  placeholder="Platos y maridajes sugeridos..."
+                  value={formData.maridaje}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+            </Row>
+
+            <Row>
+              <FormGroup>
+                <Label htmlFor="vino-reconocimientos">Reconocimientos y Premios</Label>
+                <Input
+                  id="vino-reconocimientos"
+                  name="reconocimientos"
+                  placeholder="Ej: 92 Puntos Peñín, Medalla de Oro Bruselas"
+                  value={formData.reconocimientos}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="vino-fichaTecnica">Ficha Técnica</Label>
+                <Input
+                  id="vino-fichaTecnica"
+                  name="fichaTecnica"
+                  placeholder="Graduación 14% Vol, 12 meses roble francés..."
+                  value={formData.fichaTecnica}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+            </Row>
           </ModalBody>
 
           <ModalFooter>
             <BtnSecondary type="button" onClick={onClose} disabled={cargando}>
               Cancelar
             </BtnSecondary>
-            <BtnPrimary type="submit" disabled={cargando} id="btn-submit-vino">
+            <BtnPrimary
+              type="submit"
+              disabled={cargando}
+              id="btn-submit-vino"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            >
+              <Save size={14} strokeWidth={2} />
               {cargando ? 'Guardando...' : (isEditing ? 'Guardar cambios' : 'Guardar vino')}
             </BtnPrimary>
           </ModalFooter>

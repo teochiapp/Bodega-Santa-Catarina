@@ -1,55 +1,72 @@
 const prisma = require('./prismaClient');
 
 /**
- * Retorna todos los vinos de la base de datos, ordenados por año descendente.
- * @returns {Promise<Vino[]>}
+ * Retorna todos los vinos de la base de datos, ordenados por año descendente o creación.
  */
 const obtenerTodosLosVinos = async () => {
   return prisma.vino.findMany({
-    orderBy: { anio: 'desc' },
+    orderBy: [{ anio: 'desc' }, { id: 'desc' }],
+  });
+};
+
+/**
+ * Obtiene un vino por ID.
+ */
+const obtenerVinoPorId = async (id) => {
+  return prisma.vino.findUnique({
+    where: { id: parseInt(id, 10) },
   });
 };
 
 /**
  * Crea un nuevo vino en la base de datos.
- * @param {object} data Datos del vino
- * @returns {Promise<Vino>}
  */
 const crearVino = async (data) => {
   return prisma.vino.create({
     data: {
-      coleccion: data.coleccion,
-      anio: parseInt(data.anio, 10),
-      variedad: data.variedad,
-      tipo: data.tipo,
-      descripcion: data.descripcion,
+      titulo: data.titulo || (data.variedad ? `${data.variedad} ${data.anio || ''}`.trim() : 'Sin título'),
+      coleccion: data.coleccion || '',
+      anio: data.anio ? parseInt(data.anio, 10) : null,
+      variedad: data.variedad || '',
+      tipo: data.tipo || '',
+      portada: data.portada || null,
+      categorias: Array.isArray(data.categorias) ? data.categorias : (data.categorias ? [data.categorias] : []),
+      notaCata: data.notaCata || null,
+      maridaje: data.maridaje || null,
+      reconocimientos: data.reconocimientos || null,
+      fichaTecnica: data.fichaTecnica || null,
+      descripcion: data.descripcion || '',
+      activo: data.activo !== undefined ? Boolean(data.activo) : true,
     },
   });
 };
 
 /**
  * Edita un vino existente.
- * @param {number} id 
- * @param {object} data 
- * @returns {Promise<Vino>}
  */
 const editarVino = async (id, data) => {
   return prisma.vino.update({
     where: { id: parseInt(id, 10) },
     data: {
-      coleccion: data.coleccion,
-      anio: parseInt(data.anio, 10),
-      variedad: data.variedad,
-      tipo: data.tipo,
-      descripcion: data.descripcion,
+      titulo: data.titulo !== undefined ? data.titulo : undefined,
+      coleccion: data.coleccion !== undefined ? data.coleccion : undefined,
+      anio: data.anio !== undefined ? (data.anio ? parseInt(data.anio, 10) : null) : undefined,
+      variedad: data.variedad !== undefined ? data.variedad : undefined,
+      tipo: data.tipo !== undefined ? data.tipo : undefined,
+      portada: data.portada !== undefined ? data.portada : undefined,
+      categorias: data.categorias !== undefined ? (Array.isArray(data.categorias) ? data.categorias : [data.categorias]) : undefined,
+      notaCata: data.notaCata !== undefined ? data.notaCata : undefined,
+      maridaje: data.maridaje !== undefined ? data.maridaje : undefined,
+      reconocimientos: data.reconocimientos !== undefined ? data.reconocimientos : undefined,
+      fichaTecnica: data.fichaTecnica !== undefined ? data.fichaTecnica : undefined,
+      descripcion: data.descripcion !== undefined ? data.descripcion : undefined,
+      activo: data.activo !== undefined ? Boolean(data.activo) : undefined,
     },
   });
 };
 
 /**
  * Elimina un vino.
- * @param {number} id 
- * @returns {Promise<Vino>}
  */
 const eliminarVino = async (id) => {
   return prisma.vino.delete({
@@ -57,4 +74,4 @@ const eliminarVino = async (id) => {
   });
 };
 
-module.exports = { obtenerTodosLosVinos, crearVino, editarVino, eliminarVino };
+module.exports = { obtenerTodosLosVinos, obtenerVinoPorId, crearVino, editarVino, eliminarVino };

@@ -29,10 +29,11 @@ const loginAdmin = async (email, password) => {
     throw new Error('Credenciales inválidas');
   }
 
+  const secret = process.env.JWT_SECRET || 'bodega_santa_catarina_secret_key_cambiar_en_produccion';
   const token = jwt.sign(
     { id: MOCK_ADMIN.id, email: MOCK_ADMIN.email },
-    process.env.JWT_SECRET,
-    { expiresIn: '8h' }
+    secret,
+    { expiresIn: '7d' }
   );
 
   return { token };

@@ -8,10 +8,112 @@ datasource db {
 }
 
 model Vino {
-  id          Int    @id @default(autoincrement())
-  coleccion   String
-  anio        Int
-  variedad    String
-  tipo        String
-  descripcion String @db.Text
+  id              Int      @id @default(autoincrement())
+  titulo          String   @default("")
+  coleccion       String   @default("")
+  anio            Int?
+  variedad        String?
+  tipo            String?
+  portada         String?  @db.Text
+  categorias      Json?    // Array de strings: ["Tintos", "Colección Especial", ...]
+  notaCata        String?  @db.Text
+  maridaje        String?  @db.Text
+  reconocimientos String?  @db.Text
+  fichaTecnica    String?  @db.Text
+  descripcion     String   @db.Text
+  activo          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+}
+
+model Evento {
+  id          Int      @id @default(autoincrement())
+  portada     String?  @db.Text
+  titulo      String
+  subtitulo   String?
+  descripcion String   @db.Text
+  posicion    Int      @default(0)
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model Cata {
+  id          Int      @id @default(autoincrement())
+  portada     String?  @db.Text
+  titulo      String
+  precio      Decimal  @db.Decimal(10, 2)
+  descripcion String   @db.Text
+  diaSemana   String?  // ej: "Lunes a Sábado"
+  horario     String?  // ej: "11:00 y 16:00"
+  duracion    String?  // ej: "1h 30min"
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model MenuGastronomico {
+  id          Int      @id @default(autoincrement())
+  portada     String?  @db.Text
+  titulo      String
+  precio      Decimal  @db.Decimal(10, 2)
+  descripcion String   @db.Text
+  diaSemana   String?
+  horario     String?
+  duracion    String?
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model Blog {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  fecha       DateTime @default(now())
+  portada     String?  @db.Text
+  galeria     Json?    // Array de imágenes
+  descripcion String   @db.LongText
+  enlace      String?  @db.Text
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model TarjetaRegalo {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  descripcion String   @db.Text
+  precio      Decimal  @db.Decimal(10, 2)
+  portada     String?  @db.Text
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model ConfiguracionGeneral {
+  id             Int      @id @default(1)
+  telefono       String?
+  whatsapp       String?
+  emailContacto  String?
+  emailReservas  String?
+  emailEventos   String?
+  direccion      String?
+  googleMapsUrl  String?  @db.Text
+  instagramUrl   String?
+  facebookUrl    String?
+  tripAdvisorUrl String?
+  bannerActivo   Boolean  @default(false)
+  bannerTexto    String?
+  bannerEnlace   String?
+  updatedAt      DateTime @default(now()) @updatedAt
+}
+
+model DiaVacacion {
+  id          Int      @id @default(autoincrement())
+  fechaInicio DateTime
+  fechaFin    DateTime
+  motivo      String?
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }

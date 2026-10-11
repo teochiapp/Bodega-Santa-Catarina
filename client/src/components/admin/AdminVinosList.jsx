@@ -5,15 +5,7 @@ import AdminVinoDetail from './AdminVinoDetail';
 import AdminVinoForm from './AdminVinoForm';
 import AdminConfirmModal from './AdminConfirmModal';
 import AdminLayout from './AdminLayout';
-
-// ── Íconos ────────────────────────────────────────────────────────────────────
-
-const IconAdd = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <line x1="12" y1="5" x2="12" y2="19"/>
-    <line x1="5" y1="12" x2="19" y2="12"/>
-  </svg>
-);
+import { Plus } from 'lucide-react';
 
 const Spinner = styled.div`
   width: 20px;
@@ -257,7 +249,7 @@ const AdminVinosPage = () => {
                 setIsFormOpen(true);
               }}
             >
-              <IconAdd /> Agregar vino
+              <Plus size={15} strokeWidth={2} /> Agregar vino
             </BtnPrimary>
           </div>
         </PanelHead>
@@ -266,8 +258,8 @@ const AdminVinosPage = () => {
           <Table>
             <thead>
               <tr>
+                <Th>Vino</Th>
                 <Th>Colección</Th>
-                <Th>Variedad</Th>
                 <Th>Año</Th>
                 <Th>Tipo</Th>
               </tr>
@@ -293,10 +285,15 @@ const AdminVinosPage = () => {
                     onClick={() => toggleSelect(vino.id)}
                     id={`fila-vino-${vino.id}`}
                   >
+                    <Td>
+                      <div style={{ fontWeight: 600 }}>{vino.titulo || vino.variedad}</div>
+                      {vino.titulo && vino.variedad && vino.titulo !== vino.variedad && (
+                        <div style={{ fontSize: '11px', color: 'var(--tn-muted)' }}>{vino.variedad}</div>
+                      )}
+                    </Td>
                     <Td><ColeccionBadge>{vino.coleccion}</ColeccionBadge></Td>
-                    <Td>{vino.variedad}</Td>
-                    <Td><AnioNum>{vino.anio}</AnioNum></Td>
-                    <Td><TipoBadge>{vino.tipo}</TipoBadge></Td>
+                    <Td><AnioNum>{vino.anio || '—'}</AnioNum></Td>
+                    <Td><TipoBadge>{vino.tipo || '—'}</TipoBadge></Td>
                   </Tr>
                 ))
               )}

@@ -15,7 +15,8 @@ const authMiddleware = (req, res, next) => {
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const secret = process.env.JWT_SECRET || 'bodega_santa_catarina_secret_key_cambiar_en_produccion';
+    const decoded = jwt.verify(token, secret);
     req.admin = decoded;
     next();
   } catch (err) {
@@ -24,3 +25,5 @@ const authMiddleware = (req, res, next) => {
 };
 
 module.exports = authMiddleware;
+module.exports.verificarToken = authMiddleware;
+module.exports.authMiddleware = authMiddleware;

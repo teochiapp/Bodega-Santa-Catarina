@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components';
+import { AlertTriangle, X } from 'lucide-react';
 
 // ── Animaciones ───────────────────────────────────────────────────────────────
 
@@ -29,7 +30,7 @@ const Overlay = styled.div`
 const ModalBox = styled.div`
   background: var(--tn-bg);
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   border: 1px solid var(--tn-rule);
   box-shadow: var(--tn-shadow-lg);
   animation: ${rise} 200ms ease;
@@ -42,6 +43,7 @@ const ModalHeader = styled.div`
   border-bottom: 2px solid var(--tn-rule);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 20px;
   background: var(--tn-surface);
 `;
@@ -51,6 +53,24 @@ const Title = styled.h2`
   font-weight: 700;
   color: var(--tn-text);
   letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const CloseBtn = styled.button`
+  background: none;
+  border: none;
+  color: var(--tn-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+
+  &:hover {
+    color: var(--tn-text);
+  }
 `;
 
 const ModalBody = styled.div`
@@ -70,7 +90,7 @@ const ModalFooter = styled.div`
 `;
 
 const BtnSecondary = styled.button`
-  height: 34px;
+  height: 36px;
   padding: 0 14px;
   background: var(--tn-bg);
   color: var(--tn-text);
@@ -88,7 +108,7 @@ const BtnSecondary = styled.button`
 `;
 
 const BtnDanger = styled.button`
-  height: 34px;
+  height: 36px;
   padding: 0 16px;
   background: var(--tn-rojo-700);
   color: #fff;
@@ -118,7 +138,13 @@ const AdminConfirmModal = ({ isOpen, title, message, confirmText = 'Confirmar', 
     <Overlay onClick={!cargando ? onCancel : undefined}>
       <ModalBox className="admin-scope" onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
-          <Title>{title}</Title>
+          <Title>
+            <AlertTriangle size={17} strokeWidth={2} color="var(--tn-rojo-700)" />
+            {title}
+          </Title>
+          <CloseBtn onClick={!cargando ? onCancel : undefined} aria-label="Cerrar">
+            <X size={16} strokeWidth={1.8} />
+          </CloseBtn>
         </ModalHeader>
         
         <ModalBody>

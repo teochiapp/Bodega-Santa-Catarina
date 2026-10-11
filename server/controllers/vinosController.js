@@ -1,9 +1,11 @@
-const { obtenerTodosLosVinos, crearVino: crearVinoService, editarVino: editarVinoService, eliminarVino: eliminarVinoService } = require('../services/vinosService');
+const {
+  obtenerTodosLosVinos,
+  obtenerVinoPorId,
+  crearVino: crearVinoService,
+  editarVino: editarVinoService,
+  eliminarVino: eliminarVinoService,
+} = require('../services/vinosService');
 
-/**
- * GET /api/vinos
- * Devuelve todos los vinos como JSON.
- */
 const getVinos = async (req, res) => {
   try {
     const vinos = await obtenerTodosLosVinos();
@@ -14,17 +16,21 @@ const getVinos = async (req, res) => {
   }
 };
 
-/**
- * POST /api/vinos
- * Crea un nuevo vino.
- */
+const getVinoById = async (req, res) => {
+  try {
+    const vino = await obtenerVinoPorId(req.params.id);
+    if (!vino) return res.status(404).json({ error: 'Vino no encontrado' });
+    res.json(vino);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al buscar el vino' });
+  }
+};
+
 const crearVino = async (req, res) => {
   try {
-    const { coleccion, anio, variedad, tipo, descripcion } = req.body;
-    
-    // Validaciones básicas
-    if (!coleccion || !anio || !variedad || !tipo || !descripcion) {
-      return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+    const { variedad, coleccion, descripcion, titulo } = req.body;
+    if (!variedad && !coleccion && !titulo) {
+      return res.status(400).json({ error: 'Título o variedad son requeridos' });
     }
 
     const nuevoVino = await crearVinoService(req.body);
@@ -35,31 +41,17 @@ const crearVino = async (req, res) => {
   }
 };
 
-/**
- * PUT /api/vinos/:id
- * Edita un vino existente.
- */
 const editarVino = async (req, res) => {
   try {
     const { id } = req.params;
-    const { coleccion, anio, variedad, tipo, descripcion } = req.body;
-    
-    if (!coleccion || !anio || !variedad || !tipo || !descripcion) {
-      return res.status(400).json({ error: 'Todos los campos son obligatorios' });
-    }
-
-    const vinoEditado = await editarVinoService(id, req.body);
-    res.json(vinoEditado);
+    const vinoActualizado = await editarVinoService(id, req.body);
+    res.json(vinoActualizado);
   } catch (err) {
     console.error('[vinosController] Error al editar vino:', err.message);
     res.status(500).json({ error: 'Error interno al editar el vino' });
   }
 };
 
-/**
- * DELETE /api/vinos/:id
- * Elimina un vino.
- */
 const eliminarVino = async (req, res) => {
   try {
     const { id } = req.params;
@@ -67,9 +59,8 @@ const eliminarVino = async (req, res) => {
     res.status(204).send();
   } catch (err) {
     console.error('[vinosController] Error al eliminar vino:', err.message);
-    require('fs').appendFileSync('error.log', err.stack + '\n');
-    res.status(500).json({ error: 'Error interno al eliminar el vino: ' + err.message });
+    res.status(500).json({ error: 'Error interno al eliminar el vino' });
   }
 };
 
-module.exports = { getVinos, crearVino, editarVino, eliminarVino };
+module.exports = { getVinos, getVinoById, crearVino, editarVino, eliminarVino };

@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import api from '../../services/api';
 import useAuth from '../../hooks/useAuth';
+import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react';
 
 // ── Animaciones ───────────────────────────────────────────────────────────────
 
@@ -103,6 +104,19 @@ const SubmitButton = styled.button`
   }
 `;
 
+const InfoNotice = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #855d14;
+  background: #fef9ed;
+  border: 1px solid #eedda5;
+  border-left: 3px solid #c89528;
+  padding: 10px 12px;
+`;
+
 const ErrorMsg = styled.p`
   font-size: 13px;
   color: var(--tn-rojo-700);
@@ -115,7 +129,10 @@ const ErrorMsg = styled.p`
 // ── Componente ────────────────────────────────────────────────────────────────
 
 const LoginForm = () => {
-  const [email, setEmail] = useState('');
+  const [searchParams] = useSearchParams();
+  const motivoExpirado = searchParams.get('motivo') === 'expirado';
+
+  const [email, setEmail] = useState('admin@bodegasantacatarina.com');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
@@ -149,10 +166,20 @@ const LoginForm = () => {
         className={formShaking ? 'error' : ''}
         noValidate
       >
+        {motivoExpirado && (
+          <InfoNotice role="status">
+            <AlertCircle size={16} style={{ flexShrink: 0, marginTop: 1 }} />
+            <span>Tu sesión ha expirado o no es válida. Por favor, iniciá sesión nuevamente.</span>
+          </InfoNotice>
+        )}
+
         {error && <ErrorMsg role="alert">{error}</ErrorMsg>}
 
         <FormGroup>
-          <Label htmlFor="login-email">Email</Label>
+          <Label htmlFor="login-email">
+            <Mail size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />
+            Email
+          </Label>
           <Input
             id="login-email"
             type="email"
@@ -166,7 +193,10 @@ const LoginForm = () => {
         </FormGroup>
 
         <FormGroup>
-          <Label htmlFor="login-password">Contraseña</Label>
+          <Label htmlFor="login-password">
+            <Lock size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />
+            Contraseña
+          </Label>
           <Input
             id="login-password"
             type="password"
@@ -180,6 +210,7 @@ const LoginForm = () => {
         </FormGroup>
 
         <SubmitButton type="submit" disabled={cargando} id="btn-login-submit">
+          <LogIn size={15} strokeWidth={2} style={{ marginRight: 6, verticalAlign: 'middle' }} />
           {cargando ? 'Ingresando...' : 'Ingresar'}
         </SubmitButton>
       </Form>

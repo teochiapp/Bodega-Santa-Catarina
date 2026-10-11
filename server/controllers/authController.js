@@ -20,4 +20,12 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { login };
+/**
+ * GET /api/auth/me
+ * Valida el token via middleware y retorna los datos del admin autenticado.
+ */
+const me = (req, res) => {
+  res.json({ valid: true, admin: req.admin });
+};
+
+module.exports = { login, me };

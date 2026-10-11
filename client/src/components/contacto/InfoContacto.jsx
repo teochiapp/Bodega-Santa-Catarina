@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import api from '../../services/api';
 
 const Section = styled.section`
   padding: ${({ theme }) => theme.spacing.section} ${({ theme }) => theme.spacing.xl};
@@ -40,14 +42,30 @@ const Highlight = styled.a`
 `;
 
 const InfoContacto = () => {
+  const [config, setConfig] = useState(null);
+
+  useEffect(() => {
+    api.get('/configuracion')
+      .then((data) => setConfig(data))
+      .catch(() => {});
+  }, []);
+
+  const direccion = config?.direccion || 'Finca Son Aloy, Ma-3140, km 3, Mallorca';
+  const telefono = config?.telefono || '+34 971 87 20 18';
+  const whatsapp = config?.whatsapp || '+34 620 12 34 56';
+  const email = config?.emailContacto || 'info@bodegasantacatarina.com';
+
   return (
     <Section>
       <Grid>
         <InfoCard>
           <h3>Información de contacto</h3>
-          <InfoRow>📍 Finca Son Aloy, Ma-3140, km 3</InfoRow>
-          <InfoRow>📞 +34 971 XX XX XX (WhatsApp disp.)</InfoRow>
-          <InfoRow>✉️ <Highlight href="mailto:info@santacatarina.com">info@santacatarina.com</Highlight></InfoRow>
+          <InfoRow>📍 {direccion}</InfoRow>
+          <InfoRow>📞 {telefono}</InfoRow>
+          <InfoRow>💬 WhatsApp: {whatsapp}</InfoRow>
+          <InfoRow>
+            ✉️ <Highlight href={`mailto:${email}`}>{email}</Highlight>
+          </InfoRow>
         </InfoCard>
 
         <InfoCard>
@@ -60,8 +78,8 @@ const InfoContacto = () => {
         <InfoCard>
           <h3>Servicios adicionales</h3>
           <InfoRow>Tarjetas de regalo disponibles</InfoRow>
-          <InfoRow>Posibilidad de transfer privado</InfoRow>
-          <InfoRow>Visitas adaptadas</InfoRow>
+          <InfoRow>Catas personalizadas en viñedo</InfoRow>
+          <InfoRow>Eventos privados y bodas</InfoRow>
         </InfoCard>
       </Grid>
     </Section>

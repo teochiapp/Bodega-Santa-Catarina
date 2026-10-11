@@ -65,7 +65,7 @@ const EspaciosBodega = () => {
     { title: 'El Porche Delantero', desc: 'Espacio al aire libre con encanto.' }, // Replaced Sala de Catas
   ];
 
-  const handleBook = (title) => {
+  const handleBook = () => {
     // Aquí se guardaría el estado y haría scroll al formulario
     document.getElementById('formulario-eventos')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -80,7 +80,7 @@ const EspaciosBodega = () => {
             <Info>
               <h3>{espacio.title}</h3>
               <p>{espacio.desc}</p>
-              <BookButton onClick={() => handleBook(espacio.title)}>Resérvalo</BookButton>
+              <BookButton onClick={handleBook}>Resérvalo</BookButton>
             </Info>
           </EspacioCard>
         ))}

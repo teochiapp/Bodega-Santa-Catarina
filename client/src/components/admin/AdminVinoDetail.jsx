@@ -1,20 +1,10 @@
 import styled, { keyframes } from 'styled-components';
-
-// ── Animación ─────────────────────────────────────────────────────────────────
+import { X, Pencil, Trash2 } from 'lucide-react';
 
 const slideIn = keyframes`
   from { opacity: 0; transform: translateX(18px); }
   to   { opacity: 1; transform: translateX(0); }
 `;
-
-// ── Íconos ────────────────────────────────────────────────────────────────────
-
-const IconClose = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
-    <line x1="18" y1="6" x2="6" y2="18"/>
-    <line x1="6" y1="6" x2="18" y2="18"/>
-  </svg>
-);
 
 // ── Estilos ───────────────────────────────────────────────────────────────────
 
@@ -30,7 +20,6 @@ const AsideRoot = styled.aside`
   flex-direction: column;
   animation: ${slideIn} 220ms ease;
 
-  /* Ocultar en pantallas < 1024px */
   @media (max-width: 1023px) {
     display: none;
   }
@@ -51,22 +40,22 @@ const AsideHeader = styled.div`
 `;
 
 const AsideTitle = styled.div`
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
   color: var(--tn-text);
   letter-spacing: -0.01em;
 `;
 
 const AsideKicker = styled.div`
-  font-size: 11px;
+  font-size: 10.5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--tn-gold-700);
 `;
 
 const CloseBtn = styled.button`
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   background: transparent;
   border: 1px solid var(--tn-rule);
   color: var(--tn-text);
@@ -87,11 +76,28 @@ const AsideBody = styled.div`
   padding: 20px;
 `;
 
+const WineImage = styled.div`
+  width: 100%;
+  height: 170px;
+  background-color: var(--tn-surface);
+  border: 1px solid var(--tn-rule);
+  margin-bottom: 16px;
+  background-image: ${(p) => (p.$bg ? `url(${p.$bg})` : 'none')};
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tn-muted);
+  font-size: 12px;
+`;
+
 const Section = styled.section`
   &:not(:last-child) {
-    border-bottom: 2px solid var(--tn-rule);
-    padding-bottom: 16px;
-    margin-bottom: 16px;
+    border-bottom: 1px solid var(--tn-rule);
+    padding-bottom: 14px;
+    margin-bottom: 14px;
   }
 `;
 
@@ -100,20 +106,20 @@ const SectionTitle = styled.h3`
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--tn-muted);
-  margin-bottom: 12px;
-  font-weight: 600;
+  margin-bottom: 10px;
+  font-weight: 700;
 `;
 
 const Facts = styled.dl`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px 8px;
+  gap: 10px 8px;
 `;
 
 const FactItem = styled.div``;
 
 const FactKey = styled.dt`
-  font-size: 10.5px;
+  font-size: 10px;
   letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--tn-muted);
@@ -121,7 +127,7 @@ const FactKey = styled.dt`
 `;
 
 const FactVal = styled.dd`
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--tn-text);
   word-break: break-word;
@@ -133,11 +139,11 @@ const FullFact = styled(FactItem)`
 
 const TypeBadge = styled.span`
   display: inline-block;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: 2px 8px;
+  padding: 2px 7px;
   background: var(--tn-acc-100);
   color: var(--tn-acc-700);
   border: 1px solid var(--tn-acc-200);
@@ -145,14 +151,33 @@ const TypeBadge = styled.span`
 
 const ColeccionBadge = styled.span`
   display: inline-block;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: 2px 8px;
+  padding: 2px 7px;
   background: var(--tn-gold-100);
   color: var(--tn-gold-700);
   border: 1px solid #e8d5a0;
+`;
+
+const CategoryTag = styled.span`
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2px 6px;
+  background: var(--tn-surface);
+  border: 1px solid var(--tn-rule);
+  color: var(--tn-text);
+  margin-right: 4px;
+  margin-bottom: 4px;
+`;
+
+const ParagraphText = styled.p`
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tn-text);
+  white-space: pre-line;
 `;
 
 const ActionRow = styled.div`
@@ -198,27 +223,32 @@ const BtnDanger = styled.button`
 
 // ── Componente ────────────────────────────────────────────────────────────────
 
-/**
- * Panel de detalle lateral para un vino seleccionado.
- *
- * @param {{ vino: object|null, onClose: () => void, onEdit: () => void, onDelete: () => void }} props
- */
 const AdminVinoDetail = ({ vino, onClose, onEdit, onDelete }) => {
   if (!vino) return null;
+
+  const categorias = Array.isArray(vino.categorias)
+    ? vino.categorias
+    : (typeof vino.categorias === 'string' ? vino.categorias.split(',').map(s => s.trim()).filter(Boolean) : []);
 
   return (
     <AsideRoot>
       <AsideHeader>
         <div>
-          <AsideKicker>Detalle</AsideKicker>
-          <AsideTitle>Vino #{vino.id}</AsideTitle>
+          <AsideKicker>Ficha de Vino</AsideKicker>
+          <AsideTitle>{vino.titulo || vino.variedad || `Vino #${vino.id}`}</AsideTitle>
         </div>
         <CloseBtn onClick={onClose} aria-label="Cerrar detalle" id="btn-cerrar-detalle">
-          <IconClose />
+          <X size={16} strokeWidth={1.8} />
         </CloseBtn>
       </AsideHeader>
 
       <AsideBody>
+        {vino.portada ? (
+          <WineImage $bg={vino.portada} />
+        ) : (
+          <WineImage>Sin portada cargada</WineImage>
+        )}
+
         <Section>
           <SectionTitle>Identificación</SectionTitle>
           <Facts>
@@ -238,21 +268,52 @@ const AdminVinoDetail = ({ vino, onClose, onEdit, onDelete }) => {
               <FactKey>Tipo</FactKey>
               <FactVal><TypeBadge>{vino.tipo || '—'}</TypeBadge></FactVal>
             </FactItem>
-            {vino.precio && (
-              <FactItem>
-                <FactKey>Precio</FactKey>
-                <FactVal>{vino.precio}</FactVal>
-              </FactItem>
-            )}
           </Facts>
+          
+          {categorias.length > 0 && (
+            <div style={{ marginTop: '12px' }}>
+              <FactKey>Categorías</FactKey>
+              <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '4px' }}>
+                {categorias.map((cat, idx) => (
+                  <CategoryTag key={idx}>{cat}</CategoryTag>
+                ))}
+              </div>
+            </div>
+          )}
         </Section>
 
         {vino.descripcion && (
           <Section>
             <SectionTitle>Descripción</SectionTitle>
-            <p style={{ fontSize: '13.5px', lineHeight: 1.6, color: 'var(--tn-text)' }}>
-              {vino.descripcion}
-            </p>
+            <ParagraphText>{vino.descripcion}</ParagraphText>
+          </Section>
+        )}
+
+        {vino.notaCata && (
+          <Section>
+            <SectionTitle>Nota de Cata</SectionTitle>
+            <ParagraphText>{vino.notaCata}</ParagraphText>
+          </Section>
+        )}
+
+        {vino.maridaje && (
+          <Section>
+            <SectionTitle>Maridaje</SectionTitle>
+            <ParagraphText>{vino.maridaje}</ParagraphText>
+          </Section>
+        )}
+
+        {vino.reconocimientos && (
+          <Section>
+            <SectionTitle>Reconocimientos</SectionTitle>
+            <ParagraphText>{vino.reconocimientos}</ParagraphText>
+          </Section>
+        )}
+
+        {vino.fichaTecnica && (
+          <Section>
+            <SectionTitle>Ficha Técnica</SectionTitle>
+            <ParagraphText>{vino.fichaTecnica}</ParagraphText>
           </Section>
         )}
 
@@ -262,13 +323,17 @@ const AdminVinoDetail = ({ vino, onClose, onEdit, onDelete }) => {
             <BtnPrimary
               id={`btn-editar-vino-${vino.id}`}
               onClick={onEdit}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
             >
+              <Pencil size={14} strokeWidth={1.8} />
               Editar
             </BtnPrimary>
             <BtnDanger
               id={`btn-eliminar-vino-${vino.id}`}
               onClick={onDelete}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
             >
+              <Trash2 size={14} strokeWidth={1.8} />
               Eliminar
             </BtnDanger>
           </ActionRow>

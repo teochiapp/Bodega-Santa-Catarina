@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import api from '../../services/api';
 
 const Section = styled.section`
   padding: ${({ theme }) => theme.spacing.section} ${({ theme }) => theme.spacing.xl};
@@ -49,6 +51,12 @@ const BonoPrice = styled.span`
   margin-bottom: ${({ theme }) => theme.spacing.md};
 `;
 
+const BonoDesc = styled.p`
+  font-size: 0.9rem;
+  color: ${({ theme }) => theme.colors.text};
+  line-height: 1.5;
+`;
+
 const FeaturesGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -59,20 +67,18 @@ const FeaturesGrid = styled.div`
 `;
 
 const FeatureItem = styled.span`
-  background-color: ${({ theme }) => theme.colors.background};
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  background: ${({ theme }) => theme.colors.background};
+  padding: 6px 14px;
   border-radius: 20px;
-  font-size: ${({ theme }) => theme.typography.sizes.sm};
+  font-size: 0.85rem;
+  font-weight: 500;
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.md};
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    flex-direction: column;
-  }
+  flex-wrap: wrap;
 `;
 
 const PrimaryButton = styled(Link)`
@@ -81,6 +87,7 @@ const PrimaryButton = styled(Link)`
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
   border-radius: 4px;
   font-weight: ${({ theme }) => theme.typography.weights.bold};
+  text-decoration: none;
   
   &:hover {
     background-color: ${({ theme }) => theme.colors.secondary};
@@ -94,18 +101,35 @@ const SecondaryButton = styled(Link)`
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
   border-radius: 4px;
   font-weight: ${({ theme }) => theme.typography.weights.bold};
+  text-decoration: none;
   
   &:hover {
     background-color: ${({ theme }) => theme.colors.background};
   }
 `;
 
+const DEFAULT_BONOS = [
+  { title: 'Bono Esencial', price: '150 €', desc: 'Experiencia para dos personas.' },
+  { title: 'Bono Premium', price: '250 €', desc: 'Experiencia gastronómica y cata para dos.' },
+  { title: 'Bono Personalizado', price: 'A medida', desc: 'Diseña la experiencia a tu gusto.' },
+];
+
 const TarjetasRegalo = () => {
-  const bonos = [
-    { title: 'Bono Esencial', price: '150 €', desc: 'Experiencia para dos personas.' },
-    { title: 'Bono Premium', price: '250 €', desc: 'Experiencia gastronómica y cata para dos.' },
-    { title: 'Bono Personalizado', price: 'A medida', desc: 'Diseña la experiencia a tu gusto.' },
-  ];
+  const [bonos, setBonos] = useState(DEFAULT_BONOS);
+
+  useEffect(() => {
+    api.get('/tarjetas')
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setBonos(data.map((t) => ({
+            title: t.titulo,
+            price: `${Number(t.precio).toFixed(2)} €`,
+            desc: t.descripcion,
+          })));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const caracteristicas = [
     'Bono digital', 'Envío por email', 'Validez de 12 meses', 'Personalizable', 'Reserva flexible'
@@ -120,7 +144,7 @@ const TarjetasRegalo = () => {
           <BonoCard key={idx}>
             <BonoTitle>{bono.title}</BonoTitle>
             <BonoPrice>{bono.price}</BonoPrice>
-            <p>{bono.desc}</p>
+            <BonoDesc>{bono.desc}</BonoDesc>
           </BonoCard>
         ))}
       </Grid>

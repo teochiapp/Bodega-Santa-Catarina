@@ -1,12 +1,10 @@
-import AdminVinosPage from '../../components/admin/AdminVinosList';
+import AdminDashboardView from '../../components/admin/AdminDashboardView';
 
 /**
- * Dashboard principal del admin.
- * La vista por defecto es la sección de vinos, que incluye
- * su propio layout (AdminLayout), sidebar, topbar y panel de detalle.
+ * Portada e inicio del panel de administración con estadísticas ejecutivas y métricas web.
  */
 const AdminDashboard = () => {
-  return <AdminVinosPage />;
+  return <AdminDashboardView />;
 };
 
 export default AdminDashboard;
