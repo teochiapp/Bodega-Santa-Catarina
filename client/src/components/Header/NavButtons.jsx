@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { ScrollLink } from '../common/ScrollToTop';
 
 const ButtonsContainer = styled.div`
   display: flex;
@@ -11,7 +11,7 @@ const ButtonsContainer = styled.div`
   }
 `;
 
-const IconButton = styled(Link)`
+const IconButton = styled(ScrollLink)`
   display: flex;
   align-items: center;
   justify-content: center;

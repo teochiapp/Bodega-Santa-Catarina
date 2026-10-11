@@ -80,8 +80,8 @@ const LogoLink = styled(Link)`
 `;
 
 const FullLogoImg = styled.img`
-  height: 36px;
-  max-width: 185px;
+  height: 45px;
+  max-width: 205px;
   object-fit: contain;
   mix-blend-mode: multiply;
   display: block;
@@ -92,8 +92,8 @@ const FullLogoImg = styled.img`
 `;
 
 const CompactLogoImg = styled.img`
-  width: 32px;
-  height: 32px;
+  width: 38px;
+  height: 38px;
   object-fit: contain;
   mix-blend-mode: multiply;
   display: none;
@@ -468,7 +468,7 @@ const AdminSidebar = () => {
                 <img
                   src="/logo-santacatarina.png"
                   alt="Bodega Santa Catarina"
-                  style={{ height: '36px', maxWidth: '180px', objectFit: 'contain', mixBlendMode: 'multiply', display: 'block' }}
+                  style={{ height: '45px', maxWidth: '205px', objectFit: 'contain', mixBlendMode: 'multiply', display: 'block' }}
                 />
               </LogoLink>
               <DrawerCloseBtn

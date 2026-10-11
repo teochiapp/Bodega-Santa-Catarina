@@ -14,7 +14,7 @@ const DEFAULTS = {
   facebookUrl: 'https://facebook.com/bodegasantacatarina',
   tripAdvisorUrl: 'https://tripadvisor.es',
   bannerActivo: false,
-  bannerTexto: 'Bienvenidos a Bodega Santa Catarina - Mallorca',
+  bannerTexto: '',
   bannerEnlace: '',
 };
 

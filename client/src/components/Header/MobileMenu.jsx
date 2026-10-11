@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ScrollLink as Link } from '../common/ScrollToTop';
 
 const HamburgerButton = styled.button`
   display: none;

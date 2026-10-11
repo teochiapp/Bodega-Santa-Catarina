@@ -64,7 +64,14 @@ const AdminLogin = () => {
       <PageWrapper>
         <Card>
           <CardTop>
-            <Kicker>Bodega Santa Catarina</Kicker>
+            <div style={{ marginBottom: 16 }}>
+              <img
+                src="/logo-santacatarina.png"
+                alt="Bodega Santa Catarina"
+                style={{ height: '48px', maxWidth: '220px', objectFit: 'contain', mixBlendMode: 'multiply', display: 'block' }}
+              />
+            </div>
+            <Kicker>Gestión & Operaciones</Kicker>
             <CardH1>Panel de administración</CardH1>
             <CardSub>Accedé con tus credenciales de administrador</CardSub>
           </CardTop>

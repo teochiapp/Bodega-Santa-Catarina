@@ -1,22 +1,123 @@
+import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import { ScrollLink } from '../common/ScrollToTop';
+import { obtenerVinos } from '../../services/vinosService';
 
 const Section = styled.section`
-  padding: ${({ theme }) => theme.spacing.section} ${({ theme }) => theme.spacing.xl};
-  background-color: ${({ theme }) => theme.colors.surface};
-  text-align: center;
+  padding: 100px 0;
+  background-color: #ffffff;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints?.tablet || '768px'}) {
+    padding: 60px 0;
+  }
 `;
 
-const Title = styled.h2`
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
+const Container = styled.div`
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints?.mobile || '576px'}) {
+    padding: 0 1.25rem;
+  }
 `;
 
-const CarouselContainer = styled.div`
+const HeaderRow = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.lg};
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+`;
+
+const SectionTitle = styled.h2`
+  font-family: ${({ theme }) => theme.typography.fontFamily.heading};
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 600;
+  line-height: 1;
+  color: ${({ theme }) => theme.colors.primary || 'rgb(80, 43, 58)'};
+  margin: 0;
+  letter-spacing: -0.01em;
+`;
+
+const ViewAllButton = styled(ScrollLink)`
+  font-family: ${({ theme }) => theme.typography.fontFamily.body};
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.primary || 'rgb(80, 43, 58)'};
+  background: none;
+  border: none;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.primary || 'rgb(80, 43, 58)'};
+  padding: 0 0 3px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+
+  &:hover {
+    color: rgb(203, 160, 82);
+    border-color: rgb(203, 160, 82);
+  }
+`;
+
+const CarouselLayout = styled.div`
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  gap: 22px;
+  align-items: center;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints?.mobile || '576px'}) {
+    grid-template-columns: 38px minmax(0, 1fr) 38px;
+    gap: 10px;
+  }
+`;
+
+const ArrowButton = styled.button`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(80, 43, 58, 0.208);
+  background: transparent;
+  color: ${({ theme }) => theme.colors.primary || 'rgb(80, 43, 58)'};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    border-color: ${({ theme }) => theme.colors.primary || 'rgb(80, 43, 58)'};
+    background: rgba(80, 43, 58, 0.05);
+    transform: scale(1.05);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints?.mobile || '576px'}) {
+    width: 38px;
+    height: 38px;
+  }
+`;
+
+const WineTrack = styled.div`
+  display: flex;
+  gap: 20px;
   overflow-x: auto;
-  padding-bottom: ${({ theme }) => theme.spacing.lg};
-  
-  /* Esconde scrollbar */
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 4px 0;
+
+  /* Ocultar barra de scroll estándar */
   &::-webkit-scrollbar {
     display: none;
   }
@@ -24,43 +125,253 @@ const CarouselContainer = styled.div`
   scrollbar-width: none;
 `;
 
-const VinoCard = styled.div`
-  min-width: 250px;
-  background-color: ${({ theme }) => theme.colors.background};
-  padding: ${({ theme }) => theme.spacing.lg};
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  
-  img {
-    height: 200px;
-    width: auto;
-    background-color: #eaeaea; /* placeholder */
-    margin-bottom: ${({ theme }) => theme.spacing.md};
+const WineCard = styled(ScrollLink)`
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  flex: 0 0 calc((100% - 60px) / 4);
+  scroll-snap-align: start;
+
+  @media (max-width: 1200px) {
+    flex: 0 0 calc((100% - 40px) / 3);
+  }
+
+  @media (max-width: 900px) {
+    flex: 0 0 calc((100% - 20px) / 2);
+  }
+
+  @media (max-width: 576px) {
+    flex: 0 0 85%;
   }
 `;
 
+const CardInner = styled.div`
+  height: 520px;
+  background-color: rgb(242, 236, 228);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-radius: 2px;
+  position: relative;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+
+  ${WineCard}:hover & {
+    box-shadow: 0 10px 25px rgba(80, 43, 58, 0.12);
+  }
+
+  @media (max-width: 768px) {
+    height: 420px;
+  }
+
+  @media (max-width: 480px) {
+    height: 360px;
+  }
+`;
+
+const WineImage = styled.img`
+  height: 520px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  ${WineCard}:hover & {
+    transform: scale(1.04) translateY(-3px);
+  }
+
+  @media (max-width: 768px) {
+    height: 420px;
+  }
+
+  @media (max-width: 480px) {
+    height: 360px;
+  }
+`;
+
+const FALLBACK_BOTTLES = [
+  '/assets/VINOS-02-Ks3neInp.png', // Manto Negro · TINTO
+  '/assets/VINOS-01-CN8tKOST.png', // Callet · TINTO
+  '/assets/VINOS-03-B468iQdg.png', // Prensal · BLANCO
+  '/assets/VINOS-04-ulQYCRB4.png', // Giró Ros · BLANCO
+];
+
+const DEFAULT_VINOS = [
+  {
+    id: 'vino-1',
+    nombre: 'Manto Negro · TINTO',
+    alt: 'Manto Negro · TINTO',
+    imagen: '/assets/VINOS-02-Ks3neInp.png',
+  },
+  {
+    id: 'vino-2',
+    nombre: 'Callet · TINTO',
+    alt: 'Callet · TINTO',
+    imagen: '/assets/VINOS-01-CN8tKOST.png',
+  },
+  {
+    id: 'vino-3',
+    nombre: 'Prensal · BLANCO',
+    alt: 'Prensal · BLANCO',
+    imagen: '/assets/VINOS-03-B468iQdg.png',
+  },
+  {
+    id: 'vino-4',
+    nombre: 'Giró Ros · BLANCO',
+    alt: 'Giró Ros · BLANCO',
+    imagen: '/assets/VINOS-04-ulQYCRB4.png',
+  },
+];
+
 const CarruselVinos = () => {
-  const vinosMock = [
-    { name: 'Manto Negro', gamma: 'Gama sta' },
-    { name: 'Surant Blanco', gamma: 'Colección Surant' },
-    { name: '\'Nguany Tinto', gamma: 'Colección \'Nguany' },
-    { name: 'Giró Ros', gamma: 'Gama sta' },
-  ];
+  const [vinos, setVinos] = useState(DEFAULT_VINOS);
+  const trackRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  // Carga los vinos directamente desde la API del admin
+  useEffect(() => {
+    let isMounted = true;
+    obtenerVinos()
+      .then((data) => {
+        if (!isMounted) return;
+        if (Array.isArray(data) && data.length > 0) {
+          const activos = data.filter((v) => v.activo !== false);
+          const listaUsar = activos.length > 0 ? activos : data;
+
+          const mapeados = listaUsar.map((v, index) => {
+            const fallbackImg = FALLBACK_BOTTLES[index % FALLBACK_BOTTLES.length];
+            const hasCustomImg =
+              v.portada &&
+              v.portada !== '/isologo.png' &&
+              v.portada.trim() !== '';
+
+            const tipoLabel = v.tipo ? ` · ${v.tipo.toUpperCase()}` : '';
+            const nombre = v.titulo || v.variedad || 'Vino Santa Catarina';
+            const fullLabel = `${nombre}${tipoLabel}`;
+
+            return {
+              id: v.id,
+              nombre: fullLabel,
+              alt: fullLabel,
+              imagen: hasCustomImg ? v.portada : fallbackImg,
+            };
+          });
+
+          setVinos(mapeados);
+        }
+      })
+      .catch((err) => {
+        console.warn('[CarruselVinos] Error cargando vinos de la API, usando catálogo por defecto:', err);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Actualiza los estados de las flechas según la posición de scroll
+  const updateScrollButtons = () => {
+    if (!trackRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
+    setCanScrollLeft(scrollLeft > 10);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+  };
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    updateScrollButtons();
+    el.addEventListener('scroll', updateScrollButtons, { passive: true });
+    window.addEventListener('resize', updateScrollButtons);
+    return () => {
+      el.removeEventListener('scroll', updateScrollButtons);
+      window.removeEventListener('resize', updateScrollButtons);
+    };
+  }, [vinos]);
+
+  const handleScroll = (direction) => {
+    if (!trackRef.current) return;
+    const container = trackRef.current;
+    const card = container.querySelector('[data-wine-card]');
+    const scrollAmount = card ? card.offsetWidth + 20 : 300;
+
+    container.scrollBy({
+      left: direction === 'next' ? scrollAmount : -scrollAmount,
+      behavior: 'smooth',
+    });
+  };
 
   return (
     <Section>
-      <Title>Vinos con alma</Title>
-      <CarouselContainer>
-        {vinosMock.map((vino, idx) => (
-          <VinoCard key={idx}>
-            <img src="" alt={`Botella de ${vino.name}`} />
-            <h3>{vino.name}</h3>
-            <p>{vino.gamma}</p>
-          </VinoCard>
-        ))}
-      </CarouselContainer>
+      <Container>
+        <HeaderRow>
+          <SectionTitle>VINOS CON ALMA</SectionTitle>
+          <ViewAllButton to="/vinos">VER TODOS</ViewAllButton>
+        </HeaderRow>
+
+        <CarouselLayout>
+          <ArrowButton
+            type="button"
+            aria-label="Vinos anteriores"
+            onClick={() => handleScroll('prev')}
+            disabled={!canScrollLeft}
+          >
+            <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
+              <path
+                d="M17 7H1M1 7L7 1M1 7L7 13"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </ArrowButton>
+
+          <WineTrack ref={trackRef} className="wine-in">
+            {vinos.map((vino) => (
+              <WineCard
+                key={vino.id}
+                to="/vinos"
+                data-wine-card
+                aria-label={`Ver ${vino.nombre}`}
+              >
+                <CardInner>
+                  <WineImage
+                    src={vino.imagen}
+                    alt={vino.alt}
+                    loading="lazy"
+                  />
+                </CardInner>
+              </WineCard>
+            ))}
+          </WineTrack>
+
+          <ArrowButton
+            type="button"
+            aria-label="Vinos siguientes"
+            onClick={() => handleScroll('next')}
+            disabled={!canScrollRight}
+          >
+            <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
+              <path
+                d="M1 7H17M17 7L11 1M17 7L11 13"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </ArrowButton>
+        </CarouselLayout>
+      </Container>
     </Section>
   );
 };

@@ -6,6 +6,7 @@ import { GlobalStyles } from './theme/GlobalStyles';
 // Layout
 import Layout from './components/layout/Layout';
 import ProtectedRoute from './components/layout/ProtectedRoute';
+import ScrollToTop from './components/common/ScrollToTop';
 import { AuthProvider } from './context/AuthContext';
 
 // Pages — sitio público
@@ -36,6 +37,7 @@ function App() {
       <GlobalStyles />
       <AuthProvider>
         <Router>
+          <ScrollToTop />
           <Routes>
             {/* ── Sitio público ── */}
             <Route element={<Layout />}>

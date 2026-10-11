@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { ScrollLink as Link, BackToTopButton } from '../common/ScrollToTop';
 
 const FooterContainer = styled.footer`
   background-color: rgb(64, 26, 46); /* Dark Burgundy from design */
@@ -290,6 +290,7 @@ const Footer = () => {
         <CopyrightText>
           &copy; {new Date().getFullYear()} Bodega Santa Catarina. Todos los derechos reservados.
         </CopyrightText>
+        <BackToTopButton label="Subir al inicio" />
         <LegalLinks>
           <LegalLink to="#">Aviso Legal</LegalLink>
           <LegalLink to="#">Privacidad</LegalLink>

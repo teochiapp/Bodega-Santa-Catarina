@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { NavLink as RouterNavLink, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ScrollNavLink as RouterNavLink, ScrollLink as Link } from '../common/ScrollToTop';
 
 const Nav = styled.nav`
   display: flex;

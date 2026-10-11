@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { ScrollLink } from '../common/ScrollToTop';
 import NavMenu from './NavMenu';
 import NavButtons from './NavButtons';
 import MobileMenu from './MobileMenu';
@@ -22,7 +22,7 @@ const HeaderInner = styled.div`
   justify-content: flex-start;
 `;
 
-const LogoLink = styled(Link)`
+const LogoLink = styled(ScrollLink)`
   display: flex;
   align-items: center;
   height: 68px;
