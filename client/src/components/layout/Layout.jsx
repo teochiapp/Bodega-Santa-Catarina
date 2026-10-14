@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
-import { ScrollLink } from '../common/ScrollToTop';
+import { ScrollLink, BackToTopButton } from '../common/ScrollToTop';
 import api from '../../services/api';
 
 const LayoutContainer = styled.div`
@@ -75,6 +75,7 @@ const Layout = () => {
         <Outlet />
       </MainContent>
       <Footer />
+      <BackToTopButton />
     </LayoutContainer>
   );
 };

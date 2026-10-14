@@ -17,12 +17,12 @@ const FooterContent = styled.div`
   
   h3 {
     color: ${(props) => props.theme.colors.secondary};
-    font-size: 1.5rem;
+    font-size: calc(1.5rem + 2px);
   }
 
   p {
     color: ${(props) => props.theme.colors.background};
-    font-size: 0.9rem;
+    font-size: calc(0.9rem + 2px);
     opacity: 0.8;
   }
 `;

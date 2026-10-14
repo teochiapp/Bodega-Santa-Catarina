@@ -44,8 +44,10 @@ const apiFetch = async (endpoint, options = {}) => {
     throw new Error('Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.');
   }
 
+  const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+
   const headers = {
-    'Content-Type': 'application/json',
+    ...(!isFormData && { 'Content-Type': 'application/json' }),
     ...(token && { Authorization: `Bearer ${token}` }),
     ...options.headers,
   };
@@ -79,6 +81,27 @@ const apiFetch = async (endpoint, options = {}) => {
   return data;
 };
 
+/**
+ * Resuelve una URL de imagen almacenada. Si es relativa a /uploads/,
+ * garantiza la resolución completa al origen del backend o al proxy.
+ */
+export const getResolvedImageUrl = (url) => {
+  if (!url) return '';
+  if (
+    url.startsWith('http://') ||
+    url.startsWith('https://') ||
+    url.startsWith('data:') ||
+    url.startsWith('blob:')
+  ) {
+    return url;
+  }
+  if (url.startsWith('/uploads/')) {
+    const backendOrigin = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace(/\/api\/?$/, '');
+    return `${backendOrigin}${url}`;
+  }
+  return url;
+};
+
 const api = {
   get: (endpoint, options = {}) =>
     apiFetch(endpoint, { ...options, method: 'GET' }),
@@ -91,6 +114,9 @@ const api = {
 
   delete: (endpoint, options = {}) =>
     apiFetch(endpoint, { ...options, method: 'DELETE' }),
+
+  upload: (endpoint, formData, options = {}) =>
+    apiFetch(endpoint, { ...options, method: 'POST', body: formData }),
 };
 
 export default api;

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import ReservaModal from './ReservaModal';
 import api from '../../services/api';
@@ -104,12 +105,20 @@ const ReserveButton = styled.button`
 `;
 
 const Experiencias = () => {
-  const [activeTab, setActiveTab] = useState('catas');
+  const location = useLocation();
+  const [userSelectedTab, setUserSelectedTab] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedExperience, setSelectedExperience] = useState(null);
 
   const [catasData, setCatasData] = useState([]);
   const [menusData, setMenusData] = useState([]);
+
+  const activeTab =
+    userSelectedTab !== null
+      ? userSelectedTab
+      : location.hash === '#experiencias-gastronomicas'
+      ? 'gastronomicas'
+      : 'catas';
 
   useEffect(() => {
     api.get('/catas')
@@ -171,12 +180,14 @@ const Experiencias = () => {
   };
 
   return (
-    <Section>
+    <Section style={{ scrollMarginTop: '100px' }}>
+      <div id="catas-y-visitas" style={{ scrollMarginTop: '110px' }} />
+      <div id="experiencias-gastronomicas" style={{ scrollMarginTop: '110px' }} />
       <Tabs>
-        <TabButton active={activeTab === 'catas'} onClick={() => setActiveTab('catas')}>
+        <TabButton active={activeTab === 'catas'} onClick={() => setUserSelectedTab('catas')}>
           Catas y visitas
         </TabButton>
-        <TabButton active={activeTab === 'gastronomicas'} onClick={() => setActiveTab('gastronomicas')}>
+        <TabButton active={activeTab === 'gastronomicas'} onClick={() => setUserSelectedTab('gastronomicas')}>
           Experiencias gastronómicas
         </TabButton>
       </Tabs>

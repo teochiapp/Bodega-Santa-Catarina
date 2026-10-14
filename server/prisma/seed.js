@@ -154,11 +154,11 @@ async function main() {
     await prisma.blog.createMany({
       data: [
         {
-          titulo: 'La Vendimia 2024: Tradición y Respeto por la Tierra en Sencelles',
-          fecha: new Date('2024-09-15'),
-          portada: '/isologo.png',
-          galeria: ['/isologo.png'],
-          descripcion: '<p>Este año la cosecha ha destacado por una maduración pausada y equilibrada gracias a las suaves brisas nocturnas del Pla de Mallorca. Nuestros enólogos comparten las impresiones sobre lo que promete ser una añada memorable.</p>',
+          titulo: 'Vendimia 2024: la cosecha del renacimiento',
+          fecha: new Date('2024-10-15'),
+          portada: '/src/imports/Santa_Catarina_Vendimia_284.jpg',
+          galeria: ['/src/imports/Santa_Catarina_Vendimia_284.jpg'],
+          descripcion: 'La cosecha de 2024 marca un antes y un después en Bodega Santa Catarina. Temperaturas ideales, maduración perfecta y un Manto Negro que promete ser histórico. Los viñedos de Son Aloy ofrecieron este año su mejor expresión en cuatro décadas de historia.\n\nEl otoño llegó tarde a Sencelles este año, pero llegó bien. Tras un verano de calor moderado y noches frescas que preservaron la acidez, la vendimia arrancó a mediados de septiembre con las variedades blancas. El Prensal y el Chardonnay dieron uvas de piel gruesa, aroma intenso y un perfecto equilibrio azúcar-acidez.\n\nLas tintas, en cambio, esperaron hasta octubre. El Manto Negro y el Callet, las dos variedades autóctonas que dan carácter a la Colección Sta, alcanzaron una madurez fenólica excepcional. "Llevamos años esperando una cosecha así", reconoce Marta Alcover, nuestra enóloga jefa. "El frío de las noches de septiembre fue el factor clave."\n\nEn bodega, la decisión fue trabajar con levaduras autóctonas y reducir la intervención al mínimo. El objetivo: que el vino cuente la historia de este año sin filtros. Los primeros análisis son prometedores: el 2024 será, sin duda, una de las mejores añadas en la historia de Santa Catarina.',
           enlace: '',
           activo: true,
         },

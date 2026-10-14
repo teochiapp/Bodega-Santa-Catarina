@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { X, Save } from 'lucide-react';
+import AdminImageUpload from './AdminImageUpload';
 
 // ── Animaciones ───────────────────────────────────────────────────────────────
 
@@ -353,32 +354,29 @@ const AdminVinoForm = ({ onClose, onSave, vinoAEditar = null }) => {
               </FormGroup>
             </Row>
 
-            <Row>
-              <FormGroup>
-                <Label htmlFor="vino-portada">
-                  Portada <SubHelper>(URL de la imagen o botella)</SubHelper>
-                </Label>
-                <Input
-                  id="vino-portada"
-                  name="portada"
-                  placeholder="https://... o /images/vinos/..."
-                  value={formData.portada}
-                  onChange={handleChange}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label htmlFor="vino-categorias">
-                  Categorías <SubHelper>(separadas por coma)</SubHelper>
-                </Label>
-                <Input
-                  id="vino-categorias"
-                  name="categorias"
-                  placeholder="Tintos, Barrica, Selección Especial"
-                  value={formData.categorias}
-                  onChange={handleChange}
-                />
-              </FormGroup>
-            </Row>
+            <FormGroup>
+              <Label htmlFor="vino-categorias">
+                Categorías <SubHelper>(separadas por coma)</SubHelper>
+              </Label>
+              <Input
+                id="vino-categorias"
+                name="categorias"
+                placeholder="Tintos, Barrica, Selección Especial"
+                value={formData.categorias}
+                onChange={handleChange}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <AdminImageUpload
+                id="vino-portada"
+                label="Imagen de la Botella / Portada"
+                helper="Selecciona un archivo de tu PC (PNG con fondo transparente recomendado, JPG o WebP)"
+                aspectRatio="bottle"
+                value={formData.portada}
+                onChange={(url) => setFormData((prev) => ({ ...prev, portada: url }))}
+              />
+            </FormGroup>
 
             <SectionSeparator>Enología & Notas</SectionSeparator>
 

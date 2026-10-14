@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ScrollLink as Link, BackToTopButton } from '../common/ScrollToTop';
+import { ScrollLink as Link } from '../common/ScrollToTop';
 
 const FooterContainer = styled.footer`
   background-color: rgb(64, 26, 46); /* Dark Burgundy from design */
@@ -37,7 +37,7 @@ const LeftCol = styled.div`
 const BrandTitle = styled(Link)`
   display: block;
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: 0.65rem;
+  font-size: calc(0.65rem + 2px);
   letter-spacing: 0.28em;
   font-weight: 700;
   color: rgb(242, 236, 228);
@@ -58,7 +58,7 @@ const NavLinks = styled.nav`
 
 const StyledLink = styled(Link)`
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: 0.68rem;
+  font-size: calc(0.68rem + 2px);
   font-weight: 600;
   letter-spacing: 0.12em;
   color: rgb(163, 159, 149);
@@ -93,7 +93,7 @@ const InspireText = styled.p`
 
 const Subtitle = styled.p`
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: 0.62rem;
+  font-size: calc(0.62rem + 2px);
   letter-spacing: 0.24em;
   font-weight: 600;
   color: rgb(163, 159, 149);
@@ -116,7 +116,7 @@ const RightCol = styled.div`
 
 const ContactTitle = styled.p`
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: 0.6rem;
+  font-size: calc(0.6rem + 2px);
   letter-spacing: 0.22em;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.secondary};
@@ -125,7 +125,7 @@ const ContactTitle = styled.p`
 
 const ContactText = styled.p`
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: 0.82rem;
+  font-size: calc(0.82rem + 2px);
   color: rgb(242, 236, 228);
   line-height: 1.6;
   margin-bottom: 2px;
@@ -133,7 +133,7 @@ const ContactText = styled.p`
 
 const ContactMuted = styled.p`
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: 0.82rem;
+  font-size: calc(0.82rem + 2px);
   color: rgb(163, 159, 149);
   line-height: 1.6;
   margin-bottom: 14px;
@@ -141,7 +141,7 @@ const ContactMuted = styled.p`
 
 const ContactLink = styled.a`
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: 0.82rem;
+  font-size: calc(0.82rem + 2px);
   color: rgb(163, 159, 149);
   text-decoration: none;
   display: block;
@@ -156,7 +156,7 @@ const ContactLink = styled.a`
 const ActionLink = styled(Link)`
   display: block;
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: 0.68rem;
+  font-size: calc(0.68rem + 2px);
   letter-spacing: 0.1em;
   color: ${({ theme }) => theme.colors.secondary};
   text-decoration: underline;
@@ -202,7 +202,7 @@ const BottomRow = styled.div`
 
 const CopyrightText = styled.p`
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + 2px);
   color: rgb(163, 159, 149);
   margin: 0;
 `;
@@ -217,7 +217,7 @@ const LegalLinks = styled.div`
 
 const LegalLink = styled(Link)`
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + 2px);
   color: rgb(163, 159, 149);
   text-decoration: none;
   transition: color 150ms;
@@ -229,7 +229,7 @@ const LegalLink = styled(Link)`
 
 const SocialLink = styled.a`
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: 0.75rem;
+  font-size: calc(0.75rem + 2px);
   color: rgb(163, 159, 149);
   text-decoration: none;
   transition: color 150ms;
@@ -290,7 +290,6 @@ const Footer = () => {
         <CopyrightText>
           &copy; {new Date().getFullYear()} Bodega Santa Catarina. Todos los derechos reservados.
         </CopyrightText>
-        <BackToTopButton label="Subir al inicio" />
         <LegalLinks>
           <LegalLink to="#">Aviso Legal</LegalLink>
           <LegalLink to="#">Privacidad</LegalLink>

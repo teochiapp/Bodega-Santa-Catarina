@@ -10,6 +10,7 @@ const blogRoutes = require('./blogRoutes');
 const tarjetasRoutes = require('./tarjetasRoutes');
 const configuracionRoutes = require('./configuracionRoutes');
 const dashboardRoutes = require('./dashboardRoutes');
+const uploadRoutes = require('./uploadRoutes');
 
 // Health check — verificar que la API está viva
 router.get('/health', (req, res) => {
@@ -26,5 +27,6 @@ router.use('/menus', menusRoutes);
 router.use('/blog', blogRoutes);
 router.use('/tarjetas', tarjetasRoutes);
 router.use('/configuracion', configuracionRoutes);
+router.use('/upload', uploadRoutes);
 
 module.exports = router;

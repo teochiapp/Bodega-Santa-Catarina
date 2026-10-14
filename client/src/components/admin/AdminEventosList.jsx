@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import api from '../../services/api';
 import AdminLayout from './AdminLayout';
 import AdminConfirmModal from './AdminConfirmModal';
+import AdminImageUpload from './AdminImageUpload';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
 
 const Spinner = styled.div`
@@ -393,12 +394,11 @@ const AdminEventosList = () => {
               </FormGroup>
 
               <FormGroup>
-                <label>Imagen de Portada (URL)</label>
-                <input
-                  type="text"
+                <AdminImageUpload
+                  label="Imagen de Portada / Espacio"
+                  helper="Selecciona una imagen del espacio o evento desde tu PC (JPG, PNG, WebP)"
                   value={formData.portada}
-                  onChange={(e) => setFormData({ ...formData, portada: e.target.value })}
-                  placeholder="/isologo.png"
+                  onChange={(url) => setFormData((prev) => ({ ...prev, portada: url }))}
                 />
               </FormGroup>
 

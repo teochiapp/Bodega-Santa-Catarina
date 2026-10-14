@@ -39,7 +39,11 @@ const BodegaPasoAPaso = () => {
       <h2 style={{ textAlign: 'center' }}>La bodega, paso a paso</h2>
       <Grid>
         {pasos.map((paso, idx) => (
-          <PasoCard key={idx}>
+          <PasoCard
+            key={idx}
+            id={paso === 'Sostenibilidad' ? 'sostenibilidad' : undefined}
+            style={{ scrollMarginTop: '110px' }}
+          >
             <h3>{paso}</h3>
             <p>Descripción breve de {paso.toLowerCase()} y su importancia para nosotros.</p>
           </PasoCard>
