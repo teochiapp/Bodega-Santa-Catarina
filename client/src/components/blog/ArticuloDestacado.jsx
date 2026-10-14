@@ -352,7 +352,9 @@ const ArticuloDestacado = () => {
     api.get('/blog')
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
-          const activos = data.filter((a) => a.activo !== false);
+          const activos = data
+            .filter((a) => a.activo !== false)
+            .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime() || b.id - a.id);
           if (activos.length > 0) {
             setArticulos(activos);
             setSelectedId(activos[0].id);

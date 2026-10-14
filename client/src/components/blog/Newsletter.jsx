@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { sendNewsletterSubscription } from '../../services/emailService';
 
 const SectionWrapper = styled.section`
   background-color: rgb(244, 242, 235);
@@ -43,7 +44,7 @@ const Description = styled.p`
 
 const Form = styled.form`
   display: flex;
-  gap: 4px;
+  gap: 6px;
   max-width: 420px;
   margin: 0 auto;
 
@@ -73,6 +74,11 @@ const Input = styled.input`
     border-color: rgb(80, 43, 58);
     box-shadow: 0 0 0 2px rgba(80, 43, 58, 0.12);
   }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -87,38 +93,64 @@ const SubmitButton = styled.button`
   border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
-  transition: background-color 0.2s ease, transform 0.15s ease;
+  transition: background-color 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: #3b1e2a;
     transform: translateY(-1px);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
   }
 `;
 
 const SuccessMsg = styled.p`
   font-family: 'Manrope', 'Raleway', sans-serif;
   font-size: 0.85rem;
-  color: rgb(80, 43, 58);
+  color: #2e7d32;
+  font-weight: 600;
+  margin-top: 14px;
+`;
+
+const ErrorMsg = styled.p`
+  font-family: 'Manrope', 'Raleway', sans-serif;
+  font-size: 0.82rem;
+  color: #b71c1c;
   font-weight: 600;
   margin-top: 14px;
 `;
 
 const Newsletter = () => {
   const [email, setEmail] = useState('');
+  const [cargando, setCargando] = useState(false);
   const [enviado, setEnviado] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email) return;
-    setEnviado(true);
-    setTimeout(() => {
+    if (!email || cargando) return;
+
+    setErrorMsg('');
+    setCargando(true);
+
+    try {
+      await sendNewsletterSubscription(email.trim());
+      setEnviado(true);
       setEmail('');
-      setEnviado(false);
-    }, 4000);
+      setTimeout(() => {
+        setEnviado(false);
+      }, 6000);
+    } catch (err) {
+      setErrorMsg(err.message || 'Error al procesar la suscripción.');
+    } finally {
+      setCargando(false);
+    }
   };
 
   return (
@@ -135,14 +167,22 @@ const Newsletter = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={cargando}
             required
           />
-          <SubmitButton type="submit">SUSCRIBIRSE</SubmitButton>
+          <SubmitButton type="submit" disabled={cargando}>
+            {cargando ? 'SUSCRIBIENDO...' : 'SUSCRIBIRSE'}
+          </SubmitButton>
         </Form>
         {enviado && (
           <SuccessMsg>
-            ✓ ¡Gracias por suscribirte a nuestra newsletter!
+            ✓ ¡Gracias por suscribirte! Te hemos enviado un email de confirmación.
           </SuccessMsg>
+        )}
+        {errorMsg && (
+          <ErrorMsg>
+            ✕ {errorMsg}
+          </ErrorMsg>
         )}
       </Container>
     </SectionWrapper>

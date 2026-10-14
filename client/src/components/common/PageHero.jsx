@@ -28,7 +28,7 @@ const BackgroundImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: ${({ $objectPosition }) => $objectPosition || 'center'};
   z-index: 0;
 `;
 
@@ -119,13 +119,14 @@ const PageHero = ({
   image = '/assets/Santa_Catarina_372.jpg',
   imageAlt = 'Vinos de Bodega Santa Catarina',
   height,
-  minHeight
+  minHeight,
+  objectPosition
 }) => {
   const displayTag = tag || category || badge;
 
   return (
     <HeroContainer $height={height} $minHeight={minHeight}>
-      {image && <BackgroundImage src={image} alt={imageAlt} />}
+      {image && <BackgroundImage src={image} alt={imageAlt} $objectPosition={objectPosition} />}
       <GradientOverlay />
       <Content
         initial={{ opacity: 0, y: 20 }}

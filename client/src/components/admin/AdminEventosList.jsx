@@ -414,10 +414,12 @@ const AdminEventosList = () => {
       {/* Confirmar eliminación */}
       {eventoDelete && (
         <AdminConfirmModal
-          titulo="Eliminar Evento"
-          mensaje={`¿Estás seguro de que deseas eliminar "${eventoDelete.titulo}"?`}
+          isOpen={Boolean(eventoDelete)}
+          title="Eliminar Evento"
+          message={`¿Estás seguro de que deseas eliminar "${eventoDelete.titulo}"?`}
+          confirmText="Eliminar"
           onConfirm={handleEliminar}
-          onClose={() => setEventoDelete(null)}
+          onCancel={() => setEventoDelete(null)}
         />
       )}
     </AdminLayout>

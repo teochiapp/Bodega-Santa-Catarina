@@ -8,17 +8,17 @@ const SectionWrapper = styled.section`
   overflow: hidden;
 `;
 
-/* ─── PARTE 1: Intro Finca Son Aloy ─── */
+/* ─── PARTE 1: Intro Finca Son Aloy / Viñedos y elaboración ─── */
 const IntroContainer = styled.div`
   max-width: 1440px;
   margin: 0 auto;
-  padding: clamp(4rem, 7vw, 6.5rem) clamp(1.5rem, 5vw, 4rem);
+  padding: clamp(3.5rem, 6vw, 5.5rem) clamp(1.5rem, 5vw, 4rem);
   box-sizing: border-box;
 `;
 
 const IntroGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 540px;
+  grid-template-columns: 1fr 500px;
   gap: clamp(2.5rem, 5vw, 5rem);
   align-items: center;
 
@@ -40,37 +40,48 @@ const Eyebrow = styled.p`
   letter-spacing: 0.24em;
   font-weight: 700;
   color: ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
-  margin: 0 0 18px 0;
+  margin: 0 0 16px 0;
   text-transform: uppercase;
 `;
 
 const MainTitle = styled.h2`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: clamp(2.3rem, 3.6vw, 4.2rem);
+  font-size: clamp(2.4rem, 3.8vw, 4.2rem);
   font-weight: 600;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  line-height: 1.1;
+  line-height: 1.12;
+  margin: 0 0 24px 0;
+`;
+
+const BodyParagraph = styled.p`
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
+  font-size: 0.98rem;
+  line-height: 1.8;
+  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
+  opacity: 0.92;
   margin: 0 0 32px 0;
 `;
 
 const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  margin-bottom: 32px;
+  gap: clamp(1.2rem, 3vw, 2.5rem);
+  margin: 0;
 
   @media (max-width: 576px) {
     gap: 1.25rem;
-    margin-bottom: 24px;
   }
 `;
 
-const StatItem = styled.div``;
+const StatItem = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 const StatValue = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: clamp(2.4rem, 3.2vw, 3.2rem);
-  font-weight: 600;
+  font-size: clamp(2.2rem, 3.2vw, 3rem);
+  font-weight: 500;
   color: ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
   line-height: 1;
   margin: 0 0 8px 0;
@@ -82,24 +93,15 @@ const StatLabel = styled.p`
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   line-height: 1.4;
   margin: 0;
-`;
-
-const BodyParagraph = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 1rem;
-  line-height: 1.85;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  margin: 0;
+  opacity: 0.88;
 `;
 
 const IntroImageWrapper = styled(motion.div)`
-  height: 440px;
+  height: 420px;
   overflow: hidden;
-  border-radius: 4px;
-  box-shadow: 0 16px 36px rgba(80, 43, 58, 0.08);
 
   @media (max-width: 1024px) {
-    height: 400px;
+    height: 380px;
   }
 
   @media (max-width: 576px) {
@@ -119,24 +121,28 @@ const IntroImage = styled.img`
   }
 `;
 
-/* ─── PARTE 2: Los Viñedos, La Elaboración y La Tierra Roja ─── */
+/* ─── PARTE 2: Los Viñedos, La Elaboración y La Tierra Roja (Features con contenedor extra) ─── */
 const ProcessContainer = styled.div`
-  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 5vw, 4rem) clamp(4rem, 7vw, 6.5rem);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3rem);
 `;
 
 const SplitRow = styled.article`
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  min-height: 520px;
   align-items: stretch;
-  border-top: 1px solid rgba(194, 164, 120, 0.3);
+  background-color: rgb(242, 236, 228);
+  border: 1px solid rgb(224, 221, 213);
+  overflow: hidden;
 
-  @media (max-width: 768px) {
+  @media (max-width: 960px) {
     grid-template-columns: 1fr;
-    min-height: auto;
   }
 `;
 
@@ -147,10 +153,15 @@ const SplitImageWrapper = styled(motion.div)`
   position: relative;
   overflow: hidden;
 
-  @media (max-width: 768px) {
-    min-height: 280px;
-    height: 320px;
-    order: 1; /* En mobile la imagen va arriba */
+  @media (max-width: 960px) {
+    min-height: 300px;
+    height: 360px;
+    order: 1; /* En responsive la imagen va arriba */
+  }
+
+  @media (max-width: 576px) {
+    min-height: 240px;
+    height: 280px;
   }
 `;
 
@@ -163,21 +174,21 @@ const SplitImage = styled.img`
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    transform: scale(1.02);
+    transform: scale(1.025);
   }
 `;
 
 const SplitContentWrapper = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: ${({ $align }) => ($align === 'right' ? 'flex-start' : 'flex-end')};
-  padding: clamp(3rem, 5vw, 5.5rem) clamp(1.75rem, 5vw, 5rem);
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(2.5rem, 4.5vw, 4.2rem) clamp(2rem, 4.5vw, 3.8rem);
   box-sizing: border-box;
+  background-color: rgb(242, 236, 228);
 
-  @media (max-width: 768px) {
-    justify-content: center;
-    padding: clamp(2.5rem, 6vw, 3.5rem) 1.5rem;
-    order: 2; /* En mobile el texto va debajo de la imagen */
+  @media (max-width: 960px) {
+    order: 2; /* En responsive el texto va después */
+    padding: clamp(2rem, 5vw, 2.75rem) clamp(1.5rem, 4vw, 2.25rem);
   }
 `;
 
@@ -190,7 +201,7 @@ const SplitInnerContent = styled(motion.div)`
 
 const SectionHeading = styled.h3`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: clamp(2.1rem, 3.2vw, 2.85rem);
+  font-size: clamp(2rem, 3.2vw, 2.85rem);
   font-weight: 600;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   line-height: 1.15;
@@ -210,7 +221,7 @@ const UnderlinedTitle = styled.h4`
 
 const SoilTitle = styled.h2`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: clamp(2.1rem, 3.2vw, 2.9rem);
+  font-size: clamp(2rem, 3.2vw, 2.85rem);
   font-weight: 600;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   line-height: 1.15;
@@ -221,7 +232,7 @@ const SoilTitle = styled.h2`
 
 const SoilLead = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: 1.15rem;
+  font-size: 1.12rem;
   font-style: italic;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   opacity: 0.92;
@@ -264,7 +275,7 @@ const VarietyCategory = styled.h5`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', serif"};
   font-size: 1.18rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
+  color: ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
   margin: 0 0 8px 0;
 `;
 
@@ -299,8 +310,8 @@ const DetailItem = styled.div`
 `;
 
 const DetailMarker = styled.span`
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   border: 1.5px solid ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
   background-color: transparent;
@@ -325,11 +336,11 @@ const DetailDescription = styled.p`
   margin: 0;
 `;
 
-/* Detalles del suelo (La tierra roja) */
+/* Detalles del suelo (La tierra roja con borde vertical izquierdo en dorado) */
 const SoilDetailsList = styled.dl`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
   margin: 0;
   padding: 0;
 `;
@@ -337,6 +348,8 @@ const SoilDetailsList = styled.dl`
 const SoilDetailItem = styled.div`
   display: flex;
   flex-direction: column;
+  border-left: 1.5px solid ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
+  padding-left: 14px;
 
   dt {
     font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', serif"};
@@ -359,7 +372,7 @@ const SoilDetailItem = styled.div`
 const FincaSonAloy = () => {
   return (
     <SectionWrapper>
-      {/* ── PARTE 1: LA FINCA 'SON ALOY' ── */}
+      {/* ── PARTE 1: LA FINCA 'SON ALOY' / VIÑEDOS Y ELABORACIÓN ── */}
       <IntroContainer className="bodega-vineyard-intro">
         <IntroGrid>
           <IntroContent
@@ -369,28 +382,28 @@ const FincaSonAloy = () => {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <Eyebrow className="bodega-eyebrow">LA FINCA</Eyebrow>
-            <MainTitle className="bodega-display-title">La Finca &apos;Son Aloy&apos;</MainTitle>
+            <MainTitle className="bodega-display-title">Viñedos y elaboración</MainTitle>
+
+            <BodyParagraph className="bodega-body">
+              Son Aloy es una finca única en el interior de Mallorca. Sus suelos arcillo-calcáreos,
+              la altitud de 200 metros y la influencia de la Tramuntana crean condiciones ideales
+              para elaborar vinos de personalidad singular.
+            </BodyParagraph>
 
             <StatsGrid className="bodega-stats">
               <StatItem>
-                <StatValue>85ha</StatValue>
-                <StatLabel>De viñedo en Son Aloy</StatLabel>
+                <StatValue>85 ha</StatValue>
+                <StatLabel>de viñedo en Son Aloy</StatLabel>
               </StatItem>
               <StatItem>
                 <StatValue>1984</StatValue>
-                <StatLabel>Año de fundación</StatLabel>
+                <StatLabel>año de fundación</StatLabel>
               </StatItem>
               <StatItem>
                 <StatValue>100%</StatValue>
-                <StatLabel>Ecológico certificado</StatLabel>
+                <StatLabel>identidad mallorquina</StatLabel>
               </StatItem>
             </StatsGrid>
-
-            <BodyParagraph className="bodega-body">
-              Son Aloy es una finca única en el interior de Mallorca. Suelos arcillo-calcáreos,
-              altitud de 200 metros y la influencia de la Tramuntana crean condiciones ideales
-              para elaborar vinos de personalidad singular.
-            </BodyParagraph>
           </IntroContent>
 
           <IntroImageWrapper
@@ -408,11 +421,11 @@ const FincaSonAloy = () => {
         </IntroGrid>
       </IntroContainer>
 
-      {/* ── PARTE 2: LOS VIÑEDOS, LA ELABORACIÓN Y LA TIERRA ROJA ── */}
+      {/* ── PARTE 2: LOS VIÑEDOS, LA ELABORACIÓN Y LA TIERRA ROJA (Cards con contenedor extra) ── */}
       <ProcessContainer className="bodega-process-grid">
         {/* 1. Los Viñedos (Texto a la izquierda, imagen a la derecha) */}
         <SplitRow className="is-image-right">
-          <SplitContentWrapper $align="left">
+          <SplitContentWrapper>
             <SplitInnerContent
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -485,7 +498,7 @@ const FincaSonAloy = () => {
             />
           </SplitImageWrapper>
 
-          <SplitContentWrapper $align="right">
+          <SplitContentWrapper>
             <SplitInnerContent
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -541,7 +554,7 @@ const FincaSonAloy = () => {
             />
           </SplitImageWrapper>
 
-          <SplitContentWrapper $align="right" className="bodega-soil-copy">
+          <SplitContentWrapper className="bodega-soil-copy">
             <SplitInnerContent
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}

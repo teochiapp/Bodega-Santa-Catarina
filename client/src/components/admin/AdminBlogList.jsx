@@ -184,6 +184,7 @@ const AdminBlogList = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [postEdit, setPostEdit] = useState(null);
   const [postDelete, setPostDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const [formData, setFormData] = useState({
     titulo: '',
     fecha: '',
@@ -271,12 +272,15 @@ const AdminBlogList = () => {
   const handleEliminar = async () => {
     if (!postDelete) return;
     try {
+      setDeleting(true);
       await api.delete(`/blog/${postDelete.id}`);
       setPostDelete(null);
       cargarPosts();
     } catch (err) {
       console.error('Error al eliminar el artículo:', err);
-      alert('Error al eliminar el artículo');
+      alert(err.message || 'Error al eliminar el artículo');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -430,10 +434,13 @@ const AdminBlogList = () => {
       {/* Confirmar eliminación */}
       {postDelete && (
         <AdminConfirmModal
-          titulo="Eliminar Artículo"
-          mensaje={`¿Estás seguro de que deseas eliminar "${postDelete.titulo}"?`}
+          isOpen={Boolean(postDelete)}
+          title="Eliminar Artículo"
+          message={`¿Estás seguro de que deseas eliminar "${postDelete.titulo}"? Esta acción no se puede deshacer.`}
+          confirmText="Eliminar"
           onConfirm={handleEliminar}
-          onClose={() => setPostDelete(null)}
+          onCancel={() => setPostDelete(null)}
+          cargando={deleting}
         />
       )}
     </AdminLayout>

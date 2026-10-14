@@ -19,9 +19,9 @@ export const MENU_ITEMS = [
     name: 'VINOS',
     path: '/vinos',
     submenu: [
-      { name: 'Colección STA', path: '/vinos/coleccion-sta' },
-      { name: 'Colección Surant', path: '/vinos/coleccion-surant' },
-      { name: 'Colección ‘Nguany', path: '/vinos/coleccion-nguany' },
+      { name: 'Colección STA', path: '/vinos#coleccion-sta' },
+      { name: 'Colección Surant', path: '/vinos#coleccion-surant' },
+      { name: 'Colección ‘Nguany', path: '/vinos#coleccion-nguany' },
     ],
   },
   {

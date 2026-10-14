@@ -12,6 +12,7 @@ import {
   Settings,
   Menu,
   X,
+  Images,
 } from 'lucide-react';
 
 // ── Animaciones ───────────────────────────────────────────────────────────────
@@ -357,6 +358,7 @@ const NAV = [
     items: [
       { icon: <Newspaper size={17} strokeWidth={1.8} />, label: 'Blog & Novedades', path: '/admin/blog', disabled: false },
       { icon: <Gift size={17} strokeWidth={1.8} />, label: 'Tarjetas de Regalo', path: '/admin/tarjetas', disabled: false },
+      { icon: <Images size={17} strokeWidth={1.8} />, label: 'Galería Tienda Física', path: '/admin/tienda-galeria', disabled: false },
     ],
   },
   {

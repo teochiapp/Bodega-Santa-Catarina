@@ -117,3 +117,14 @@ model DiaVacacion {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
 }
+
+model TiendaImagen {
+  id        Int      @id @default(autoincrement())
+  imagen    String   @db.Text
+  alt       String?  @db.Text
+  orden     Int      @default(0)
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+

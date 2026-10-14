@@ -131,32 +131,50 @@ const BtnDanger = styled.button`
 
 // ── Componente ────────────────────────────────────────────────────────────────
 
-const AdminConfirmModal = ({ isOpen, title, message, confirmText = 'Confirmar', cancelText = 'Cancelar', onConfirm, onCancel, cargando = false }) => {
-  if (!isOpen) return null;
+const AdminConfirmModal = ({
+  isOpen = true,
+  title,
+  titulo,
+  message,
+  mensaje,
+  confirmText,
+  confirmLabel,
+  cancelText = 'Cancelar',
+  onConfirm,
+  onCancel,
+  onClose,
+  cargando = false,
+}) => {
+  if (isOpen === false) return null;
+
+  const displayTitle = title || titulo || 'Confirmar acción';
+  const displayMessage = message || mensaje || '¿Estás seguro de que deseas continuar?';
+  const displayConfirmText = confirmLabel || confirmText || 'Eliminar';
+  const handleCancel = onCancel || onClose;
 
   return (
-    <Overlay onClick={!cargando ? onCancel : undefined}>
+    <Overlay onClick={!cargando && handleCancel ? handleCancel : undefined}>
       <ModalBox className="admin-scope" onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
           <Title>
             <AlertTriangle size={17} strokeWidth={2} color="var(--tn-rojo-700)" />
-            {title}
+            {displayTitle}
           </Title>
-          <CloseBtn onClick={!cargando ? onCancel : undefined} aria-label="Cerrar">
+          <CloseBtn onClick={!cargando && handleCancel ? handleCancel : undefined} aria-label="Cerrar">
             <X size={16} strokeWidth={1.8} />
           </CloseBtn>
         </ModalHeader>
         
         <ModalBody>
-          {message}
+          {displayMessage}
         </ModalBody>
 
         <ModalFooter>
-          <BtnSecondary onClick={onCancel} disabled={cargando}>
+          <BtnSecondary onClick={handleCancel} disabled={cargando}>
             {cancelText}
           </BtnSecondary>
           <BtnDanger onClick={onConfirm} disabled={cargando}>
-            {cargando ? 'Cargando...' : confirmText}
+            {cargando ? 'Eliminando...' : displayConfirmText}
           </BtnDanger>
         </ModalFooter>
       </ModalBox>

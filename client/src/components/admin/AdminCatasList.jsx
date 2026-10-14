@@ -450,10 +450,12 @@ const AdminCatasList = () => {
       {/* Confirmar eliminación */}
       {cataDelete && (
         <AdminConfirmModal
-          titulo="Eliminar Cata"
-          mensaje={`¿Estás seguro de que deseas eliminar "${cataDelete.titulo}"? Esta acción no se puede deshacer.`}
+          isOpen={Boolean(cataDelete)}
+          title="Eliminar Cata"
+          message={`¿Estás seguro de que deseas eliminar "${cataDelete.titulo}"? Esta acción no se puede deshacer.`}
+          confirmText="Eliminar"
           onConfirm={handleEliminar}
-          onClose={() => setCataDelete(null)}
+          onCancel={() => setCataDelete(null)}
         />
       )}
     </AdminLayout>

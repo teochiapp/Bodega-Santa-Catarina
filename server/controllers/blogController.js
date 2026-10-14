@@ -54,11 +54,18 @@ const editarPost = async (req, res) => {
 const eliminarPost = async (req, res) => {
   try {
     const { id } = req.params;
-    await eliminarPostService(id);
-    res.status(204).send();
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+      return res.status(400).json({ error: 'ID de artículo inválido' });
+    }
+    await eliminarPostService(numericId);
+    return res.status(204).send();
   } catch (err) {
+    if (err.code === 'P2025') {
+      return res.status(404).json({ error: 'Artículo no encontrado o ya eliminado' });
+    }
     console.error('[blogController] Error al eliminar post:', err.message);
-    res.status(500).json({ error: 'Error interno al eliminar el artículo' });
+    return res.status(500).json({ error: 'Error interno al eliminar el artículo' });
   }
 };
 

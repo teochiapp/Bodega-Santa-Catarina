@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './theme/theme';
 import { GlobalStyles } from './theme/GlobalStyles';
@@ -37,6 +37,7 @@ import AdminMenusPage from './pages/admin/AdminMenusPage';
 import AdminEventosPage from './pages/admin/AdminEventosPage';
 import AdminBlogPage from './pages/admin/AdminBlogPage';
 import AdminTarjetasPage from './pages/admin/AdminTarjetasPage';
+import AdminTiendaGaleriaPage from './pages/admin/AdminTiendaGaleriaPage';
 import AdminConfiguracionPage from './pages/admin/AdminConfiguracionPage';
 
 function App() {
@@ -62,14 +63,14 @@ function App() {
               <Route path="/la-bodega/nuestra-filosofia" element={<BodegaFilosofiaPage />} />
               <Route path="/la-bodega/sostenibilidad" element={<BodegaSostenibilidadPage />} />
 
-              {/* Vinos y sus colecciones */}
+              {/* Vinos y sus colecciones (todo en la misma página con anchors) */}
               <Route path="/vinos" element={<VinosPage />} />
-              <Route path="/vinos/coleccion-sta" element={<VinosStaPage />} />
-              <Route path="/vinos/sta" element={<VinosStaPage />} />
-              <Route path="/vinos/coleccion-surant" element={<VinosSurantPage />} />
-              <Route path="/vinos/surant" element={<VinosSurantPage />} />
-              <Route path="/vinos/coleccion-nguany" element={<VinosNguanyPage />} />
-              <Route path="/vinos/nguany" element={<VinosNguanyPage />} />
+              <Route path="/vinos/coleccion-sta" element={<Navigate to="/vinos#coleccion-sta" replace />} />
+              <Route path="/vinos/sta" element={<Navigate to="/vinos#coleccion-sta" replace />} />
+              <Route path="/vinos/coleccion-surant" element={<Navigate to="/vinos#coleccion-surant" replace />} />
+              <Route path="/vinos/surant" element={<Navigate to="/vinos#coleccion-surant" replace />} />
+              <Route path="/vinos/coleccion-nguany" element={<Navigate to="/vinos#coleccion-nguany" replace />} />
+              <Route path="/vinos/nguany" element={<Navigate to="/vinos#coleccion-nguany" replace />} />
 
               <Route path="/enoturismo" element={<EnoturismoPage />} />
               <Route path="/eventos" element={<EventosPage />} />
@@ -135,6 +136,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminTarjetasPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/tienda-galeria"
+              element={
+                <ProtectedRoute>
+                  <AdminTiendaGaleriaPage />
                 </ProtectedRoute>
               }
             />

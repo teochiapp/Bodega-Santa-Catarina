@@ -1,6 +1,8 @@
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
+import { ScrollLink } from '../common/ScrollToTop';
 import api from '../../services/api';
 
 // Subtítulos y orden estándar por gama / colección
@@ -200,10 +202,81 @@ const GamaContainer = styled.div`
   }
 `;
 
+const gentlePulse = keyframes`
+  0% {
+    background-color: transparent;
+    border-bottom-color: rgba(194, 164, 120, 0.25);
+    transform: translateY(0);
+  }
+  30% {
+    background-color: rgba(194, 164, 120, 0.08);
+    border-bottom-color: rgb(194, 164, 120);
+    transform: translateY(-2px);
+  }
+  100% {
+    background-color: transparent;
+    border-bottom-color: rgba(194, 164, 120, 0.25);
+    transform: translateY(0);
+  }
+`;
+
+const QuickNavContainer = styled.nav`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 3.5rem;
+  flex-wrap: wrap;
+
+  @media (max-width: 576px) {
+    gap: 8px;
+    margin-bottom: 2.5rem;
+  }
+`;
+
+const QuickNavPill = styled(ScrollLink)`
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 22px;
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 999px;
+  background-color: ${({ $isActive }) => ($isActive ? 'rgb(80, 43, 58)' : 'rgba(242, 236, 228, 0.85)')};
+  color: ${({ $isActive }) => ($isActive ? '#FFFFFF' : 'rgb(80, 43, 58)')};
+  border: 1px solid ${({ $isActive }) => ($isActive ? 'rgb(80, 43, 58)' : 'rgba(194, 164, 120, 0.45)')};
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(80, 43, 58, 0.04);
+
+  &:hover {
+    background-color: rgb(80, 43, 58);
+    color: #FFFFFF;
+    border-color: rgb(80, 43, 58);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(80, 43, 58, 0.15);
+  }
+
+  @media (max-width: 576px) {
+    padding: 8px 16px;
+    font-size: 0.72rem;
+  }
+`;
+
 const GamaHeader = styled.div`
   border-bottom: 1px solid rgba(194, 164, 120, 0.25);
-  padding-bottom: 20px;
+  padding: 10px 14px 20px;
   margin-bottom: 2.5rem;
+  border-radius: 6px;
+  transition: all 0.4s ease;
+
+  ${({ $isTargeted }) =>
+    $isTargeted &&
+    css`
+      animation: ${gentlePulse} 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    `}
 
   @media (max-width: ${({ theme }) => theme.breakpoints?.mobile || '576px'}) {
     margin-bottom: 1.75rem;
@@ -560,6 +633,19 @@ const CatalogoVinos = ({ filtroColeccion, ocultarHeaderGama = false }) => {
   const [openNotaId, setOpenNotaId] = useState(null);
   const [catalog, setCatalog] = useState(DEFAULT_CATALOG);
   const [, setLoading] = useState(true);
+  const location = useLocation();
+  const [activeAnchor, setActiveAnchor] = useState('');
+
+  useEffect(() => {
+    if (location.hash) {
+      const hash = location.hash.replace('#', '');
+      setActiveAnchor(hash);
+      const timer = setTimeout(() => {
+        setActiveAnchor('');
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [location.hash]);
 
   useEffect(() => {
     api.get('/vinos')
@@ -669,6 +755,14 @@ Bodega Santa Catarina · Finca Son Aloy, Mallorca
     return undefined;
   };
 
+  const resolveShortGamaId = (gama) => {
+    const g = (gama || '').toLowerCase();
+    if (g.includes('sta')) return 'sta';
+    if (g.includes('surant')) return 'surant';
+    if (g.includes('nguany')) return 'nguany';
+    return undefined;
+  };
+
   const displayedCatalog = filtroColeccion
     ? catalog.filter((seccion) => {
         const gama = (seccion.gama || '').toLowerCase();
@@ -679,18 +773,50 @@ Bodega Santa Catarina · Finca Son Aloy, Mallorca
 
   return (
     <Section>
-      {displayedCatalog.map((seccion, idx) => (
-        <GamaContainer
-          key={idx}
-          id={resolveGamaId(seccion.gama)}
-          style={{ scrollMarginTop: '110px' }}
-        >
-          {!ocultarHeaderGama && (
-            <GamaHeader>
-              <GamaSubtitle>{seccion.subtitulo || 'COLECCIÓN'}</GamaSubtitle>
-              <GamaTitle>{seccion.gama}</GamaTitle>
-            </GamaHeader>
-          )}
+      {!filtroColeccion && (
+        <QuickNavContainer aria-label="Navegación rápida de colecciones">
+          {displayedCatalog.map((seccion) => {
+            const id = resolveGamaId(seccion.gama);
+            const shortId = resolveShortGamaId(seccion.gama);
+            const isAct = activeAnchor === id || activeAnchor === shortId;
+            return (
+              <QuickNavPill
+                key={seccion.gama}
+                to={`/vinos#${id}`}
+                $isActive={isAct}
+              >
+                {seccion.gama}
+              </QuickNavPill>
+            );
+          })}
+        </QuickNavContainer>
+      )}
+
+      {displayedCatalog.map((seccion, idx) => {
+        const id = resolveGamaId(seccion.gama);
+        const shortId = resolveShortGamaId(seccion.gama);
+        const isTargeted = activeAnchor && (activeAnchor === id || activeAnchor === shortId);
+
+        return (
+          <GamaContainer
+            key={idx}
+            id={id}
+            style={{ scrollMarginTop: '115px' }}
+          >
+            {shortId && (
+              <span
+                id={shortId}
+                style={{ display: 'block', position: 'relative', top: '-115px', visibility: 'hidden' }}
+                aria-hidden="true"
+              />
+            )}
+
+            {!ocultarHeaderGama && (
+              <GamaHeader $isTargeted={isTargeted}>
+                <GamaSubtitle>{seccion.subtitulo || 'COLECCIÓN'}</GamaSubtitle>
+                <GamaTitle>{seccion.gama}</GamaTitle>
+              </GamaHeader>
+            )}
 
           <Grid>
             {seccion.vinos.map((vino, vIdx) => {
@@ -799,7 +925,8 @@ Bodega Santa Catarina · Finca Son Aloy, Mallorca
             })}
           </Grid>
         </GamaContainer>
-      ))}
+      );
+    })}
     </Section>
   );
 };

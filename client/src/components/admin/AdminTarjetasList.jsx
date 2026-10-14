@@ -389,10 +389,12 @@ const AdminTarjetasList = () => {
       {/* Confirmar eliminación */}
       {tarjetaDelete && (
         <AdminConfirmModal
-          titulo="Eliminar Tarjeta"
-          mensaje={`¿Estás seguro de que deseas eliminar "${tarjetaDelete.titulo}"?`}
+          isOpen={Boolean(tarjetaDelete)}
+          title="Eliminar Tarjeta"
+          message={`¿Estás seguro de que deseas eliminar "${tarjetaDelete.titulo}"?`}
+          confirmText="Eliminar"
           onConfirm={handleEliminar}
-          onClose={() => setTarjetaDelete(null)}
+          onCancel={() => setTarjetaDelete(null)}
         />
       )}
     </AdminLayout>

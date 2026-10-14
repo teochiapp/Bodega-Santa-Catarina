@@ -2,7 +2,10 @@ const prisma = require('./prismaClient');
 
 const obtenerTodosLosPosts = async () => {
   return prisma.blog.findMany({
-    orderBy: { fecha: 'desc' },
+    orderBy: [
+      { fecha: 'desc' },
+      { id: 'desc' },
+    ],
   });
 };
 

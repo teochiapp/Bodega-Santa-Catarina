@@ -450,10 +450,12 @@ const AdminMenusList = () => {
       {/* Confirmar eliminación */}
       {menuDelete && (
         <AdminConfirmModal
-          titulo="Eliminar Menú"
-          mensaje={`¿Estás seguro de que deseas eliminar "${menuDelete.titulo}"?`}
+          isOpen={Boolean(menuDelete)}
+          title="Eliminar Menú"
+          message={`¿Estás seguro de que deseas eliminar "${menuDelete.titulo}"?`}
+          confirmText="Eliminar"
           onConfirm={handleEliminar}
-          onClose={() => setMenuDelete(null)}
+          onCancel={() => setMenuDelete(null)}
         />
       )}
     </AdminLayout>

@@ -1,0 +1,228 @@
+/**
+ * Genera el HTML responsive para el email de bienvenida al Newsletter de Bodega Santa Catarina.
+ * Utiliza los colores de marca de la bodega (#502B3A vino, #CBA052 dorado, #F4F2EB fondo).
+ *
+ * @param {object} params
+ * @param {string} params.email - Correo del suscriptor
+ * @param {string} [params.fecha] - Fecha formateada (opcional)
+ * @param {string} [params.origen] - Origen del registro (opcional)
+ * @returns {string} - Código HTML completo listo para enviar por SMTP / Brevo API
+ */
+const generarHtmlNewsletter = ({ email, fecha, origen }) => {
+  const fechaFmt = fecha || new Date().toLocaleDateString('es-ES', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
+  const origenFmt = origen || 'Blog Santa Catarina';
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido al Newsletter de Bodega Santa Catarina</title>
+  <style>
+    body, table, td, p, a, li, blockquote {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+    table, td {
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+    img {
+      -ms-interpolation-mode: bicubic;
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+    }
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      background-color: #F4F2EB;
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #502B3A;
+    }
+    .wrapper {
+      width: 100%;
+      table-layout: fixed;
+      background-color: #F4F2EB;
+      padding: 40px 10px;
+    }
+    .main-table {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #FFFFFF;
+      border: 1px solid #E4DFD5;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .header-bar {
+      background-color: #502B3A;
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: #CBA052;
+      margin: 0 0 8px 0;
+      font-weight: 700;
+    }
+    .brand-title {
+      font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+      font-size: 28px;
+      font-weight: 500;
+      color: #F2ECE4;
+      margin: 0;
+      letter-spacing: 0.04em;
+    }
+    .content-body {
+      padding: 36px 32px;
+      background-color: #FFFFFF;
+    }
+    .greeting {
+      font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: #502B3A;
+      margin: 0 0 16px 0;
+      line-height: 1.25;
+    }
+    .paragraph {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #502B3A;
+      margin: 0 0 20px 0;
+    }
+    .highlight-card {
+      background-color: #F4F2EB;
+      border-left: 3px solid #CBA052;
+      border-radius: 4px;
+      padding: 18px 20px;
+      margin: 24px 0;
+    }
+    .highlight-card p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #502B3A;
+    }
+    .btn-container {
+      text-align: center;
+      margin: 32px 0 20px 0;
+    }
+    .cta-button {
+      display: inline-block;
+      background-color: #502B3A;
+      color: #F2ECE4 !important;
+      text-decoration: none;
+      padding: 14px 30px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border-radius: 100px;
+    }
+    .divider {
+      border: 0;
+      height: 1px;
+      background-color: #EFEBE4;
+      margin: 32px 0 24px 0;
+    }
+    .footer {
+      background-color: #FAF8F5;
+      padding: 24px 32px;
+      text-align: center;
+      border-top: 1px solid #EFEBE4;
+    }
+    .footer-text {
+      font-size: 12px;
+      line-height: 1.6;
+      color: #8C757F;
+      margin: 0 0 8px 0;
+    }
+    .footer-note {
+      font-size: 11px;
+      color: #A8969F;
+      margin: 0;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <center class="wrapper">
+    <table class="main-table" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <!-- CABECERA -->
+      <tr>
+        <td class="header-bar">
+          <p class="eyebrow">SON ALOY · SENCELLES · MALLORCA</p>
+          <h1 class="brand-title">Bodega Santa Catarina</h1>
+        </td>
+      </tr>
+
+      <!-- CUERPO PRINCIPAL -->
+      <tr>
+        <td class="content-body">
+          <h2 class="greeting">¡Bienvenido a nuestras historias de la bodega!</h2>
+          
+          <p class="paragraph">
+            Gracias por suscribirte a nuestro boletín. A partir de ahora recibirás en tu correo electrónico las novedades de nuestras vendimias, presentaciones de nuevas añadas, invitaciones a catas y las crónicas que nacen entre viñedos en Son Aloy.
+          </p>
+
+          <div class="highlight-card">
+            <p><strong>Detalles de tu suscripción:</strong></p>
+            <p style="margin-top: 6px;">
+              • Email registrado: <strong>${email}</strong><br>
+              • Fecha: <strong>${fechaFmt}</strong><br>
+              • Origen: <strong>${origenFmt}</strong>
+            </p>
+          </div>
+
+          <p class="paragraph">
+            Nuestros vinos son fruto del respeto por la tierra, las variedades autóctonas mallorquinas (Manto Negro, Callet, Prensal Blanc) y más de cuatro décadas de tradición enológica.
+          </p>
+
+          <div class="btn-container">
+            <a href="https://santacatarina.es/vinos" class="cta-button" target="_blank">
+              DESCUBRIR NUESTROS VINOS
+            </a>
+          </div>
+
+          <hr class="divider">
+
+          <p class="paragraph" style="font-size: 13.5px; color: #73505E; margin-bottom: 0;">
+            Si deseas coordinar una visita o consultar horarios de nuestra tienda física, puedes responder directamente a este correo o contactarnos a través de nuestra web.
+          </p>
+        </td>
+      </tr>
+
+      <!-- PIE DE PÁGINA -->
+      <tr>
+        <td class="footer">
+          <p class="footer-text">
+            <strong>Bodega Santa Catarina</strong><br>
+            Finca Son Aloy, Carretera Inca–Sencelles, Km 3, Mallorca, Islas Baleares.<br>
+            Tel: (+34) 971 872 078 · info@santacatarina.es
+          </p>
+          <p class="footer-note">
+            Recibiste este correo porque te suscribiste a nuestra newsletter. Cumplimos con el RGPD y protegemos tu privacidad.<br>
+            Si deseas darte de baja en cualquier momento, responde a este correo con el asunto "Baja Newsletter".
+          </p>
+        </td>
+      </tr>
+    </table>
+  </center>
+</body>
+</html>`;
+};
+
+module.exports = {
+  generarHtmlNewsletter,
+};
