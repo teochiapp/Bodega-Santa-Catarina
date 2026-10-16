@@ -1,9 +1,3 @@
-const EventosBodas = () => {
-  return (
-    <div>
-      <h1>Eventos y Bodas</h1>
-    </div>
-  );
-};
+import EventosPage from './EventosPage';
 
-export default EventosBodas;
+export default EventosPage;

@@ -4,7 +4,7 @@ import { ScrollLink } from '../common/ScrollToTop';
 const SectionWrapper = styled.section`
   position: relative;
   width: 100%;
-  background-color: ${({ theme }) => theme.colors.primary || 'rgb(80, 43, 58)'};
+  background-color: #5C1120;
   overflow: hidden;
   min-height: 440px;
   display: flex;
@@ -22,11 +22,16 @@ const BannerImage = styled.img`
   object-fit: cover;
   object-position: right center;
   transition: transform 0.6s ease;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 45%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 45%);
 
   @media (max-width: 900px) {
     width: 100%;
+    max-width: none;
     opacity: 0.35;
     object-position: center right;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 `;
 
@@ -35,20 +40,20 @@ const GradientOverlay = styled.div`
   inset: 0;
   background: linear-gradient(
     to right,
-    rgb(80, 43, 58) 0%,
-    rgb(80, 43, 58) 32%,
-    rgba(80, 43, 58, 0.9) 48%,
-    rgba(80, 43, 58, 0.3) 72%,
-    rgba(80, 43, 58, 0) 100%
+    rgb(92, 17, 32) 0%,
+    rgb(92, 17, 32) 32%,
+    rgba(92, 17, 32, 0.9) 48%,
+    rgba(92, 17, 32, 0.3) 72%,
+    rgba(92, 17, 32, 0) 100%
   );
   pointer-events: none;
 
   @media (max-width: 900px) {
     background: linear-gradient(
       to right,
-      rgb(80, 43, 58) 0%,
-      rgba(80, 43, 58, 0.92) 50%,
-      rgba(80, 43, 58, 0.8) 100%
+      rgb(92, 17, 32) 0%,
+      rgba(92, 17, 32, 0.92) 50%,
+      rgba(92, 17, 32, 0.8) 100%
     );
   }
 `;
@@ -83,11 +88,12 @@ const Kicker = styled.p`
 
 const Title = styled.h2`
   font-family: ${({ theme }) => theme.typography.fontFamily.heading};
-  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-size: clamp(1.5rem, 5.2vw, 3.25rem);
   font-weight: 600;
   line-height: 1.05;
   color: rgb(242, 236, 228);
   margin-bottom: 18px;
+  white-space: nowrap;
 `;
 
 const TextBlock = styled.div`
@@ -136,7 +142,7 @@ const Distribuidores = () => {
   return (
     <SectionWrapper>
       <BannerImage
-        src="/assets/distribuidores-banner.jpg"
+        src="/inicio/footer-distribuidores-bg.webp"
         alt="Red de distribuidores en Mallorca Bodega Santa Catarina"
         loading="lazy"
       />

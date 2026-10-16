@@ -3,7 +3,6 @@ const router = express.Router();
 
 const authRoutes = require('./authRoutes');
 const vinosRoutes = require('./vinosRoutes');
-const eventosRoutes = require('./eventosRoutes');
 const catasRoutes = require('./catasRoutes');
 const menusRoutes = require('./menusRoutes');
 const blogRoutes = require('./blogRoutes');
@@ -23,7 +22,6 @@ router.get('/health', (req, res) => {
 router.use('/auth', authRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/vinos', vinosRoutes);
-router.use('/eventos', eventosRoutes);
 router.use('/catas', catasRoutes);
 router.use('/menus', menusRoutes);
 router.use('/blog', blogRoutes);

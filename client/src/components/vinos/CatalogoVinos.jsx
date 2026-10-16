@@ -365,7 +365,7 @@ const BottleContainer = styled.div`
   justify-content: center;
   overflow: hidden;
   position: relative;
-  padding: 16px 8px;
+  padding: 0;
   box-sizing: border-box;
 
   @media (max-width: 960px) {
@@ -375,7 +375,7 @@ const BottleContainer = styled.div`
   @media (max-width: 576px) {
     height: auto;
     min-height: 340px;
-    padding: 12px 6px;
+    padding: 0;
   }
 `;
 
@@ -394,7 +394,7 @@ const BottleWrapper = styled.div`
 `;
 
 const BottleImg = styled.img`
-  height: 390px;
+  height: 520px;
   width: auto;
   max-width: 100%;
   object-fit: contain;
@@ -406,36 +406,12 @@ const BottleImg = styled.img`
   }
 
   @media (max-width: 960px) {
-    height: 350px;
+    height: 480px;
   }
 
   @media (max-width: 576px) {
-    height: 270px;
+    height: 340px;
   }
-`;
-
-const BottleInfo = styled.div`
-  text-align: center;
-  margin-top: 14px;
-`;
-
-const BottleName = styled.h3`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: clamp(1.3rem, 1.8vw, 1.6rem);
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  margin: 0;
-  line-height: 1.2;
-`;
-
-const BottleType = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
-  text-transform: uppercase;
-  margin: 4px 0 0 0;
 `;
 
 const SidePanel = styled.div`
@@ -689,8 +665,26 @@ const CatalogoVinos = ({ filtroColeccion, ocultarHeaderGama = false }) => {
                 fichaTecnica: v.fichaTecnica || '',
                 imagen: resolvedImage,
                 gama,
+                orden: Number(v.orden ?? 0),
               });
             });
+
+          // Ordenar los vinos dentro de cada categoría en base a su campo 'orden'
+          Object.values(grupos).forEach((grupo) => {
+            grupo.vinos.sort((a, b) => {
+              const ordenA = Number(a.orden ?? 0);
+              const ordenB = Number(b.orden ?? 0);
+              if (ordenA !== ordenB) {
+                return ordenA - ordenB;
+              }
+              const anioA = typeof a.añada === 'number' ? a.añada : 0;
+              const anioB = typeof b.añada === 'number' ? b.añada : 0;
+              if (anioA !== anioB) {
+                return anioB - anioA;
+              }
+              return (a.id || 0) - (b.id || 0);
+            });
+          });
 
           const transformed = Object.values(grupos).sort((a, b) => a.orden - b.orden);
 
@@ -773,25 +767,6 @@ Bodega Santa Catarina · Finca Son Aloy, Mallorca
 
   return (
     <Section>
-      {!filtroColeccion && (
-        <QuickNavContainer aria-label="Navegación rápida de colecciones">
-          {displayedCatalog.map((seccion) => {
-            const id = resolveGamaId(seccion.gama);
-            const shortId = resolveShortGamaId(seccion.gama);
-            const isAct = activeAnchor === id || activeAnchor === shortId;
-            return (
-              <QuickNavPill
-                key={seccion.gama}
-                to={`/vinos#${id}`}
-                $isActive={isAct}
-              >
-                {seccion.gama}
-              </QuickNavPill>
-            );
-          })}
-        </QuickNavContainer>
-      )}
-
       {displayedCatalog.map((seccion, idx) => {
         const id = resolveGamaId(seccion.gama);
         const shortId = resolveShortGamaId(seccion.gama);
@@ -840,10 +815,6 @@ Bodega Santa Catarina · Finca Son Aloy, Mallorca
                           alt={`${vino.nombre} · ${vino.tipo}`}
                           loading="lazy"
                         />
-                        <BottleInfo>
-                          <BottleName>{vino.nombre}</BottleName>
-                          <BottleType>{vino.tipo}</BottleType>
-                        </BottleInfo>
                       </BottleWrapper>
                     </BottleContainer>
 

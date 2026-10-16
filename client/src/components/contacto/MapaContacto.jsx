@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { ScrollLink } from '../common/ScrollToTop';
 
 const SectionWrapper = styled.section`
   width: 100%;
@@ -118,96 +117,48 @@ const CardButton = styled.a`
 `;
 
 /* ─── CIERRE FINAL DE LA PÁGINA ─── */
-const CierreSection = styled.div`
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: clamp(3.5rem, 6vw, 5.5rem) 2rem;
+const TeEsperamosSection = styled.section`
+  position: relative;
+  padding: 5rem 2rem;
+  overflow: hidden;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
 `;
 
-const CierreEyebrow = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.62rem;
-  letter-spacing: 0.24em;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
-  text-transform: uppercase;
-  margin: 0 0 14px 0;
+const TeEsperamosBg = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.12;
+  pointer-events: none;
 `;
 
-const CierreTitle = styled(motion.h2)`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: clamp(2.3rem, 4vw, 3.6rem);
-  font-weight: 600;
+const TeEsperamosContent = styled.div`
+  position: relative;
+  z-index: 1;
+`;
+
+const TeEsperamosTitle = styled.p`
+  font-family: 'Parisienne', 'Dancing Script', cursive;
+  font-size: clamp(2rem, 3.5vw, 3rem);
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  line-height: 1.15;
-  margin: 0 0 16px 0;
+  margin: 0 0 12px 0;
+  line-height: 1.2;
 `;
 
-const CierreSubtitle = styled.p`
+const TeEsperamosInfo = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.95rem;
-  line-height: 1.8;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  opacity: 0.88;
-  max-width: 600px;
-  margin: 0 0 28px 0;
-`;
-
-const ActionButtons = styled.div`
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  flex-wrap: wrap;
-`;
-
-const PrimaryBtn = styled(ScrollLink)`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   letter-spacing: 0.18em;
-  font-weight: 700;
-  text-transform: uppercase;
-  text-decoration: none;
-  padding: 14px 28px;
-  background-color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  color: rgb(242, 236, 228);
-  border-radius: 2px;
-  transition: background-color 200ms ease, transform 150ms ease;
-
-  &:hover {
-    background-color: #643547;
-    transform: translateY(-2px);
-  }
-`;
-
-const SecondaryBtn = styled(ScrollLink)`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  font-weight: 700;
-  text-transform: uppercase;
-  text-decoration: none;
-  padding: 14px 28px;
-  background-color: transparent;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  border: 1px solid rgba(80, 43, 58, 0.4);
-  border-radius: 2px;
-  transition: all 200ms ease;
-
-  &:hover {
-    border-color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-    background-color: rgba(80, 43, 58, 0.05);
-    transform: translateY(-2px);
-  }
+  margin: 0;
+  text-transform: uppercase;
 `;
 
 const MapaContacto = () => {
   const mapEmbedUrl =
-    'https://maps.google.com/maps?q=Bodega%20Santa%20Catarina%2C%20Carretera%20Inca-Sencelles%20Km%203%2C%2007140%20Sencelles%2C%20Illes%20Balears&t=&z=14&ie=UTF8&iwloc=&output=embed';
+    'https://maps.google.com/maps?q=39.6845827,2.9158282&hl=es&z=14&output=embed';
   const mapsExternalUrl =
     'https://maps.google.com/?q=Carretera+Inca+Sencelles+Km3+07140+Sencelles+Mallorca';
 
@@ -252,30 +203,19 @@ const MapaContacto = () => {
       </MapContainer>
 
       {/* ── CIERRE INVITACIÓN ── */}
-      <CierreSection>
-        <CierreEyebrow>VISÍTANOS EN MALLORCA</CierreEyebrow>
-        <CierreTitle
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          Te esperamos en Son Aloy
-        </CierreTitle>
-        <CierreSubtitle>
-          Descubre nuestros viñedos, degusta nuestros vinos y vive una experiencia única
-          rodeado de la tranquilidad y autenticidad del interior de la isla.
-        </CierreSubtitle>
-
-        <ActionButtons>
-          <PrimaryBtn to="/enoturismo">
-            Reservar experiencia
-          </PrimaryBtn>
-          <SecondaryBtn to="/donde-comprar">
-            Dónde comprar
-          </SecondaryBtn>
-        </ActionButtons>
-      </CierreSection>
+      <TeEsperamosSection>
+        <TeEsperamosBg
+          alt="Barricas en Bodega Santa Catarina"
+          src="/common/bg-te-esperamos.avif"
+          loading="lazy"
+        />
+        <TeEsperamosContent>
+          <TeEsperamosTitle>Te esperamos en Mallorca</TeEsperamosTitle>
+          <TeEsperamosInfo>
+            CARRETERA INCA–SENCELLES, KM 3 · 07140 SENCELLES · +34 971 137 115
+          </TeEsperamosInfo>
+        </TeEsperamosContent>
+      </TeEsperamosSection>
     </SectionWrapper>
   );
 };

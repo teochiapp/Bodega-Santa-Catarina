@@ -21,6 +21,7 @@ model Vino {
   reconocimientos String?  @db.Text
   fichaTecnica    String?  @db.Text
   descripcion     String   @db.Text
+  orden           Int      @default(0)
   activo          Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @default(now()) @updatedAt

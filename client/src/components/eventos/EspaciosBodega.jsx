@@ -1,168 +1,254 @@
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+
+// Import images from /src/imports
+import sonAloyImg from '../../imports/Santa_Cararina_229.jpg';
+import barricasImg from '../../imports/Santa_Cararina_390-3.jpg';
+import terrazasImg from '../../imports/Santa_Catarina_189-1.jpg';
+import ajardinadaImg from '../../imports/eventos-zona-ajardinada.jpg';
+import porcheImg from '../../imports/IMG_6519-4.jpeg';
+import polivalenteImg from '../../imports/eventos-sala-polivalente.jpg';
+import clastraImg from '../../imports/la-clastra.jpeg';
 
 const Section = styled.section`
-  padding: ${({ theme }) => theme.spacing.section} ${({ theme }) => theme.spacing.xl};
-  background-color: ${({ theme }) => theme.colors.surface};
-  max-width: 1440px;
-  margin: 0 auto;
+  max-width: 1180px;
+  margin: 0px auto;
+  padding: clamp(4rem, 7vw, 6rem) 2rem;
+  scroll-margin-top: 96px;
   box-sizing: border-box;
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+  @media (max-width: 576px) {
     padding: 3rem 1.25rem;
   }
 `;
 
-const Title = styled.h2`
-  text-align: center;
-  font-family: ${({ theme }) => theme.typography.fontFamily.heading};
-  font-size: clamp(2.2rem, 3.5vw, 3.5rem);
-  color: ${({ theme }) => theme.colors.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
+const Kicker = styled.p`
+  font-family: 'Manrope', 'Raleway', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.24em;
+  font-weight: 700;
+  color: rgb(194, 164, 120);
+  margin: 0px 0px 16px;
+  text-transform: uppercase;
 `;
 
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: ${({ theme }) => theme.spacing.xl};
+const Heading = styled.h2`
+  font-family: 'Cormorant Garamond', 'Playfair Display', serif;
+  font-size: clamp(2rem, 3.5vw, 4.3rem);
+  font-weight: 600;
+  color: rgb(80, 43, 58);
+  margin: 0px 0px 3rem;
+  line-height: 1.1;
+
+  @media (max-width: 576px) {
+    margin-bottom: 2.2rem;
+  }
 `;
 
-const EspacioCard = styled.div`
-  background-color: ${({ theme }) => theme.colors.background};
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: ${({ theme }) => theme.shadows.sm};
-  border: 1px solid ${({ theme }) => theme.colors.border};
+const Intro = styled.p`
+  font-family: 'Manrope', 'Raleway', sans-serif;
+  font-size: 0.92rem;
+  line-height: 1.8;
+  color: rgb(80, 43, 58);
+  max-width: 820px;
+  margin: -2rem 0px 2.5rem;
+
+  @media (max-width: 576px) {
+    margin-top: -1.5rem;
+    margin-bottom: 2rem;
+    font-size: 0.88rem;
+  }
+`;
+
+const ListContainer = styled.div`
+  max-width: 880px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 28px rgba(80, 43, 58, 0.1);
-    border-color: rgba(194, 164, 120, 0.6);
-  }
+  gap: 12px;
 `;
 
-const Imagen = styled.div`
-  height: 220px;
-  background-color: #d9d9d9;
-  background-image: ${(p) => (p.$bg ? `url(${p.$bg})` : 'none')};
-  background-size: cover;
-  background-position: center;
-`;
-
-const Info = styled.div`
-  padding: ${({ theme }) => theme.spacing.lg};
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-
-  h3 {
-    font-family: ${({ theme }) => theme.typography.fontFamily.heading};
-    font-size: 1.5rem;
-    color: ${({ theme }) => theme.colors.primary};
-    margin: 0 0 10px 0;
-  }
-
-  p {
-    font-family: ${({ theme }) => theme.typography.fontFamily.body};
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: ${({ theme }) => theme.colors.text};
-    margin: 0 0 20px 0;
-    flex: 1;
-  }
-`;
-
-const BookButton = styled.button`
-  margin-top: auto;
-  background-color: transparent;
-  color: ${({ theme }) => theme.colors.secondary};
-  border: 2px solid ${({ theme }) => theme.colors.secondary};
-  padding: 10px 18px;
-  border-radius: 4px;
-  font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-weight: ${({ theme }) => theme.typography.weights.bold};
-  font-size: 0.85rem;
-  letter-spacing: 0.5px;
+const SpaceButton = styled.button`
+  width: 100%;
+  padding: 0px;
+  border: 1px solid rgb(224, 221, 213);
+  background: rgb(244, 242, 235);
+  color: rgb(80, 43, 58);
   cursor: pointer;
-  transition: all 0.2s ease;
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  border-radius: 0px;
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: all 0.25s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.secondary};
-    color: ${({ theme }) => theme.colors.surface};
+    background: #FAF8F5;
+    border-color: rgb(194, 164, 120);
+    box-shadow: 0 4px 18px rgba(80, 43, 58, 0.08);
   }
+
+  .event-space-standard-image {
+    width: 50%;
+    flex: 0 0 50%;
+    aspect-ratio: 4 / 3;
+    min-height: 280px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  &:hover .event-space-standard-image {
+    transform: scale(1.02);
+  }
+
+  .event-space-standard-copy {
+    width: 50%;
+    flex: 0 0 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: clamp(2rem, 4vw, 3.5rem);
+    box-sizing: border-box;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+
+    .event-space-standard-image {
+      width: 100%;
+      flex: none;
+      aspect-ratio: 16 / 10;
+      min-height: auto;
+    }
+
+    .event-space-standard-copy {
+      width: 100%;
+      flex: none;
+      padding: 1.75rem 1.25rem;
+    }
+  }
+`;
+
+const TitleSpan = styled.span`
+  display: block;
+  font-family: 'Cormorant Garamond', 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 2.3vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.15;
+  color: rgb(80, 43, 58);
+`;
+
+const DescSpan = styled.span`
+  display: block;
+  margin-top: 12px;
+  font-family: 'Manrope', 'Raleway', sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: rgb(80, 43, 58);
+  max-width: 360px;
 `;
 
 const ESPACIOS = [
   {
     id: 'casa-son-aloy',
     title: 'Casa Son Aloy',
-    desc: 'Encanto rústico y señorial mallorquín. Espacio idílico rodeado de historia vinícola y bancales.',
-    img: '/assets/finca-son-aloy-CERJ_NRj.jpg',
+    desc: 'Casa mallorquina con carácter histórico para celebraciones íntimas y encuentros exclusivos.',
+    img: sonAloyImg,
+    fallback: '/assets/Santa_Cararina_229-CzSpZpJL.jpg',
   },
   {
     id: 'sala-de-barricas',
     title: 'Sala de Barricas',
-    desc: 'El corazón de nuestra bodega entre aromas a roble. Ambiente íntimo y solemne para banquetes únicos.',
-    img: '/assets/Santa_Catarina_372.jpg',
+    desc: 'Rodeada de barricas de roble francés.',
+    img: barricasImg,
+    fallback: '/assets/Santa_Cararina_390-3-RBJCEfHL.jpg',
   },
   {
     id: 'terrazas',
     title: 'Terrazas',
-    desc: 'Vistas panorámicas hacia los viñedos y la Serra de Tramuntana. Perfectas para cócteles y veladas al atardecer.',
-    img: '/assets/Santa_Cararina_217-1-BZzqf_YD.jpg',
+    desc: 'Vistas al viñedo y a la Serra de Tramuntana.',
+    img: terrazasImg,
+    fallback: '/assets/Santa_Catarina_189-1-Csn_lgkP.jpg',
   },
   {
     id: 'zona-gravilla',
     title: 'Zona Gravilla y Ajardinada',
-    desc: 'Espacio diáfano al aire libre bajo los olivos, diseñado para ceremonias civiles y banquetes de gran aforo.',
-    img: '/assets/Santa_Catarina_Vendimia_296-BNFQEO6C.jpg',
+    desc: 'Recepciones y cócteles entre viñedos y árboles.',
+    img: ajardinadaImg,
+    fallback: '/assets/eventos-zona-ajardinada-BxWDX93V.jpg',
   },
   {
     id: 'porche-delantero',
     title: 'Porche Delantero y Caseta con Porche',
-    desc: 'Espacios exteriores techados con sombra natural, brisa mediterránea y vistas directas a la finca.',
-    img: '/assets/Santa_Cararina_045-9piNaR8O.jpg',
+    desc: 'Dos espacios exclusivos con acceso directo a la casa mallorquina.',
+    img: porcheImg,
+    fallback: '/assets/IMG_6519-4-CzhAqZpF.jpeg',
   },
   {
     id: 'sala-polivalente',
     title: 'Sala Polivalente',
-    desc: 'Espacio climatizado y modulable, preparado con tecnología audiovisual para conferencias y celebraciones privadas.',
-    img: '/assets/proximos-eventos-DXYwTRvi.jpg',
+    desc: 'Climatizada, con vistas a la Tramuntana.',
+    img: polivalenteImg,
+    fallback: '/assets/eventos-sala-polivalente-DX0OHfZ8.jpg',
   },
   {
     id: 'la-clastra',
     title: 'La Clastra',
-    desc: 'Tradicional patio mallorquín cerrado de piedra viva, con acústica privilegiada y un ambiente íntimo y protegido.',
-    img: '/assets/Santa_Catarina_268-gAddmlwS.jpg',
+    desc: 'Espacio al aire libre entre la casa y la bodega.',
+    img: clastraImg,
+    fallback: '/assets/la-clastra-CL6xFguL.jpeg',
   },
 ];
 
-const EspaciosBodega = () => {
-  const handleBook = () => {
-    document.getElementById('formulario-eventos')?.scrollIntoView({ behavior: 'smooth' });
+const EspaciosBodega = ({ onSelectEspacio }) => {
+  const navigate = useNavigate();
+
+  const handleClickEspacio = (espacio) => {
+    if (onSelectEspacio) {
+      onSelectEspacio(espacio.id);
+    } else {
+      navigate(`/eventos/${espacio.id}`);
+    }
   };
 
   return (
-    <Section>
-      <Title>Nuestros Espacios</Title>
-      <Grid>
+    <Section id="espacios-eventos">
+      <Kicker>NUESTROS ESPACIOS</Kicker>
+      <Heading>Elige tu espacio ideal</Heading>
+      <Intro>
+        Espacios interiores y exteriores para bodas, celebraciones, encuentros profesionales y jornadas de ocio, donde la tradición y la cultura del vino crean experiencias inolvidables.
+      </Intro>
+      <ListContainer>
         {ESPACIOS.map((espacio) => (
-          <EspacioCard
+          <SpaceButton
             key={espacio.id}
             id={espacio.id}
-            style={{ scrollMarginTop: '110px' }}
+            type="button"
+            className="event-space-standard event-category-row"
+            style={{ scrollMarginTop: '96px' }}
+            onClick={() => handleClickEspacio(espacio)}
+            aria-label={`Ver detalles de ${espacio.title}`}
           >
-            <Imagen $bg={espacio.img} />
-            <Info>
-              <h3>{espacio.title}</h3>
-              <p>{espacio.desc}</p>
-              <BookButton onClick={handleBook}>Resérvalo</BookButton>
-            </Info>
-          </EspacioCard>
+            <img
+              className="event-space-standard-image"
+              alt=""
+              src={espacio.img}
+              onError={(e) => {
+                if (espacio.fallback && e.currentTarget.src !== espacio.fallback) {
+                  e.currentTarget.src = espacio.fallback;
+                }
+              }}
+            />
+            <span className="event-space-standard-copy">
+              <TitleSpan>{espacio.title}</TitleSpan>
+              <DescSpan>{espacio.desc}</DescSpan>
+            </span>
+          </SpaceButton>
         ))}
-      </Grid>
+      </ListContainer>
     </Section>
   );
 };

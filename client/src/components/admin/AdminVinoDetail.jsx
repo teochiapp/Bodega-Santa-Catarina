@@ -268,6 +268,10 @@ const AdminVinoDetail = ({ vino, onClose, onEdit, onDelete }) => {
               <FactKey>Tipo</FactKey>
               <FactVal><TypeBadge>{vino.tipo || '—'}</TypeBadge></FactVal>
             </FactItem>
+            <FactItem>
+              <FactKey>Orden Catálogo</FactKey>
+              <FactVal><span style={{ color: 'var(--tn-gold-700)', fontWeight: 700 }}>#{vino.orden ?? 0}</span></FactVal>
+            </FactItem>
           </Facts>
           
           {categorias.length > 0 && (

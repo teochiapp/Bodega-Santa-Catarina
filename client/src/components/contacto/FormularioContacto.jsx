@@ -32,7 +32,7 @@ const FormColumn = styled(motion.div)`
 
 const Eyebrow = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   letter-spacing: 0.22em;
   font-weight: 700;
   color: ${({ theme }) => theme.colors?.secondary || 'rgb(203, 160, 82)'};
@@ -79,7 +79,7 @@ const FormGroup = styled.div`
 const Label = styled.label`
   display: block;
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
@@ -91,7 +91,7 @@ const Input = styled.input`
   width: 100%;
   padding: 0.85rem 1rem;
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   background-color: #FFFFFF;
   border: 1px solid rgba(80, 43, 58, 0.16);
@@ -119,7 +119,7 @@ const Select = styled.select`
   width: 100%;
   padding: 0.85rem 2.5rem 0.85rem 1rem;
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   background-color: #FFFFFF;
   border: 1px solid rgba(80, 43, 58, 0.16);
@@ -157,7 +157,7 @@ const Textarea = styled.textarea`
   width: 100%;
   padding: 0.85rem 1rem;
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   background-color: #FFFFFF;
   border: 1px solid rgba(80, 43, 58, 0.16);
@@ -180,7 +180,7 @@ const Textarea = styled.textarea`
 
 const SubmitBtn = styled.button`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.65rem;
+  font-size: 0.71rem;
   letter-spacing: 0.2em;
   font-weight: 700;
   padding: 1.05rem;
@@ -204,7 +204,7 @@ const SubmitBtn = styled.button`
 
 const PrivacyText = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   line-height: 1.6;
   opacity: 0.88;
@@ -217,7 +217,7 @@ const SuccessNotification = styled(motion.div)`
   padding: 1rem 1.25rem;
   border-radius: 4px;
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   line-height: 1.5;
   margin-bottom: 1.25rem;
   text-align: center;
@@ -240,7 +240,7 @@ const GiftCardBox = styled.div`
 
 const GiftEyebrow = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   letter-spacing: 0.2em;
   font-weight: 700;
   color: ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
@@ -250,7 +250,7 @@ const GiftEyebrow = styled.p`
 
 const GiftTitle = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: 1.15rem;
+  font-size: 1.21rem;
   font-weight: 600;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   margin: 0 0 8px 0;
@@ -259,7 +259,7 @@ const GiftTitle = styled.p`
 
 const GiftDescription = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.8rem;
+  font-size: 0.86rem;
   line-height: 1.7;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   opacity: 0.9;
@@ -268,7 +268,7 @@ const GiftDescription = styled.p`
 
 const GiftLink = styled.a`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.65rem;
+  font-size: 0.71rem;
   letter-spacing: 0.12em;
   color: ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
   text-decoration: underline;
@@ -288,7 +288,7 @@ const DirectionsSection = styled.div`
 
 const DirectionsHeading = styled.h3`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: 1.35rem;
+  font-size: 1.41rem;
   font-weight: 700;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   margin: 0 0 1.25rem 0;
@@ -306,7 +306,7 @@ const DirectionItem = styled.div`
 
 const DirectionTitle = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.7rem;
+  font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
@@ -315,7 +315,7 @@ const DirectionTitle = styled.p`
 
 const DirectionDescription = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   line-height: 1.7;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   opacity: 0.9;
@@ -328,7 +328,7 @@ const SocialSection = styled.div`
 
 const SocialLabel = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   letter-spacing: 0.2em;
   font-weight: 700;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
@@ -344,7 +344,7 @@ const SocialButtonsList = styled.div`
 
 const SocialPill = styled.a`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   letter-spacing: 0.12em;
   font-weight: 600;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};

@@ -158,7 +158,7 @@ const NuestraBodega = () => {
 
         <ImageContainer>
           <StyledImage
-            src="/assets/Santa_Cararina_045-9piNaR8O.jpg"
+            src="/inicio/about-image-card.webp"
             alt="Vendimia en Bodega Santa Catarina"
             loading="lazy"
           />

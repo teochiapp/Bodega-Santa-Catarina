@@ -228,6 +228,7 @@ const AdminVinoForm = ({ onClose, onSave, vinoAEditar = null }) => {
     anio: vinoAEditar?.anio ?? '',
     variedad: vinoAEditar?.variedad ?? '',
     tipo: vinoAEditar?.tipo ?? 'Tinto',
+    orden: vinoAEditar?.orden ?? 0,
     portada: vinoAEditar?.portada ?? '',
     categorias: Array.isArray(vinoAEditar?.categorias)
       ? vinoAEditar.categorias.join(', ')
@@ -260,6 +261,7 @@ const AdminVinoForm = ({ onClose, onSave, vinoAEditar = null }) => {
       ...formData,
       titulo: formData.titulo.trim() || `${formData.variedad} ${formData.anio || ''}`.trim(),
       anio: formData.anio ? parseInt(formData.anio, 10) : null,
+      orden: formData.orden !== '' && formData.orden !== null && formData.orden !== undefined ? (parseInt(formData.orden, 10) || 0) : 0,
       categorias: formData.categorias
         ? formData.categorias.split(',').map((c) => c.trim()).filter(Boolean)
         : [],
@@ -354,18 +356,34 @@ const AdminVinoForm = ({ onClose, onSave, vinoAEditar = null }) => {
               </FormGroup>
             </Row>
 
-            <FormGroup>
-              <Label htmlFor="vino-categorias">
-                Categorías <SubHelper>(separadas por coma)</SubHelper>
-              </Label>
-              <Input
-                id="vino-categorias"
-                name="categorias"
-                placeholder="Tintos, Barrica, Selección Especial"
-                value={formData.categorias}
-                onChange={handleChange}
-              />
-            </FormGroup>
+            <Row>
+              <FormGroup style={{ flex: '1.2' }}>
+                <Label htmlFor="vino-categorias">
+                  Categorías <SubHelper>(separadas por coma)</SubHelper>
+                </Label>
+                <Input
+                  id="vino-categorias"
+                  name="categorias"
+                  placeholder="Tintos, Barrica, Selección Especial"
+                  value={formData.categorias}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <FormGroup style={{ flex: '0.8' }}>
+                <Label htmlFor="vino-orden">
+                  Orden en Catálogo <SubHelper>(Dentro de su categoría)</SubHelper>
+                </Label>
+                <Input
+                  id="vino-orden"
+                  name="orden"
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  value={formData.orden}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+            </Row>
 
             <FormGroup>
               <AdminImageUpload

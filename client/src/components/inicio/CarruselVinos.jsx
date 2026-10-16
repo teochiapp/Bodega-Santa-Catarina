@@ -5,7 +5,7 @@ import { obtenerVinos } from '../../services/vinosService';
 
 const Section = styled.section`
   padding: 100px 0;
-  background-color: #ffffff;
+  background-color: #F2ECE4;
 
   @media (max-width: ${({ theme }) => theme.breakpoints?.tablet || '768px'}) {
     padding: 60px 0;
@@ -302,6 +302,18 @@ const CarruselVinos = () => {
     const container = trackRef.current;
     const card = container.querySelector('[data-wine-card]');
     const scrollAmount = card ? card.offsetWidth + 20 : 300;
+    const { scrollLeft, scrollWidth, clientWidth } = container;
+    const maxScroll = scrollWidth - clientWidth;
+
+    // Ciclo infinito: al llegar al final vuelve al inicio y viceversa
+    if (direction === 'next' && scrollLeft >= maxScroll - 10) {
+      container.scrollTo({ left: 0, behavior: 'smooth' });
+      return;
+    }
+    if (direction === 'prev' && scrollLeft <= 10) {
+      container.scrollTo({ left: maxScroll, behavior: 'smooth' });
+      return;
+    }
 
     container.scrollBy({
       left: direction === 'next' ? scrollAmount : -scrollAmount,
@@ -322,7 +334,6 @@ const CarruselVinos = () => {
             type="button"
             aria-label="Vinos anteriores"
             onClick={() => handleScroll('prev')}
-            disabled={!canScrollLeft}
           >
             <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
               <path
@@ -358,7 +369,6 @@ const CarruselVinos = () => {
             type="button"
             aria-label="Vinos siguientes"
             onClick={() => handleScroll('next')}
-            disabled={!canScrollRight}
           >
             <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
               <path

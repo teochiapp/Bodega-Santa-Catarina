@@ -232,7 +232,7 @@ const ProximosEventos = () => {
           {/* Bloque Izquierdo: Próximos Eventos */}
           <LeftBlock>
             <BackgroundImage
-              src="/assets/proximos-eventos-DXYwTRvi.jpg"
+              src="/inicio/proximos-eventos.webp"
               alt="Eventos en Bodega Santa Catarina"
               loading="lazy"
             />

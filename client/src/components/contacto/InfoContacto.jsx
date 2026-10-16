@@ -71,7 +71,7 @@ const IconContainer = styled.div`
 
 const Label = styled.p`
   font-family: 'Manrope', 'Raleway', sans-serif;
-  font-size: 0.58rem;
+  font-size: 0.64rem;
   letter-spacing: 0.2em;
   font-weight: 700;
   text-transform: uppercase;
@@ -82,7 +82,7 @@ const Label = styled.p`
 
 const TextLine = styled.p`
   font-family: 'Manrope', 'Raleway', sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   color: rgb(80, 43, 58);
   line-height: 1.7;
   margin: 0;
@@ -90,7 +90,7 @@ const TextLine = styled.p`
 
 const InteractiveLink = styled.a`
   font-family: 'Manrope', 'Raleway', sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   color: rgb(80, 43, 58);
   line-height: 1.7;
   margin: 0;
@@ -124,7 +124,7 @@ const BottomBar = styled.div`
 
 const DirectionsText = styled.p`
   font-family: 'Manrope', 'Raleway', sans-serif;
-  font-size: 0.76rem;
+  font-size: 0.82rem;
   line-height: 1.7;
   color: rgb(80, 43, 58);
   margin: 0;
@@ -133,7 +133,7 @@ const DirectionsText = styled.p`
 const MapButton = styled.a`
   flex-shrink: 0;
   font-family: 'Manrope', 'Raleway', sans-serif;
-  font-size: 0.66rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   color: rgb(242, 236, 228);

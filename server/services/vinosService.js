@@ -1,11 +1,11 @@
 const prisma = require('./prismaClient');
 
 /**
- * Retorna todos los vinos de la base de datos, ordenados por año descendente o creación.
+ * Retorna todos los vinos de la base de datos, ordenados por orden ascendente, año o creación.
  */
 const obtenerTodosLosVinos = async () => {
   return prisma.vino.findMany({
-    orderBy: [{ anio: 'desc' }, { id: 'desc' }],
+    orderBy: [{ orden: 'asc' }, { anio: 'desc' }, { id: 'asc' }],
   });
 };
 
@@ -36,6 +36,7 @@ const crearVino = async (data) => {
       reconocimientos: data.reconocimientos || null,
       fichaTecnica: data.fichaTecnica || null,
       descripcion: data.descripcion || '',
+      orden: data.orden !== undefined ? (parseInt(data.orden, 10) || 0) : 0,
       activo: data.activo !== undefined ? Boolean(data.activo) : true,
     },
   });
@@ -60,6 +61,7 @@ const editarVino = async (id, data) => {
       reconocimientos: data.reconocimientos !== undefined ? data.reconocimientos : undefined,
       fichaTecnica: data.fichaTecnica !== undefined ? data.fichaTecnica : undefined,
       descripcion: data.descripcion !== undefined ? data.descripcion : undefined,
+      orden: data.orden !== undefined ? (parseInt(data.orden, 10) || 0) : undefined,
       activo: data.activo !== undefined ? Boolean(data.activo) : undefined,
     },
   });

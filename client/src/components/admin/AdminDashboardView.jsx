@@ -441,15 +441,6 @@ const AdminDashboardView = () => {
           <MetricSub>Gastronomía & maridaje</MetricSub>
         </MetricCard>
 
-        <MetricCard onClick={() => navigate('/admin/eventos')}>
-          <MetricHead>
-            <MetricLabel>Eventos</MetricLabel>
-            <MetricIconWrapper><CalendarHeart size={18} strokeWidth={1.8} /></MetricIconWrapper>
-          </MetricHead>
-          <MetricValue>{totales?.eventos ?? 0}</MetricValue>
-          <MetricSub>Bodas & espacios</MetricSub>
-        </MetricCard>
-
         <MetricCard onClick={() => navigate('/admin/blog')}>
           <MetricHead>
             <MetricLabel>Blog</MetricLabel>
@@ -484,10 +475,6 @@ const AdminDashboardView = () => {
           <ActionButton onClick={() => navigate('/admin/menus')} id="dash-btn-menus">
             <span className="action-icon"><UtensilsCrossed size={16} strokeWidth={1.8} /></span>
             <span>Menús Gastronómicos</span>
-          </ActionButton>
-          <ActionButton onClick={() => navigate('/admin/eventos')} id="dash-btn-eventos">
-            <span className="action-icon"><CalendarHeart size={16} strokeWidth={1.8} /></span>
-            <span>Eventos & Bodas</span>
           </ActionButton>
           <ActionButton onClick={() => navigate('/admin/blog')} id="dash-btn-blog">
             <span className="action-icon"><Newspaper size={16} strokeWidth={1.8} /></span>

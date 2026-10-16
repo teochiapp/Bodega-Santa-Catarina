@@ -150,6 +150,21 @@ const AnioNum = styled.span`
   font-weight: 600;
 `;
 
+const OrdenBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: var(--tn-surface);
+  color: var(--tn-gold-700);
+  border: 1px solid var(--tn-rule);
+`;
+
 const ErrorAlert = styled.div`
   border: 1px solid var(--tn-line);
   border-left: 3px solid var(--tn-rojo-700);
@@ -172,6 +187,7 @@ const ResultsBar = styled.div`
 const AdminVinosPage = () => {
   const { vinos, cargando, error, agregarVino, actualizarVino, borrarVino } = useVinos();
   const [selectedId, setSelectedId] = useState(null);
+  const [activeTab, setActiveTab] = useState('Todos');
   
   // Modals state
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -179,6 +195,18 @@ const AdminVinosPage = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const colecciones = ['Todos', ...new Set(vinos.map((v) => v.coleccion).filter(Boolean))];
+
+  const vinosFiltrados = (activeTab === 'Todos'
+    ? vinos
+    : vinos.filter((v) => v.coleccion === activeTab)
+  ).slice().sort((a, b) => {
+    if (activeTab === 'Todos' && a.coleccion !== b.coleccion) {
+      return (a.coleccion || '').localeCompare(b.coleccion || '');
+    }
+    return (a.orden ?? 0) - (b.orden ?? 0) || (b.anio ?? 0) - (a.anio ?? 0);
+  });
 
   const selectedVino = vinos.find((v) => v.id === selectedId) ?? null;
 
@@ -239,7 +267,15 @@ const AdminVinosPage = () => {
 
         <PanelHead>
           <TabsRow>
-            <Tab $active>Todos</Tab>
+            {colecciones.map((col) => (
+              <Tab
+                key={col}
+                $active={activeTab === col}
+                onClick={() => setActiveTab(col)}
+              >
+                {col}
+              </Tab>
+            ))}
           </TabsRow>
           <div style={{ padding: '3px 0' }}>
             <BtnPrimary
@@ -258,6 +294,7 @@ const AdminVinosPage = () => {
           <Table>
             <thead>
               <tr>
+                <Th style={{ width: '60px', textAlign: 'center' }}>Orden</Th>
                 <Th>Vino</Th>
                 <Th>Colección</Th>
                 <Th>Año</Th>
@@ -267,24 +304,29 @@ const AdminVinosPage = () => {
             <tbody>
               {cargando ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: '32px 14px', textAlign: 'center' }}>
+                  <td colSpan={5} style={{ padding: '32px 14px', textAlign: 'center' }}>
                     <Spinner />
                   </td>
                 </tr>
-              ) : vinos.length === 0 ? (
+              ) : vinosFiltrados.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: '32px 14px', textAlign: 'center', color: 'var(--tn-muted)', fontSize: '14px' }}>
+                  <td colSpan={5} style={{ padding: '32px 14px', textAlign: 'center', color: 'var(--tn-muted)', fontSize: '14px' }}>
                     No hay vinos cargados todavía.
                   </td>
                 </tr>
               ) : (
-                vinos.map((vino) => (
+                vinosFiltrados.map((vino) => (
                   <Tr
                     key={vino.id}
                     $active={selectedId === vino.id}
                     onClick={() => toggleSelect(vino.id)}
                     id={`fila-vino-${vino.id}`}
                   >
+                    <Td style={{ textAlign: 'center' }}>
+                      <OrdenBadge title={`Orden dentro de ${vino.coleccion}: ${vino.orden ?? 0}`}>
+                        #{vino.orden ?? 0}
+                      </OrdenBadge>
+                    </Td>
                     <Td>
                       <div style={{ fontWeight: 600 }}>{vino.titulo || vino.variedad}</div>
                       {vino.titulo && vino.variedad && vino.titulo !== vino.variedad && (
@@ -301,10 +343,11 @@ const AdminVinosPage = () => {
           </Table>
         </TableScroll>
 
-        {!cargando && !error && vinos.length > 0 && (
+        {!cargando && !error && vinosFiltrados.length > 0 && (
           <ResultsBar>
-            {vinos.length} {vinos.length === 1 ? 'vino' : 'vinos'}
-            {selectedVino ? ` · ${selectedVino.variedad} ${selectedVino.anio} seleccionado` : ''}
+            {vinosFiltrados.length} {vinosFiltrados.length === 1 ? 'vino' : 'vinos'}
+            {activeTab !== 'Todos' ? ` en ${activeTab}` : ''}
+            {selectedVino ? ` · ${selectedVino.variedad} ${selectedVino.anio || ''} seleccionado` : ''}
           </ResultsBar>
         )}
       </AdminLayout>

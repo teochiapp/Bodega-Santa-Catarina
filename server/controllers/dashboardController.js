@@ -9,19 +9,16 @@ const getDashboardStats = async (req, res) => {
       vinosCount,
       catasCount,
       menusCount,
-      eventosCount,
       blogCount,
       tarjetasCount,
       vacaciones,
       ultimosVinos,
       ultimosBlogs,
-      ultimosEventos,
       config,
     ] = await Promise.all([
       prisma.vino.count(),
       prisma.cata.count(),
       prisma.menuGastronomico.count(),
-      prisma.evento.count(),
       prisma.blog.count(),
       prisma.tarjetaRegalo.count(),
       prisma.diaVacacion.findMany({
@@ -51,17 +48,6 @@ const getDashboardStats = async (req, res) => {
           activo: true,
         },
       }),
-      prisma.evento.findMany({
-        take: 4,
-        orderBy: { posicion: 'asc' },
-        select: {
-          id: true,
-          titulo: true,
-          subtitulo: true,
-          posicion: true,
-          activo: true,
-        },
-      }),
       prisma.configuracionGeneral.findUnique({
         where: { id: 1 },
       }),
@@ -83,7 +69,6 @@ const getDashboardStats = async (req, res) => {
         vinos: vinosCount,
         catas: catasCount,
         menus: menusCount,
-        eventos: eventosCount,
         blog: blogCount,
         tarjetas: tarjetasCount,
         diasVacaciones: vacaciones.length,
@@ -108,7 +93,6 @@ const getDashboardStats = async (req, res) => {
       },
       ultimosVinos,
       ultimosBlogs,
-      ultimosEventos,
       vacaciones,
     });
   } catch (error) {

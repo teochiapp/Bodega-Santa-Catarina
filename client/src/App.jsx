@@ -34,7 +34,6 @@ import AdminVinosPage from './pages/admin/AdminVinosPage';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminCatasPage from './pages/admin/AdminCatasPage';
 import AdminMenusPage from './pages/admin/AdminMenusPage';
-import AdminEventosPage from './pages/admin/AdminEventosPage';
 import AdminBlogPage from './pages/admin/AdminBlogPage';
 import AdminTarjetasPage from './pages/admin/AdminTarjetasPage';
 import AdminTiendaGaleriaPage from './pages/admin/AdminTiendaGaleriaPage';
@@ -74,6 +73,9 @@ function App() {
 
               <Route path="/enoturismo" element={<EnoturismoPage />} />
               <Route path="/eventos" element={<EventosPage />} />
+              <Route path="/eventos/:slug" element={<EventosPage />} />
+              <Route path="/eventos-y-bodas" element={<Navigate to="/eventos" replace />} />
+              <Route path="/bodas" element={<Navigate to="/eventos" replace />} />
               <Route path="/donde-comprar" element={<DondeComprarPage />} />
               <Route path="/tienda" element={<TiendaPage />} />
               <Route path="/tienda-fisica" element={<TiendaPage />} />
@@ -112,14 +114,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminMenusPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/eventos"
-              element={
-                <ProtectedRoute>
-                  <AdminEventosPage />
                 </ProtectedRoute>
               }
             />

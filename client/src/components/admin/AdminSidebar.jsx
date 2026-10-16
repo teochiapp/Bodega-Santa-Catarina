@@ -350,7 +350,6 @@ const NAV = [
     items: [
       { icon: <Sparkles size={17} strokeWidth={1.8} />, label: 'Catas y Degustaciones', path: '/admin/catas', disabled: false },
       { icon: <UtensilsCrossed size={17} strokeWidth={1.8} />, label: 'Menús Gastronómicos', path: '/admin/menus', disabled: false },
-      { icon: <CalendarHeart size={17} strokeWidth={1.8} />, label: 'Eventos y Bodas', path: '/admin/eventos', disabled: false },
     ],
   },
   {

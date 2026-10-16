@@ -223,7 +223,7 @@ const HeroVideo = () => {
     <HeroContainer>
       <BackgroundVideo
         ref={videoRef}
-        src="/home-hero-video.mp4"
+        src="/inicio/hero-video.mp4"
         poster="/assets/Santa_Catarina_Vendimia_296-BNFQEO6C.jpg"
         autoPlay
         loop
