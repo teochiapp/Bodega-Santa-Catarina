@@ -19,18 +19,18 @@ export const MENU_ITEMS = [
     name: 'VINOS',
     path: '/vinos',
     submenu: [
-      { name: 'Colección STA', path: '/vinos#coleccion-sta' },
-      { name: 'Colección Surant', path: '/vinos#coleccion-surant' },
-      { name: 'Colección ‘Nguany', path: '/vinos#coleccion-nguany' },
+      { name: 'Colección STA', path: '/vinos/coleccion-sta' },
+      { name: 'Colección Surant', path: '/vinos/coleccion-surant' },
+      { name: 'Colección ‘Nguany', path: '/vinos/coleccion-nguany' },
     ],
   },
   {
     name: 'ENOTURISMO',
     path: '/enoturismo',
     submenu: [
-      { name: 'Cata y visitas', path: '/enoturismo#catas-y-visitas' },
-      { name: 'Experiencias gastronómicas', path: '/enoturismo#experiencias-gastronomicas' },
-      { name: 'Regala tu experiencia', path: '/enoturismo#regala-tu-experiencia' },
+      { name: 'Cata y visitas', path: '/enoturismo/catas-y-visitas' },
+      { name: 'Experiencias gastronómicas', path: '/enoturismo/experiencias-gastronomicas' },
+      { name: 'Regala tu experiencia', path: '/enoturismo/regala-tu-experiencia' },
     ],
   },
   {

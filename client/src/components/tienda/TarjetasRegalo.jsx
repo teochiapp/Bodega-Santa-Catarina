@@ -1,163 +1,626 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import api from '../../services/api';
+import api, { getResolvedImageUrl } from '../../services/api';
+
+const SectionWrapper = styled.div`
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 3rem;
+  box-sizing: border-box;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    padding: 3rem 1.25rem 2rem;
+  }
+`;
 
 const Section = styled.section`
-  padding: ${({ theme }) => theme.spacing.section} ${({ theme }) => theme.spacing.xl};
-  background-color: ${({ theme }) => theme.colors.surface};
-  text-align: center;
+  width: 100%;
+`;
+
+const Heading = styled.div`
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 4rem;
+  align-items: end;
+  margin-bottom: 3rem;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.desktop}) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+`;
+
+const Eyebrow = styled.p`
+  font-family: ${({ theme }) => theme.typography.fontFamily.body};
+  font-size: 0.65rem;
+  letter-spacing: 0.24em;
+  color: ${({ theme }) => theme.colors.secondary};
+  margin: 0 0 16px 0;
+  font-weight: 700;
+  text-transform: uppercase;
 `;
 
 const Title = styled.h2`
+  font-family: ${({ theme }) => theme.typography.fontFamily.heading};
+  font-weight: ${({ theme }) => theme.typography.weights.regular};
+  font-size: clamp(2.4rem, 4.5vw, 4.2rem);
+  line-height: 1.05;
   color: ${({ theme }) => theme.colors.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
+  margin: 0;
+`;
+
+const Intro = styled.div`
+  font-family: ${({ theme }) => theme.typography.fontFamily.body};
+  font-size: 0.84rem;
+  line-height: 1.8;
+  color: ${({ theme }) => theme.colors.primary};
+  opacity: 0.9;
+
+  p {
+    margin: 0;
+  }
 `;
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: ${({ theme }) => theme.spacing.xl};
-  max-width: 1000px;
-  margin: 0 auto ${({ theme }) => theme.spacing.xl} auto;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.desktop}) {
+    grid-template-columns: 1fr;
+  }
 `;
 
-const BonoCard = styled.div`
-  background-color: ${({ theme }) => theme.colors.background};
-  padding: ${({ theme }) => theme.spacing.xl};
-  border-radius: 8px;
-  box-shadow: ${({ theme }) => theme.shadows.sm};
+const Card = styled.article`
+  background: #f4f2eb;
   border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 12px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform ${({ theme }) => theme.transitions.fast};
-  
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
   &:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(80, 43, 58, 0.08);
   }
 `;
 
-const BonoTitle = styled.h3`
-  font-size: ${({ theme }) => theme.typography.sizes.xl};
-  color: ${({ theme }) => theme.colors.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.xs};
+const CardImage = styled.div`
+  height: 220px;
+  overflow: hidden;
+  background-color: #e6dfd5;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  ${Card}:hover & img {
+    transform: scale(1.05);
+  }
 `;
 
-const BonoPrice = styled.span`
-  display: block;
-  font-size: ${({ theme }) => theme.typography.sizes.xxl};
-  color: ${({ theme }) => theme.colors.secondary};
-  font-weight: ${({ theme }) => theme.typography.weights.bold};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-`;
-
-const BonoDesc = styled.p`
-  font-size: 0.9rem;
-  color: ${({ theme }) => theme.colors.text};
-  line-height: 1.5;
-`;
-
-const FeaturesGrid = styled.div`
+const CardBody = styled.div`
+  padding: 1.5rem;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: ${({ theme }) => theme.spacing.md};
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-  color: ${({ theme }) => theme.colors.textLight};
+  flex-direction: column;
+  gap: 1.25rem;
+  flex: 1;
 `;
 
-const FeatureItem = styled.span`
-  background: ${({ theme }) => theme.colors.background};
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 500;
-`;
-
-const ButtonGroup = styled.div`
+const CardHeading = styled.div`
   display: flex;
-  justify-content: center;
-  gap: ${({ theme }) => theme.spacing.md};
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+`;
+
+const CardTitle = styled.h3`
+  font-family: ${({ theme }) => theme.typography.fontFamily.heading};
+  font-weight: ${({ theme }) => theme.typography.weights.regular};
+  font-size: 1.65rem;
+  line-height: 1.15;
+  color: ${({ theme }) => theme.colors.primary};
+  margin: 0;
+`;
+
+const CardPrice = styled.p`
+  font-family: ${({ theme }) => theme.typography.fontFamily.heading};
+  font-size: 1.5rem;
+  color: ${({ theme }) => theme.colors.primary};
+  white-space: nowrap;
+  margin: 0;
+`;
+
+const InfoText = styled.p`
+  font-family: ${({ theme }) => theme.typography.fontFamily.body};
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: ${({ theme }) => theme.colors.primary};
+  margin: 0;
+`;
+
+const Actions = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
   flex-wrap: wrap;
 `;
 
-const PrimaryButton = styled(Link)`
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.surface};
-  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  border-radius: 4px;
+const PrimaryButton = styled.button`
+  padding: 11px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: ${({ theme }) => theme.colors.secondary};
+  color: #fff;
+  font-family: ${({ theme }) => theme.typography.fontFamily.body};
+  font-size: 0.62rem;
   font-weight: ${({ theme }) => theme.typography.weights.bold};
-  text-decoration: none;
-  
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: background ${({ theme }) => theme.transitions.fast};
+
   &:hover {
-    background-color: ${({ theme }) => theme.colors.secondary};
+    background: ${({ theme }) => theme.colors.primary};
   }
 `;
 
-const SecondaryButton = styled(Link)`
-  background-color: transparent;
+const SecondaryButton = styled.button`
+  padding: 11px 18px;
+  border: 1px solid ${({ theme }) => theme.colors.secondary};
+  border-radius: 999px;
+  background: transparent;
   color: ${({ theme }) => theme.colors.primary};
-  border: 2px solid ${({ theme }) => theme.colors.primary};
-  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  border-radius: 4px;
+  font-family: ${({ theme }) => theme.typography.fontFamily.body};
+  font-size: 0.62rem;
   font-weight: ${({ theme }) => theme.typography.weights.bold};
-  text-decoration: none;
-  
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
   &:hover {
-    background-color: ${({ theme }) => theme.colors.background};
+    background: rgba(80, 43, 58, 0.05);
   }
 `;
 
-const DEFAULT_BONOS = [
-  { title: 'Bono Esencial', price: '150 €', desc: 'Experiencia para dos personas.' },
-  { title: 'Bono Premium', price: '250 €', desc: 'Experiencia gastronómica y cata para dos.' },
-  { title: 'Bono Personalizado', price: 'A medida', desc: 'Diseña la experiencia a tu gusto.' },
+// ─── Features Practical Bar (regalaTuExperiencia.md) ────────────────────────
+const PracticalWrap = styled.div`
+  width: 100%;
+  margin: 3.5rem 0 0;
+`;
+
+const PracticalBar = styled.section`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 12px;
+  background: #f4f2eb;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.desktop}) {
+    grid-template-columns: 1fr;
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 1.5rem;
+    font-family: ${({ theme }) => theme.typography.fontFamily.body};
+    color: ${({ theme }) => theme.colors.primary};
+
+    & + div {
+      border-left: 1px solid ${({ theme }) => theme.colors.border};
+    }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.desktop}) {
+      & + div {
+        border-left: 0;
+        border-top: 1px solid ${({ theme }) => theme.colors.border};
+      }
+    }
+
+    strong {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+    }
+
+    small {
+      font-size: 0.72rem;
+      line-height: 1.5;
+    }
+  }
+`;
+
+const PracticalIcon = styled.span`
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #e9dfd2;
+  display: grid;
+  place-items: center;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+
+// ─── Modal para solicitar tarjeta de regalo ─────────────────────────────────
+const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(40, 20, 28, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+`;
+
+const ModalContent = styled.div`
+  background: #f4f2eb;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 12px;
+  width: 100%;
+  max-width: 520px;
+  padding: 2.25rem;
+  box-sizing: border-box;
+  position: relative;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+
+  h3 {
+    font-family: ${({ theme }) => theme.typography.fontFamily.heading};
+    font-size: 2rem;
+    color: ${({ theme }) => theme.colors.primary};
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-family: ${({ theme }) => theme.typography.fontFamily.body};
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: ${({ theme }) => theme.colors.primary};
+    opacity: 0.85;
+    margin: 0 0 1.5rem 0;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px solid #e0ddd5;
+    background: #f2ece4;
+    font-family: ${({ theme }) => theme.typography.fontFamily.body};
+    font-size: 0.85rem;
+    color: ${({ theme }) => theme.colors.primary};
+    box-sizing: border-box;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+  }
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: transparent;
+  border: 0;
+  font-size: 1.5rem;
+  color: ${({ theme }) => theme.colors.primary};
+  cursor: pointer;
+`;
+
+const DEFAULT_TARJETAS = [
+  {
+    id: 1,
+    titulo: 'Bono regalo 1',
+    precio: '150 € / 2 pax',
+    portada: '/assets/bono-regalo-1.jpg',
+    descripcion: 'Incluye recorrido guiado por la bodega y viñedos, cata de 3 vinos y maridaje de aperitivos típicos mallorquines para dos personas.',
+  },
+  {
+    id: 2,
+    titulo: 'Bono regalo 2',
+    precio: '250 € / 2 pax',
+    portada: '/assets/bono-regalo-2.jpg',
+    descripcion: 'Experiencia enológica y gastronómica completa para dos personas: visita a viñedos, cata de autor y almuerzo maridado en nuestra terraza con vistas a la Sierra de Tramuntana.',
+  },
+  {
+    id: 3,
+    titulo: 'Bono personalizado',
+    precio: 'Consultar',
+    portada: '/assets/bono-personalizado.jpg',
+    descripcion: 'Diseña una experiencia a tu medida: catas privadas, almuerzos entre viñas, celebraciones especiales o regalos corporativos. Solicita presupuesto sin compromiso.',
+  },
 ];
 
+const formatearPrecio = (t) => {
+  if (typeof t.precio === 'string' && (t.precio.includes('€') || t.precio.toLowerCase().includes('consultar'))) {
+    return t.precio;
+  }
+  const num = Number(t.precio);
+  if (!num || num === 0 || t.titulo.toLowerCase().includes('personalizado')) {
+    return 'Consultar';
+  }
+  return `${num.toFixed(0)} € / 2 pax`;
+};
+
 const TarjetasRegalo = () => {
-  const [bonos, setBonos] = useState(DEFAULT_BONOS);
+  const [tarjetas, setTarjetas] = useState(DEFAULT_TARJETAS);
+  const [infoAbierta, setInfoAbierta] = useState(null);
+  const [modalBono, setModalBono] = useState(null);
+  const [solicitudEnviada, setSolicitudEnviada] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+  const [errorSolicitud, setErrorSolicitud] = useState('');
+  const [codigoSolicitud, setCodigoSolicitud] = useState('');
+  const [datosContacto, setDatosContacto] = useState({
+    nombre: '',
+    email: '',
+    telefono: '',
+    destinatario: '',
+    mensaje: '',
+  });
 
   useEffect(() => {
+    let activo = true;
     api.get('/tarjetas')
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setBonos(data.map((t) => ({
-            title: t.titulo,
-            price: `${Number(t.precio).toFixed(2)} €`,
-            desc: t.descripcion,
-          })));
+        if (activo && Array.isArray(data) && data.length > 0) {
+          const activas = data.filter((t) => t.activo !== false);
+          activas.sort((a, b) => {
+            const orden = { 'bono regalo 1': 1, 'bono regalo 2': 2, 'bono personalizado': 3 };
+            const ordA = orden[a.titulo.toLowerCase()] || a.id;
+            const ordB = orden[b.titulo.toLowerCase()] || b.id;
+            return ordA - ordB;
+          });
+          if (activas.length > 0) {
+            setTarjetas(
+              activas.map((t) => ({
+                id: t.id,
+                titulo: t.titulo,
+                precio: formatearPrecio(t),
+                portada: t.portada || '/assets/bono-regalo-1.jpg',
+                descripcion: t.descripcion,
+              }))
+            );
+          }
         }
       })
       .catch(() => {});
+    return () => {
+      activo = false;
+    };
   }, []);
 
-  const caracteristicas = [
-    'Bono digital', 'Envío por email', 'Validez de 12 meses', 'Personalizable', 'Reserva flexible'
-  ];
+  const handleRegalar = (bono) => {
+    setModalBono(bono);
+    setSolicitudEnviada(false);
+    setErrorSolicitud('');
+    setCodigoSolicitud('');
+  };
+
+  const cerrarModal = () => {
+    setModalBono(null);
+    if (solicitudEnviada) {
+      setDatosContacto({ nombre: '', email: '', telefono: '', destinatario: '', mensaje: '' });
+      setSolicitudEnviada(false);
+      setCodigoSolicitud('');
+    }
+  };
+
+  const handleSubmitSolicitud = async (e) => {
+    e.preventDefault();
+    if (enviando) return;
+    setEnviando(true);
+    setErrorSolicitud('');
+    try {
+      const res = await api.post('/pedidos-tarjetas', { ...datosContacto, tarjetaId: modalBono.id });
+      setCodigoSolicitud(res?.codigo || '');
+      setSolicitudEnviada(true);
+    } catch (err) {
+      setErrorSolicitud(err.message || 'No se pudo enviar la solicitud. Inténtalo de nuevo.');
+    } finally {
+      setEnviando(false);
+    }
+  };
 
   return (
-    <Section>
-      <Title>Tarjetas Regalo</Title>
-      
-      <Grid>
-        {bonos.map((bono, idx) => (
-          <BonoCard key={idx}>
-            <BonoTitle>{bono.title}</BonoTitle>
-            <BonoPrice>{bono.price}</BonoPrice>
-            <BonoDesc>{bono.desc}</BonoDesc>
-          </BonoCard>
-        ))}
-      </Grid>
-      
-      <FeaturesGrid>
-        {caracteristicas.map((f, i) => <FeatureItem key={i}>✓ {f}</FeatureItem>)}
-      </FeaturesGrid>
-      
-      <ButtonGroup>
-        <PrimaryButton to="/contacto">Solicitar tarjeta regalo</PrimaryButton>
-        <SecondaryButton to="/enoturismo">Ver experiencias</SecondaryButton>
-      </ButtonGroup>
-    </Section>
+    <SectionWrapper id="regala-tu-experiencia" style={{ scrollMarginTop: '110px' }}>
+      <Section className="enoturismo-experiences-section">
+        <Heading className="enoturismo-section-heading">
+          <div>
+            <Eyebrow className="enoturismo-panel-eyebrow">NUESTRAS EXPERIENCIAS</Eyebrow>
+            <Title>Regala una experiencia inolvidable</Title>
+          </div>
+          <Intro className="enoturismo-intro-copy">
+            <p>
+              Regala una cata, una visita o una experiencia gastronómica en Son Aloy.
+              Los bonos se envían por email, son personalizables y tienen una validez de 12 meses.
+            </p>
+          </Intro>
+        </Heading>
+
+        <Grid className="enoturismo-card-grid is-three-columns">
+          {tarjetas.map((t) => {
+            const isInfoOpen = infoAbierta === t.id;
+            const imgSrc = getResolvedImageUrl(t.portada || '/assets/bono-regalo-1.jpg');
+            return (
+              <Card key={t.id} className="enoturismo-experience-card">
+                <CardImage className="enoturismo-card-image">
+                  <img src={imgSrc} alt={t.titulo} loading="lazy" />
+                </CardImage>
+
+                <CardBody className="enoturismo-card-body">
+                  <CardHeading className="enoturismo-card-heading">
+                    <CardTitle>{t.titulo}</CardTitle>
+                    <CardPrice>{t.precio}</CardPrice>
+                  </CardHeading>
+
+                  {isInfoOpen && <InfoText>{t.descripcion}</InfoText>}
+
+                  <Actions className="enoturismo-card-actions">
+                    <PrimaryButton
+                      type="button"
+                      className="is-primary"
+                      id={`btn-regalar-${t.id}`}
+                      onClick={() => handleRegalar(t)}
+                    >
+                      REGALAR →
+                    </PrimaryButton>
+                    <SecondaryButton
+                      type="button"
+                      className="is-secondary"
+                      aria-expanded={isInfoOpen}
+                      onClick={() => setInfoAbierta((s) => (s === t.id ? null : t.id))}
+                    >
+                      + INFO {isInfoOpen ? '▲' : '▼'}
+                    </SecondaryButton>
+                  </Actions>
+                </CardBody>
+              </Card>
+            );
+          })}
+        </Grid>
+
+        {/* Features Practical Bar (regalaTuExperiencia.md) */}
+        <PracticalWrap className="enoturismo-practical-wrap">
+          <PracticalBar className="enoturismo-practical-bar" aria-label="Información práctica">
+            <div>
+              <PracticalIcon className="enoturismo-practical-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="8.5" />
+                  <path d="M12 7.5V12l3 2" />
+                </svg>
+              </PracticalIcon>
+              <span>
+                <strong>Horarios</strong>
+                <small>Lunes a viernes · 10:00 – 17:00<br />Sábados y domingos · Cerrado</small>
+              </span>
+            </div>
+
+            <div>
+              <PracticalIcon className="enoturismo-practical-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="9" r="3" />
+                  <circle cx="16.5" cy="10" r="2.5" />
+                  <path d="M3.5 19c.7-3.4 2.6-5.2 5.5-5.2s4.8 1.8 5.5 5.2M14 14.5c3.4-.4 5.5 1.1 6.5 4.5" />
+                </svg>
+              </PracticalIcon>
+              <span>
+                <strong>Aforo limitado</strong>
+                <small>Máximo 10 personas.<br />Para grupos mayores, consulta disponibilidad</small>
+              </span>
+            </div>
+
+            <div>
+              <PracticalIcon className="enoturismo-practical-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3.5" y="5.5" width="17" height="13" rx="1.5" />
+                  <path d="m4.5 7 7.5 6 7.5-6" />
+                </svg>
+              </PracticalIcon>
+              <span>
+                <strong>Reservas</strong>
+                <small>enoturismo@bodegasantacatarina.com</small>
+              </span>
+            </div>
+          </PracticalBar>
+        </PracticalWrap>
+
+
+      </Section>
+
+      {/* Modal para solicitar bono regalo */}
+      {modalBono && (
+        <ModalOverlay onClick={cerrarModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <CloseButton type="button" onClick={cerrarModal} aria-label="Cerrar">×</CloseButton>
+            {solicitudEnviada ? (
+              <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                <h3>¡Solicitud recibida!</h3>
+                <p>
+                  Gracias <strong>{datosContacto.nombre}</strong>. Nos pondremos en contacto contigo en breve para preparar y personalizar tu <strong>{modalBono.titulo}</strong>.
+                  {codigoSolicitud && <><br />Código de solicitud: <strong>{codigoSolicitud}</strong>. Te hemos enviado un email de confirmación.</>}
+                </p>
+                <PrimaryButton type="button" onClick={cerrarModal}>Cerrar</PrimaryButton>
+              </div>
+            ) : (
+              <>
+                <h3>Solicitar {modalBono.titulo}</h3>
+                <p>
+                  Completa tus datos y nos pondremos en contacto contigo para preparar y personalizar tu tarjeta regalo.
+                </p>
+                <form onSubmit={handleSubmitSolicitud}>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Tu nombre completo"
+                    value={datosContacto.nombre}
+                    onChange={(e) => setDatosContacto({ ...datosContacto, nombre: e.target.value })}
+                  />
+                  <input
+                    type="email"
+                    required
+                    placeholder="Tu email de contacto"
+                    value={datosContacto.email}
+                    onChange={(e) => setDatosContacto({ ...datosContacto, email: e.target.value })}
+                  />
+                  <input
+                    type="tel"
+                    required
+                    placeholder="Teléfono"
+                    value={datosContacto.telefono}
+                    onChange={(e) => setDatosContacto({ ...datosContacto, telefono: e.target.value })}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Nombre del destinatario (opcional)"
+                    value={datosContacto.destinatario}
+                    onChange={(e) => setDatosContacto({ ...datosContacto, destinatario: e.target.value })}
+                  />
+                  <textarea
+                    rows={3}
+                    placeholder="Dedicatoria o comentarios para el bono (opcional)"
+                    value={datosContacto.mensaje}
+                    onChange={(e) => setDatosContacto({ ...datosContacto, mensaje: e.target.value })}
+                  />
+                  {errorSolicitud && (
+                    <p role="alert" style={{ color: '#8c1d1d', margin: 0 }}>{errorSolicitud}</p>
+                  )}
+                  <div className="modal-actions">
+                    <SecondaryButton type="button" onClick={cerrarModal}>
+                      Cancelar
+                    </SecondaryButton>
+                    <PrimaryButton type="submit" disabled={enviando}>
+                      {enviando ? 'Enviando…' : 'Enviar solicitud'}
+                    </PrimaryButton>
+                  </div>
+                </form>
+              </>
+            )}
+          </ModalContent>
+        </ModalOverlay>
+      )}
+    </SectionWrapper>
   );
 };
 

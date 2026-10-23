@@ -125,8 +125,9 @@ const SubMenu = styled.div`
 const SubMenuLink = styled(Link)`
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
   font-size: 0.88rem;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.text};
+  font-weight: ${({ $isActive }) => ($isActive ? '700' : '500')};
+  color: ${({ theme, $isActive }) => ($isActive ? theme.colors.secondary : theme.colors.text)};
+  background-color: ${({ $isActive }) => ($isActive ? 'rgba(194, 164, 120, 0.12)' : 'transparent')};
   padding: 8px 12px;
   text-decoration: none;
   border-radius: 4px;
@@ -242,6 +243,7 @@ const MobileMenu = () => {
                               <SubMenuLink
                                 key={sub.name}
                                 to={sub.path}
+                                $isActive={location.pathname === sub.path}
                                 onClick={closeMenu}
                               >
                                 {sub.name}

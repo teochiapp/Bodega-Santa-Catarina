@@ -40,31 +40,164 @@ model Evento {
 }
 
 model Cata {
-  id          Int      @id @default(autoincrement())
-  portada     String?  @db.Text
-  titulo      String
-  precio      Decimal  @db.Decimal(10, 2)
-  descripcion String   @db.Text
-  diaSemana   String?  // ej: "Lunes a Sábado"
-  horario     String?  // ej: "11:00 y 16:00"
-  duracion    String?  // ej: "1h 30min"
-  activo      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt
+  id            Int      @id @default(autoincrement())
+  portada       String?  @db.Text
+  titulo        String
+  precio        Decimal  @db.Decimal(10, 2)
+  descripcion   String   @db.Text
+  diaSemana     String?  // ej: "Lunes a Sábado"
+  horario       String?  // ej: "11:00 y 16:00"
+  duracion      String?  // ej: "1h 30min"
+  duracionMin   Int      @default(90)  // duración numérica en minutos (para reservas)
+  cupoPorSesion Int      @default(10)  // capacidad por defecto de cada sesión
+  activo        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  horarios      HorarioCata[]
+  sesiones      SesionCata[]
 }
 
+// Plantilla semanal de horarios de una cata (ej: lunes 10:00, cupo 8).
+model HorarioCata {
+  id         Int     @id @default(autoincrement())
+  cataId     Int
+  diaSemana  Int     // 0 = domingo ... 6 = sábado (igual que Date.getUTCDay)
+  hora       String  // "HH:mm"
+  cupo       Int?    // si es null, usa Cata.cupoPorSesion
+  activo     Boolean @default(true)
+
+  cata       Cata    @relation(fields: [cataId], references: [id], onDelete: Cascade)
+
+  @@unique([cataId, diaSemana, hora])
+}
+
+// Sesión concreta (cata + fecha + hora). Se crea al recibir la primera reserva.
+// plazasReservadas se modifica SOLO con UPDATE atómico condicionado (ver reservasService).
+model SesionCata {
+  id                Int      @id @default(autoincrement())
+  cataId            Int
+  fecha             DateTime @db.Date
+  hora              String
+  plazasReservadas  Int      @default(0)
+  createdAt         DateTime @default(now())
+
+  cata              Cata      @relation(fields: [cataId], references: [id], onDelete: Cascade)
+  reservas          Reserva[]
+
+  @@unique([cataId, fecha, hora])
+  @@index([fecha])
+}
+
+enum EstadoReserva {
+  CONFIRMADA
+  CANCELADA
+  ASISTIO
+  NO_ASISTIO
+}
+
+// Preparado para pagos online futuros: hoy las reservas son gratuitas (NO_REQUERIDO).
+enum EstadoPago {
+  NO_REQUERIDO
+  PENDIENTE
+  PAGADO
+  REEMBOLSADO
+}
+
+model Reserva {
+  id             Int           @id @default(autoincrement())
+  codigo         String        @unique
+  sesionId       Int
+  nombre         String
+  email          String
+  telefono       String
+  personas       Int
+  idioma         String        @default("Español")
+  comentarios    String?       @db.Text
+  estado         EstadoReserva @default(CONFIRMADA)
+  precioTotal    Decimal       @default(0) @db.Decimal(10, 2)
+  estadoPago     EstadoPago    @default(NO_REQUERIDO)
+  pagoReferencia String?       // id de transacción del proveedor de pagos (futuro)
+  canceladaAt    DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @default(now()) @updatedAt
+
+  sesion         SesionCata    @relation(fields: [sesionId], references: [id])
+
+  @@index([email])
+  @@index([estado])
+}
+
+
 model MenuGastronomico {
-  id          Int      @id @default(autoincrement())
-  portada     String?  @db.Text
-  titulo      String
-  precio      Decimal  @db.Decimal(10, 2)
-  descripcion String   @db.Text
-  diaSemana   String?
-  horario     String?
-  duracion    String?
-  activo      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt
+  id            Int      @id @default(autoincrement())
+  portada       String?  @db.Text
+  titulo        String
+  precio        Decimal  @db.Decimal(10, 2)
+  descripcion   String   @db.Text
+  diaSemana     String?
+  horario       String?
+  duracion      String?
+  duracionMin   Int      @default(120)
+  cupoPorSesion Int      @default(10)
+  activo        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  horarios      HorarioMenu[]
+  sesiones      SesionMenu[]
+}
+
+model HorarioMenu {
+  id         Int              @id @default(autoincrement())
+  menuId     Int
+  diaSemana  Int              // 0 = domingo ... 6 = sábado
+  hora       String           // "HH:mm"
+  cupo       Int?             // si es null usa MenuGastronomico.cupoPorSesion
+  activo     Boolean          @default(true)
+
+  menu       MenuGastronomico @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  @@unique([menuId, diaSemana, hora])
+}
+
+model SesionMenu {
+  id               Int              @id @default(autoincrement())
+  menuId           Int
+  fecha            DateTime         @db.Date
+  hora             String
+  plazasReservadas Int              @default(0)
+  createdAt        DateTime         @default(now())
+
+  menu             MenuGastronomico @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  reservas         ReservaMenu[]
+
+  @@unique([menuId, fecha, hora])
+  @@index([fecha])
+}
+
+model ReservaMenu {
+  id             Int           @id @default(autoincrement())
+  codigo         String        @unique
+  sesionId       Int
+  nombre         String
+  email          String
+  telefono       String
+  personas       Int
+  idioma         String        @default("Español")
+  comentarios    String?       @db.Text
+  estado         EstadoReserva @default(CONFIRMADA)
+  precioTotal    Decimal       @default(0) @db.Decimal(10, 2)
+  estadoPago     EstadoPago    @default(NO_REQUERIDO)
+  pagoReferencia String?
+  canceladaAt    DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @default(now()) @updatedAt
+
+  sesion         SesionMenu    @relation(fields: [sesionId], references: [id])
+
+  @@index([email])
+  @@index([estado])
 }
 
 model Blog {
@@ -89,6 +222,39 @@ model TarjetaRegalo {
   activo      Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
+
+  pedidos     PedidoTarjeta[]
+}
+
+enum EstadoPedidoTarjeta {
+  PENDIENTE
+  CONTACTADO
+  COMPLETADO
+  CANCELADO
+}
+
+// Solicitud de una tarjeta regalo hecha desde la web (se gestiona en el admin).
+model PedidoTarjeta {
+  id            Int                 @id @default(autoincrement())
+  codigo        String              @unique
+  tarjetaId     Int?
+  tarjetaTitulo String
+  importe       Decimal             @default(0) @db.Decimal(10, 2)
+  nombre        String
+  email         String
+  telefono      String
+  destinatario  String?
+  mensaje       String?             @db.Text
+  estado        EstadoPedidoTarjeta @default(PENDIENTE)
+  estadoPago    EstadoPago          @default(NO_REQUERIDO)
+  canceladoAt   DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @default(now()) @updatedAt
+
+  tarjeta       TarjetaRegalo?      @relation(fields: [tarjetaId], references: [id], onDelete: SetNull)
+
+  @@index([email])
+  @@index([estado])
 }
 
 model ConfiguracionGeneral {

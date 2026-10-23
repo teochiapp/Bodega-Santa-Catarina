@@ -22,6 +22,9 @@ import VinosStaPage from './pages/vinos/VinosStaPage';
 import VinosSurantPage from './pages/vinos/VinosSurantPage';
 import VinosNguanyPage from './pages/vinos/VinosNguanyPage';
 import EnoturismoPage from './pages/EnoturismoPage';
+import CatasYVisitasPage from './pages/CatasYVisitasPage';
+import ExperienciasGastronomicasPage from './pages/ExperienciasGastronomicasPage';
+import RegalaTuExperienciaPage from './pages/RegalaTuExperienciaPage';
 import EventosPage from './pages/EventosPage';
 import DondeComprarPage from './pages/DondeComprarPage';
 import TiendaPage from './pages/TiendaPage';
@@ -33,9 +36,11 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminVinosPage from './pages/admin/AdminVinosPage';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminCatasPage from './pages/admin/AdminCatasPage';
+import AdminReservasPage from './pages/admin/AdminReservasPage';
 import AdminMenusPage from './pages/admin/AdminMenusPage';
 import AdminBlogPage from './pages/admin/AdminBlogPage';
 import AdminTarjetasPage from './pages/admin/AdminTarjetasPage';
+import AdminPedidosTarjetasPage from './pages/admin/AdminPedidosTarjetasPage';
 import AdminTiendaGaleriaPage from './pages/admin/AdminTiendaGaleriaPage';
 import AdminConfiguracionPage from './pages/admin/AdminConfiguracionPage';
 
@@ -62,16 +67,24 @@ function App() {
               <Route path="/la-bodega/nuestra-filosofia" element={<BodegaFilosofiaPage />} />
               <Route path="/la-bodega/sostenibilidad" element={<BodegaSostenibilidadPage />} />
 
-              {/* Vinos y sus colecciones (todo en la misma página con anchors) */}
+              {/* Vinos y sus colecciones (secciones separadas e independientes) */}
               <Route path="/vinos" element={<VinosPage />} />
-              <Route path="/vinos/coleccion-sta" element={<Navigate to="/vinos#coleccion-sta" replace />} />
-              <Route path="/vinos/sta" element={<Navigate to="/vinos#coleccion-sta" replace />} />
-              <Route path="/vinos/coleccion-surant" element={<Navigate to="/vinos#coleccion-surant" replace />} />
-              <Route path="/vinos/surant" element={<Navigate to="/vinos#coleccion-surant" replace />} />
-              <Route path="/vinos/coleccion-nguany" element={<Navigate to="/vinos#coleccion-nguany" replace />} />
-              <Route path="/vinos/nguany" element={<Navigate to="/vinos#coleccion-nguany" replace />} />
+              <Route path="/vinos/coleccion-sta" element={<VinosStaPage />} />
+              <Route path="/vinos/sta" element={<Navigate to="/vinos/coleccion-sta" replace />} />
+              <Route path="/vinos/coleccion-surant" element={<VinosSurantPage />} />
+              <Route path="/vinos/surant" element={<Navigate to="/vinos/coleccion-surant" replace />} />
+              <Route path="/vinos/coleccion-nguany" element={<VinosNguanyPage />} />
+              <Route path="/vinos/nguany" element={<Navigate to="/vinos/coleccion-nguany" replace />} />
 
+              {/* ── Enoturismo (secciones separadas e independientes) ── */}
               <Route path="/enoturismo" element={<EnoturismoPage />} />
+              <Route path="/enoturismo/catas-y-visitas" element={<CatasYVisitasPage />} />
+              <Route path="/enoturismo/catas" element={<Navigate to="/enoturismo/catas-y-visitas" replace />} />
+              <Route path="/enoturismo/experiencias-gastronomicas" element={<ExperienciasGastronomicasPage />} />
+              <Route path="/enoturismo/gastronomia" element={<Navigate to="/enoturismo/experiencias-gastronomicas" replace />} />
+              <Route path="/enoturismo/regala-tu-experiencia" element={<RegalaTuExperienciaPage />} />
+              <Route path="/enoturismo/regala" element={<Navigate to="/enoturismo/regala-tu-experiencia" replace />} />
+
               <Route path="/eventos" element={<EventosPage />} />
               <Route path="/eventos/:slug" element={<EventosPage />} />
               <Route path="/eventos-y-bodas" element={<Navigate to="/eventos" replace />} />
@@ -110,6 +123,14 @@ function App() {
               }
             />
             <Route
+              path="/admin/reservas"
+              element={
+                <ProtectedRoute>
+                  <AdminReservasPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/admin/menus"
               element={
                 <ProtectedRoute>
@@ -130,6 +151,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminTarjetasPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/pedidos-tarjetas"
+              element={
+                <ProtectedRoute>
+                  <AdminPedidosTarjetasPage />
                 </ProtectedRoute>
               }
             />

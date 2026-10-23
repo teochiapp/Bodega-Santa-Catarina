@@ -12,6 +12,8 @@ const dashboardRoutes = require('./dashboardRoutes');
 const uploadRoutes = require('./uploadRoutes');
 const tiendaGaleriaRoutes = require('./tiendaGaleriaRoutes');
 const newsletterRoutes = require('./newsletterRoutes');
+const reservasRoutes = require('./reservasRoutes');
+const pedidosTarjetasRoutes = require('./pedidosTarjetasRoutes');
 
 // Health check — verificar que la API está viva
 router.get('/health', (req, res) => {
@@ -30,5 +32,7 @@ router.use('/configuracion', configuracionRoutes);
 router.use('/upload', uploadRoutes);
 router.use('/tienda-galeria', tiendaGaleriaRoutes);
 router.use('/newsletter', newsletterRoutes);
+router.use('/reservas', reservasRoutes);
+router.use('/pedidos-tarjetas', pedidosTarjetasRoutes);
 
 module.exports = router;

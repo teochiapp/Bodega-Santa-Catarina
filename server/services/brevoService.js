@@ -198,4 +198,6 @@ const suscribirNewsletter = async (email, opciones = {}) => {
 
 module.exports = {
   suscribirNewsletter,
+  obtenerRemitente,
+  BREVO_API_URL,
 };

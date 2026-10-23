@@ -277,7 +277,7 @@ const Footer = () => {
           <ContactMuted>07140 Sencelles, Mallorca</ContactMuted>
           <ContactText>Tlf: +34 971 137 115</ContactText>
           <ContactLink href="mailto:info@bodegasantacatarina.com">info@bodegasantacatarina.com</ContactLink>
-          <ActionLink to="/tienda">Tarjetas regalo →</ActionLink>
+          <ActionLink to="/enoturismo/regala-tu-experiencia">Tarjetas regalo →</ActionLink>
           <ActionLink to="/donde-comprar">Dónde comprar →</ActionLink>
         </RightCol>
       </FooterInner>

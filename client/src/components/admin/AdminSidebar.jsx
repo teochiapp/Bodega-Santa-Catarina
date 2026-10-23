@@ -7,6 +7,7 @@ import {
   Sparkles,
   UtensilsCrossed,
   CalendarHeart,
+  CalendarCheck,
   Newspaper,
   Gift,
   Settings,
@@ -340,6 +341,13 @@ const NAV = [
     ],
   },
   {
+    group: 'Reservas & Pedidos',
+    items: [
+      { icon: <CalendarCheck size={17} strokeWidth={1.8} />, label: 'Reservas', path: '/admin/reservas', disabled: false },
+      { icon: <Gift size={17} strokeWidth={1.8} />, label: 'Tarjetas Regalo', path: '/admin/pedidos-tarjetas', disabled: false },
+    ],
+  },
+  {
     group: 'Catálogo',
     items: [
       { icon: <Wine size={17} strokeWidth={1.8} />, label: 'Vinos', path: '/admin/vinos', disabled: false },
@@ -356,7 +364,7 @@ const NAV = [
     group: 'Contenido & Tienda',
     items: [
       { icon: <Newspaper size={17} strokeWidth={1.8} />, label: 'Blog & Novedades', path: '/admin/blog', disabled: false },
-      { icon: <Gift size={17} strokeWidth={1.8} />, label: 'Tarjetas de Regalo', path: '/admin/tarjetas', disabled: false },
+      { icon: <Gift size={17} strokeWidth={1.8} />, label: 'Catálogo de Bonos', path: '/admin/tarjetas', disabled: false },
       { icon: <Images size={17} strokeWidth={1.8} />, label: 'Galería Tienda Física', path: '/admin/tienda-galeria', disabled: false },
     ],
   },

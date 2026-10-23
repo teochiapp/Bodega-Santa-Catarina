@@ -4,6 +4,7 @@ import api from '../../services/api';
 import AdminLayout from './AdminLayout';
 import AdminConfirmModal from './AdminConfirmModal';
 import AdminImageUpload from './AdminImageUpload';
+import AdminHorariosEditor from './AdminHorariosEditor';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
 
 const Spinner = styled.div`
@@ -110,7 +111,7 @@ const ModalOverlay = styled.div`
 const ModalBox = styled.div`
   background: var(--tn-bg);
   width: 100%;
-  max-width: 520px;
+  max-width: 640px;
   border: 1px solid var(--tn-rule);
   box-shadow: var(--tn-shadow-lg);
   max-height: 90vh;
@@ -197,8 +198,11 @@ const AdminCatasList = () => {
     diaSemana: '',
     horario: '',
     duracion: '',
+    duracionMin: 90,
+    cupoPorSesion: 10,
     portada: '',
   });
+  const [horarios, setHorarios] = useState([]);
 
   const cargarCatas = async () => {
     try {
@@ -230,17 +234,24 @@ const AdminCatasList = () => {
     };
   }, []);
 
+  const HORARIOS_POR_DEFECTO = [1, 2, 3, 4, 5].flatMap((diaSemana) =>
+    ['10:00', '11:30', '13:00', '15:00'].map((hora) => ({ diaSemana, hora, cupo: null }))
+  );
+
   const handleOpenCrear = () => {
     setCataEdit(null);
     setFormData({
       titulo: '',
       precio: '',
       descripcion: '',
-      diaSemana: 'Lunes a Sábado',
-      horario: '11:30 y 16:30',
+      diaSemana: '',
+      horario: '',
       duracion: '1h 30min',
+      duracionMin: 90,
+      cupoPorSesion: 10,
       portada: '',
     });
+    setHorarios(HORARIOS_POR_DEFECTO);
     setModalOpen(true);
   };
 
@@ -253,19 +264,21 @@ const AdminCatasList = () => {
       diaSemana: cata.diaSemana || '',
       horario: cata.horario || '',
       duracion: cata.duracion || '',
+      duracionMin: cata.duracionMin ?? 90,
+      cupoPorSesion: cata.cupoPorSesion ?? 10,
       portada: cata.portada || '',
     });
+    setHorarios((cata.horarios || []).map((h) => ({ diaSemana: h.diaSemana, hora: h.hora, cupo: h.cupo })));
     setModalOpen(true);
   };
 
   const handleGuardar = async (e) => {
     e.preventDefault();
     try {
-      if (cataEdit) {
-        await api.put(`/catas/${cataEdit.id}`, formData);
-      } else {
-        await api.post('/catas', formData);
-      }
+      const guardada = cataEdit
+        ? await api.put(`/catas/${cataEdit.id}`, formData)
+        : await api.post('/catas', formData);
+      await api.put(`/reservas/catas/${guardada.id}/horarios`, { horarios });
       setModalOpen(false);
       cargarCatas();
     } catch (err) {
@@ -281,7 +294,8 @@ const AdminCatasList = () => {
       cargarCatas();
     } catch (err) {
       console.error('Error al eliminar cata:', err);
-      alert('Error al eliminar la cata');
+      setCataDelete(null);
+      alert(err.message || 'Error al eliminar la cata');
     }
   };
 
@@ -308,9 +322,9 @@ const AdminCatasList = () => {
               <tr>
                 <Th>Título</Th>
                 <Th>Precio</Th>
-                <Th>Días</Th>
-                <Th>Horario</Th>
                 <Th>Duración</Th>
+                <Th>Cupo / sesión</Th>
+                <Th>Sesiones / semana</Th>
                 <Th style={{ textAlign: 'right' }}>Acciones</Th>
               </tr>
             </thead>
@@ -326,9 +340,9 @@ const AdminCatasList = () => {
                   <Td>
                     <strong style={{ color: 'var(--tn-acc-700)' }}>{Number(cata.precio).toFixed(2)} €</strong>
                   </Td>
-                  <Td>{cata.diaSemana || '—'}</Td>
-                  <Td>{cata.horario || '—'}</Td>
-                  <Td>{cata.duracion || '—'}</Td>
+                  <Td>{cata.duracion || `${cata.duracionMin} min`}</Td>
+                  <Td>{cata.cupoPorSesion} pers.</Td>
+                  <Td>{cata.horarios?.length ?? 0}</Td>
                   <Td style={{ textAlign: 'right' }}>
                     <ActionBtn onClick={() => handleOpenEditar(cata)}>
                       <Pencil size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />
@@ -400,24 +414,33 @@ const AdminCatasList = () => {
 
               <FormRow>
                 <FormGroup>
-                  <label>Días de la Semana</label>
+                  <label>Duración en minutos</label>
                   <input
-                    type="text"
-                    value={formData.diaSemana}
-                    onChange={(e) => setFormData({ ...formData, diaSemana: e.target.value })}
-                    placeholder="Lunes a Sábado"
+                    type="number"
+                    min="1"
+                    max="1440"
+                    required
+                    value={formData.duracionMin}
+                    onChange={(e) => setFormData({ ...formData, duracionMin: e.target.value })}
                   />
                 </FormGroup>
                 <FormGroup>
-                  <label>Horario</label>
+                  <label>Capacidad por sesión</label>
                   <input
-                    type="text"
-                    value={formData.horario}
-                    onChange={(e) => setFormData({ ...formData, horario: e.target.value })}
-                    placeholder="11:30 y 16:30"
+                    type="number"
+                    min="1"
+                    max="500"
+                    required
+                    value={formData.cupoPorSesion}
+                    onChange={(e) => setFormData({ ...formData, cupoPorSesion: e.target.value })}
                   />
                 </FormGroup>
               </FormRow>
+
+              <FormGroup>
+                <label>Horarios semanales (cupo opcional por horario)</label>
+                <AdminHorariosEditor value={horarios} onChange={setHorarios} />
+              </FormGroup>
 
               <FormGroup>
                 <label>Descripción</label>

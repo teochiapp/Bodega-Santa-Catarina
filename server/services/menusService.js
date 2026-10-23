@@ -2,6 +2,7 @@ const prisma = require('./prismaClient');
 
 const obtenerTodosLosMenus = async () => {
   return prisma.menuGastronomico.findMany({
+    include: { horarios: { where: { activo: true } } },
     orderBy: { id: 'asc' },
   });
 };
@@ -9,6 +10,7 @@ const obtenerTodosLosMenus = async () => {
 const obtenerMenuPorId = async (id) => {
   return prisma.menuGastronomico.findUnique({
     where: { id: parseInt(id, 10) },
+    include: { horarios: { where: { activo: true } } },
   });
 };
 

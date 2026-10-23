@@ -111,9 +111,10 @@ const DropdownLink = styled(ScrollLink)`
   padding: 10px 25px;
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
   font-size: 13px;
-  font-weight: 500;
+  font-weight: ${({ $isActive }) => ($isActive ? '700' : '500')};
   letter-spacing: 0.15px;
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme, $isActive }) => ($isActive ? theme.colors.secondary : theme.colors.primary)};
+  background-color: ${({ $isActive }) => ($isActive ? 'rgba(194, 164, 120, 0.08)' : 'transparent')};
   text-decoration: none;
   white-space: nowrap;
   transition: background-color 150ms ease, color 150ms ease;
@@ -242,6 +243,7 @@ const NavMenu = () => {
                         key={sub.name}
                         to={sub.path}
                         role="menuitem"
+                        $isActive={location.pathname === sub.path}
                         onClick={() => setOpenMenu(null)}
                       >
                         {sub.name}

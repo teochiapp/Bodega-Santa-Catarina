@@ -5,15 +5,16 @@ const VinosNguanyPage = () => {
   return (
     <>
       <PageHero
-        tag="NUESTRA COLECCIÓN"
+        tag="NUESTRA COLECCIÓN · COLECCIÓN ‘NGUANY"
         title={
           <>
-            <span>Vinos Nobles</span>
+            <span>Vinos de Finca</span>
             <br />
-            <span>con Alma</span>
+            <span>Son Aloy</span>
           </>
         }
-        image="/assets/Santa_Catarina_372.jpg"
+        description="Ediciones limitadas de autor. Complejidad, estructura y el cuidado minucioso de cada añada bajo el clima único de Mallorca."
+        image="/assets/Santa_Catarina_Vendimia_284.jpg"
       />
       <CatalogoVinos filtroColeccion="nguany" />
     </>

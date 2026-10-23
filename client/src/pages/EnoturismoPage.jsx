@@ -1,21 +1,15 @@
-import PageHero from '../components/common/PageHero';
-import Experiencias from '../components/enoturismo/Experiencias';
-import InformacionPractica from '../components/enoturismo/InformacionPractica';
-import PreguntasFrecuentes from '../components/enoturismo/PreguntasFrecuentes';
-import TarjetasRegalo from '../components/tienda/TarjetasRegalo';
+import { Navigate, useLocation } from 'react-router-dom';
 
 const EnoturismoPage = () => {
-  return (
-    <>
-      <PageHero title="Vive el viñedo" subtitle="Experiencias inolvidables en Bodega Santa Catarina" />
-      <Experiencias />
-      <div id="regala-tu-experiencia" style={{ scrollMarginTop: '100px' }}>
-        <TarjetasRegalo />
-      </div>
-      <InformacionPractica />
-      <PreguntasFrecuentes />
-    </>
-  );
+  const { hash } = useLocation();
+
+  if (hash === '#experiencias-gastronomicas') {
+    return <Navigate to="/enoturismo/experiencias-gastronomicas" replace />;
+  }
+  if (hash === '#regala-tu-experiencia') {
+    return <Navigate to="/enoturismo/regala-tu-experiencia" replace />;
+  }
+  return <Navigate to="/enoturismo/catas-y-visitas" replace />;
 };
 
 export default EnoturismoPage;

@@ -2,19 +2,22 @@ import { useState, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const VIEWBOX_DESKTOP = '0 0 760 434';
-const VIEWBOX_MOBILE = '335 150 120 85'; // recorte sobre Europa + Mallorca
+const VIEWBOX_DESKTOP = '0 0 760 430';
+// Móvil: encuadre ajustado a Europa (Mallorca + mercados europeos).
+const VIEWBOX_MOBILE_EUROPE = '176 164 184 90';
+// Móvil: encuadre amplio, sólo cuando se selecciona Canadá (fuera de Europa).
+const VIEWBOX_MOBILE_WIDE = '8 150 352 172';
 
 const Section = styled.section`
   width: 100%;
-  background-color: #5C1120;
+  background-color: #502B3A;
   padding: clamp(3.5rem, 5vw, 6rem) clamp(1rem, 3.5vw, 3.5rem);
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
 
   @media (max-width: 768px) {
-    padding: 3rem 1.25rem 3.5rem 1.25rem;
+    padding: 2.5rem 1.25rem 3.5rem 1.25rem;
   }
 `;
 
@@ -68,8 +71,8 @@ const Title = styled.h2`
   margin: 0 0 18px 0;
 
   @media (max-width: 768px) {
-    font-size: clamp(2.1rem, 7vw, 2.6rem);
-    margin-bottom: 14px;
+    font-size: clamp(2rem, 6.5vw, 2.5rem);
+    margin-bottom: 12px;
   }
 `;
 
@@ -82,7 +85,7 @@ const Description = styled.p`
 
   @media (max-width: 768px) {
     font-size: 0.85rem;
-    line-height: 1.65;
+    line-height: 1.6;
   }
 `;
 
@@ -93,18 +96,57 @@ const MapShell = styled.div`
   flex-direction: column;
 `;
 
+/* ── Mobile Selector Pills Bar ── */
+const MobilePillsBar = styled.div`
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 2px 14px 2px;
+    margin-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+`;
+
+const MobilePill = styled.button`
+  flex: 0 0 auto;
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 100px;
+  border: 1px solid ${({ $isActive }) => ($isActive ? 'rgb(194, 164, 120)' : 'rgba(194, 164, 120, 0.3)')};
+  background: ${({ $isActive }) => ($isActive ? 'rgb(194, 164, 120)' : 'rgba(255, 255, 255, 0.05)')};
+  color: ${({ $isActive }) => ($isActive ? '#502B3A' : 'rgba(242, 236, 228, 0.85)')};
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.96);
+  }
+`;
+
 const MapStage = styled.div`
   position: relative;
   width: 100%;
-  aspect-ratio: ${({ $mobile }) => ($mobile ? '120 / 85' : '760 / 434')};
+  aspect-ratio: ${({ $mobile }) => ($mobile ? '184 / 90' : '760 / 430')};
   max-width: 860px;
   margin: 0 auto;
-  border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
 
   @media (max-width: 768px) {
-    aspect-ratio: 120 / 85;
+    aspect-ratio: 184 / 90;
     max-width: 100%;
+    overflow: hidden;
   }
 `;
 
@@ -114,6 +156,7 @@ const SvgRoutes = styled.svg`
   width: 100%;
   height: 100%;
   overflow: hidden;
+  border-radius: 8px;
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
 
@@ -132,6 +175,13 @@ const SvgRoutes = styled.svg`
       stroke-width: 2.2;
       filter: drop-shadow(0 0 5px rgba(242, 236, 228, 0.6));
     }
+  }
+
+  .world-label-guide {
+    stroke: rgba(194, 164, 120, 0.65);
+    stroke-width: 0.9;
+    fill: none;
+    transition: stroke 0.25s ease;
   }
 
   .world-destination-point {
@@ -171,6 +221,10 @@ const SvgRoutes = styled.svg`
         stroke: rgb(194, 164, 120);
         stroke-width: 2;
       }
+      .world-label-guide {
+        stroke: rgb(242, 236, 228);
+        stroke-width: 1.2;
+      }
       text {
         fill: rgb(242, 236, 228);
         filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));
@@ -179,25 +233,37 @@ const SvgRoutes = styled.svg`
   }
 
   @keyframes worldPulseHalo {
-    0% { transform: scale(0.9); opacity: 0.4; }
-    50% { transform: scale(1.3); opacity: 0.85; }
-    100% { transform: scale(0.9); opacity: 0.4; }
+    0% {
+      transform: scale(0.85);
+      opacity: 0.35;
+    }
+    50% {
+      transform: scale(1.35);
+      opacity: 0.85;
+    }
+    100% {
+      transform: scale(0.85);
+      opacity: 0.35;
+    }
   }
 
   .world-mallorca-halo {
     fill: rgba(194, 164, 120, 0.25);
-    transform-origin: 392px 205px;
+    stroke: rgba(194, 164, 120, 0.4);
+    stroke-width: 0.8;
+    transform-origin: 266px 219.3px;
     animation: worldPulseHalo 3s infinite ease-in-out;
   }
 
   .world-mallorca-ring {
-    fill: none;
+    fill: #F2ECE4;
     stroke: rgb(194, 164, 120);
     stroke-width: 1.5;
+    filter: drop-shadow(0 0 4px rgba(194, 164, 120, 0.6));
   }
 
   .world-mallorca-dot {
-    fill: #FFFFFF;
+    fill: rgb(194, 164, 120);
   }
 
   .world-mallorca-label {
@@ -214,24 +280,17 @@ const SvgRoutes = styled.svg`
     $mobile &&
     css`
       .world-route {
-        stroke-width: 0.6;
+        stroke-width: 1;
         &.is-active {
-          stroke-width: 1;
+          stroke-width: 1.8;
         }
       }
       .world-destination-point text {
-        font-size: 3.6px;
-        letter-spacing: 0.1em;
-      }
-      .world-destination-point:hover .world-point-dot,
-      .world-destination-point.is-active .world-point-dot {
-        stroke-width: 0.8;
+        font-size: 7.5px;
+        letter-spacing: 0.12em;
       }
       .world-mallorca-label {
-        font-size: 3.6px;
-      }
-      .world-mallorca-ring {
-        stroke-width: 0.6;
+        font-size: 7.5px;
       }
     `}
 `;
@@ -336,7 +395,7 @@ const VisitWebBtn = styled.a`
   }
 `;
 
-/* ── Mobile Carousel Styles (Scroll-Snap Sincronizado) ── */
+/* ── Mobile Carousel Section ── */
 const MobileCarouselSection = styled.div`
   display: none;
   margin-top: 1.5rem;
@@ -404,16 +463,11 @@ const DISTRIBUIDORES = {
   CANADÁ: {
     pais: 'CANADÁ',
     codigo: 'CA',
-    point: { cx: 226, cy: 162 },
-    label: { x: 216, y: 157, anchor: 'end' },
-    routeD: 'M392 205 Q300 135 226 162',
+    point: { cx: 38, cy: 206.4 },
+    label: { x: 50, y: 210, anchor: 'start' },
+    routeD: 'M266 219.3 Q175 140 38 206.4',
     isDashed: true,
-    cardPos: { left: '4%', top: '38%' },
-    mobile: {
-      point: { cx: 342, cy: 178 },
-      label: { x: 348, y: 178, anchor: 'start' },
-      routeD: 'M392 205 Q350 190 342 178',
-    },
+    cardPos: { left: '4%', top: '35%' },
     items: [
       {
         nombre: 'Sélections V.S.B.A.',
@@ -427,11 +481,12 @@ const DISTRIBUIDORES = {
   BÉLGICA: {
     pais: 'BÉLGICA',
     codigo: 'BE',
-    point: { cx: 398, cy: 169 },
-    label: { x: 393, y: 162, anchor: 'end' },
-    routeD: 'M392 205 Q392 185 398 169',
+    point: { cx: 271, cy: 198.6 },
+    guide: 'M267 194 L254 181',
+    label: { x: 249, y: 176, anchor: 'end' },
+    routeD: 'M266 219.3 Q263 205 271 198.6',
     isDashed: false,
-    cardPos: { left: '16%', top: '2%' },
+    cardPos: { left: '36%', top: '8%' },
     items: [
       {
         nombre: 'Mil Amores',
@@ -443,11 +498,12 @@ const DISTRIBUIDORES = {
   ALEMANIA: {
     pais: 'ALEMANIA',
     codigo: 'DE',
-    point: { cx: 412, cy: 166 },
-    label: { x: 422, y: 166, anchor: 'start' },
-    routeD: 'M392 205 Q406 182 412 166',
+    point: { cx: 278.6, cy: 198.8 },
+    guide: 'M283 195 L301 184',
+    label: { x: 306, y: 181, anchor: 'start' },
+    routeD: 'M266 219.3 Q271 202 278.6 198.8',
     isDashed: false,
-    cardPos: { left: '48%', top: '1%' },
+    cardPos: { left: '46%', top: '8%' },
     items: [
       {
         nombre: 'Der Mallorquiner',
@@ -465,11 +521,12 @@ const DISTRIBUIDORES = {
   SUIZA: {
     pais: 'SUIZA',
     codigo: 'CH',
-    point: { cx: 406, cy: 182 },
-    label: { x: 416, y: 182, anchor: 'start' },
-    routeD: 'M392 205 Q400 193 406 182',
+    point: { cx: 278.9, cy: 206 },
+    guide: 'M284 206 L304 206',
+    label: { x: 309, y: 208, anchor: 'start' },
+    routeD: 'M266 219.3 Q272 207 278.9 206',
     isDashed: false,
-    cardPos: { left: '48%', top: '34%' },
+    cardPos: { left: '46%', top: '30%' },
     items: [
       {
         nombre: 'Pamisa',
@@ -482,11 +539,12 @@ const DISTRIBUIDORES = {
   ITALIA: {
     pais: 'ITALIA',
     codigo: 'IT',
-    point: { cx: 418, cy: 198 },
-    label: { x: 428, y: 200, anchor: 'start' },
-    routeD: 'M392 205 Q408 205 418 198',
+    point: { cx: 291.6, cy: 207.3 },
+    guide: 'M296 211 L313 226',
+    label: { x: 318, y: 231, anchor: 'start' },
+    routeD: 'M266 219.3 Q280 204 291.6 207.3',
     isDashed: false,
-    cardPos: { left: '48%', top: '50%' },
+    cardPos: { left: '46%', top: '50%' },
     items: [
       {
         nombre: 'Proposta Vini',
@@ -499,11 +557,11 @@ const DISTRIBUIDORES = {
   PENÍNSULA: {
     pais: 'PENÍNSULA',
     codigo: 'ES',
-    point: { cx: 375, cy: 206 },
-    label: { x: 365, y: 209, anchor: 'end' },
-    routeD: 'M392 205 Q383 199 375 206',
+    point: { cx: 245.7, cy: 217.8 },
+    label: { x: 233.7, y: 221.8, anchor: 'end' },
+    routeD: 'M266 219.3 Q255 211 245.7 217.8',
     isDashed: true,
-    cardPos: { left: '8%', top: '52%' },
+    cardPos: { left: '6%', top: '52%' },
     items: [
       {
         nombre: 'Mundidrinks',
@@ -524,30 +582,44 @@ const MapaInternacional = () => {
     return false;
   });
 
-  const [activeCountry, setActiveCountry] = useState(() => {
-    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
-      return 'CANADÁ';
-    }
-    return null;
-  });
+  // Sin ubicación seleccionada al inicio en todos los dispositivos
+  const [activeCountry, setActiveCountry] = useState(null);
 
   const closeTimerRef = useRef(null);
   const carouselTrackRef = useRef(null);
   const cardRefs = useRef({});
   const isScrollingRef = useRef(false);
+  const fromScrollRef = useRef(false);
 
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth <= 768;
-      setIsMobile(mobile);
-      if (mobile) {
-        setActiveCountry((prev) => prev || 'CANADÁ');
-      }
+      setIsMobile(window.innerWidth <= 768);
     };
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Al seleccionar un país en móvil, centra su tarjeta en el carrusel
+  useEffect(() => {
+    if (!isMobile || !activeCountry) return;
+    if (fromScrollRef.current) {
+      fromScrollRef.current = false;
+      return;
+    }
+    const cardEl = cardRefs.current[activeCountry];
+    const track = carouselTrackRef.current;
+    if (cardEl && track) {
+      isScrollingRef.current = true;
+      track.scrollTo({
+        left: cardEl.offsetLeft - (track.clientWidth - cardEl.clientWidth) / 2,
+        behavior: 'smooth',
+      });
+      setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 500);
+    }
+  }, [activeCountry, isMobile]);
 
   const currentData = activeCountry ? DISTRIBUIDORES[activeCountry] : null;
 
@@ -571,25 +643,10 @@ const MapaInternacional = () => {
 
   // Selección al hacer tap/click
   const handleCountrySelect = (key) => {
-    if (isMobile) {
-      setActiveCountry(key);
-      const cardEl = cardRefs.current[key];
-      if (cardEl && carouselTrackRef.current) {
-        isScrollingRef.current = true;
-        carouselTrackRef.current.scrollTo({
-          left: cardEl.offsetLeft - (carouselTrackRef.current.clientWidth - cardEl.clientWidth) / 2,
-          behavior: 'smooth',
-        });
-        setTimeout(() => {
-          isScrollingRef.current = false;
-        }, 500);
-      }
-    } else {
-      setActiveCountry((prev) => (prev === key ? null : key));
-    }
+    setActiveCountry((prev) => (prev === key ? null : key));
   };
 
-  // Detección de tarjeta activa en el carrusel móvil al deslizar con el dedo
+  // Detección de tarjeta activa en el carrusel móvil al deslizar
   const handleCarouselScroll = () => {
     if (isScrollingRef.current || !carouselTrackRef.current) return;
     const track = carouselTrackRef.current;
@@ -613,13 +670,10 @@ const MapaInternacional = () => {
     });
 
     if (closestCountry && closestCountry !== activeCountry) {
+      fromScrollRef.current = true;
       setActiveCountry(closestCountry);
     }
   };
-
-  const R = isMobile
-    ? { hit: 6, halo: 6, dot: 2.4, mHalo: 6, mRing: 3.6, mDot: 1.5 }
-    : { hit: 24, halo: 15, dot: 6, mHalo: 17, mRing: 10, mDot: 4 };
 
   return (
     <Section className="world-distribution-hero">
@@ -637,29 +691,51 @@ const MapaInternacional = () => {
 
         {/* ── ESCENARIO MAPA ── */}
         <MapShell className="world-map-shell">
+          {/* Barra de botones rápidos en móvil */}
+          <MobilePillsBar>
+            {COUNTRIES_LIST.map((countryKey) => {
+              const isActive = activeCountry === countryKey;
+              return (
+                <MobilePill
+                  key={countryKey}
+                  type="button"
+                  $isActive={isActive}
+                  onClick={() => handleCountrySelect(countryKey)}
+                >
+                  {countryKey}
+                </MobilePill>
+              );
+            })}
+          </MobilePillsBar>
+
           <MapStage className="world-map-stage" $mobile={isMobile}>
             <SvgRoutes
               className="world-routes"
               $mobile={isMobile}
-              viewBox={isMobile ? VIEWBOX_MOBILE : VIEWBOX_DESKTOP}
+              viewBox={
+                isMobile
+                  ? activeCountry === 'CANADÁ'
+                    ? VIEWBOX_MOBILE_WIDE
+                    : VIEWBOX_MOBILE_EUROPE
+                  : VIEWBOX_DESKTOP
+              }
               role="img"
               aria-label="Mapa mundial con conexiones desde Mallorca hacia seis mercados de distribución"
             >
+              {/* Contorno del mapa mundial exacto */}
               <image
-                href="/common/mapamundi-transparente-3.webp"
+                href="/common/mapamundi-internacional-crop.png"
                 x="0"
                 y="0"
                 width="760"
-                height="434"
+                height="430"
                 preserveAspectRatio="none"
-                opacity={isMobile ? '0.65' : '0.32'}
+                opacity={isMobile ? '0.35' : '0.24'}
                 style={{ pointerEvents: 'none' }}
               />
 
-              {Object.entries(DISTRIBUIDORES).map(([key, base]) => {
-                const info = isMobile && base.mobile ? { ...base, ...base.mobile } : base;
-                const effectiveActive = activeCountry || (isMobile ? 'CANADÁ' : null);
-                const isActive = effectiveActive === key;
+              {Object.entries(DISTRIBUIDORES).map(([key, info]) => {
+                const isActive = activeCountry === key;
                 return (
                   <g key={key}>
                     <path
@@ -686,11 +762,11 @@ const MapaInternacional = () => {
                         }
                       }}
                     >
-                      {/* Área táctil e interactiva */}
+                      {/* Área táctil amplia e invisible */}
                       <circle
                         cx={info.point.cx}
                         cy={info.point.cy}
-                        r={R.hit}
+                        r={isMobile ? 12 : 16}
                         fill="rgba(0, 0, 0, 0.001)"
                         style={{ pointerEvents: 'all' }}
                       />
@@ -698,16 +774,22 @@ const MapaInternacional = () => {
                         className="world-point-halo"
                         cx={info.point.cx}
                         cy={info.point.cy}
-                        r={R.halo}
+                        r={10.5}
                         style={{ pointerEvents: 'all' }}
                       />
                       <circle
                         className="world-point-dot"
                         cx={info.point.cx}
                         cy={info.point.cy}
-                        r={R.dot}
+                        r={4.2}
                         style={{ pointerEvents: 'all' }}
                       />
+                      {info.guide && (
+                        <path
+                          className="world-label-guide"
+                          d={info.guide}
+                        />
+                      )}
                       <text
                         x={info.label.x}
                         y={info.label.y}
@@ -722,12 +804,14 @@ const MapaInternacional = () => {
               })}
 
               {/* Punto Mallorca */}
-              <circle className="world-mallorca-halo" cx="392" cy="205" r={R.mHalo} />
-              <circle className="world-mallorca-ring" cx="392" cy="205" r={R.mRing} />
-              <circle className="world-mallorca-dot" cx="392" cy="205" r={R.mDot} />
-              <text className="world-mallorca-label" x="392" y={isMobile ? 212 : 226} textAnchor="middle">
-                MALLORCA
-              </text>
+              <g className="world-mallorca-group">
+                <circle className="world-mallorca-halo" cx="266" cy="219.3" r="11.7" />
+                <circle className="world-mallorca-ring" cx="266" cy="219.3" r="6.9" />
+                <circle className="world-mallorca-dot" cx="266" cy="219.3" r="2.8" />
+                <text className="world-mallorca-label" x="266" y="244" textAnchor="middle">
+                  MALLORCA
+                </text>
+              </g>
             </SvgRoutes>
 
             {/* Tarjeta flotante en escritorio al hacer hover */}
@@ -782,14 +866,15 @@ const MapaInternacional = () => {
 
           {/* Carrusel móvil sincronizado (Scroll-Snap horizontal) */}
           <MobileCarouselSection className="world-mobile-carousel">
+            {activeCountry && (
+            <>
             <MobileCarouselTrack
               ref={carouselTrackRef}
               onScroll={handleCarouselScroll}
             >
               {COUNTRIES_LIST.map((countryKey) => {
                 const dist = DISTRIBUIDORES[countryKey];
-                const effectiveActive = activeCountry || (isMobile ? 'CANADÁ' : null);
-                const isActive = effectiveActive === countryKey;
+                const isActive = activeCountry === countryKey;
                 return (
                   <MobileCarouselCard
                     key={dist.pais}
@@ -797,7 +882,7 @@ const MapaInternacional = () => {
                       cardRefs.current[countryKey] = el;
                     }}
                     $isActive={isActive}
-                    onClick={() => handleCountrySelect(countryKey)}
+                    onClick={() => setActiveCountry(countryKey)}
                   >
                     <CardCountryHeader className="world-card-country">
                       <span>{dist.pais}</span>
@@ -836,19 +921,18 @@ const MapaInternacional = () => {
             </MobileCarouselTrack>
 
             <MobileCarouselDots>
-              {COUNTRIES_LIST.map((countryKey) => {
-                const effectiveActive = activeCountry || (isMobile ? 'CANADÁ' : null);
-                return (
-                  <CarouselDot
-                    key={countryKey}
-                    type="button"
-                    $isActive={effectiveActive === countryKey}
-                    aria-label={`Ver distribuidor de ${countryKey}`}
-                    onClick={() => handleCountrySelect(countryKey)}
-                  />
-                );
-              })}
+              {COUNTRIES_LIST.map((countryKey) => (
+                <CarouselDot
+                  key={countryKey}
+                  type="button"
+                  $isActive={activeCountry === countryKey}
+                  aria-label={`Ver distribuidor de ${countryKey}`}
+                  onClick={() => setActiveCountry(countryKey)}
+                />
+              ))}
             </MobileCarouselDots>
+            </>
+            )}
           </MobileCarouselSection>
         </MapShell>
       </Layout>

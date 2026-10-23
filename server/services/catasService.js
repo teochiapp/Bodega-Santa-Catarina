@@ -1,7 +1,14 @@
 const prisma = require('./prismaClient');
 
+// Convierte a entero dentro de [min, max]; devuelve null si no es válido o está vacío.
+const entero = (valor, min, max) => {
+  const n = parseInt(valor, 10);
+  return Number.isInteger(n) && n >= min && n <= max ? n : null;
+};
+
 const obtenerTodasLasCatas = async () => {
   return prisma.cata.findMany({
+    include: { horarios: { where: { activo: true }, orderBy: [{ diaSemana: 'asc' }, { hora: 'asc' }] } },
     orderBy: { id: 'asc' },
   });
 };
@@ -22,6 +29,8 @@ const crearCata = async (data) => {
       diaSemana: data.diaSemana || null,
       horario: data.horario || null,
       duracion: data.duracion || null,
+      duracionMin: entero(data.duracionMin, 1, 1440) ?? 90,
+      cupoPorSesion: entero(data.cupoPorSesion, 1, 500) ?? 10,
       activo: data.activo !== undefined ? Boolean(data.activo) : true,
     },
   });
@@ -38,14 +47,23 @@ const editarCata = async (id, data) => {
       diaSemana: data.diaSemana !== undefined ? data.diaSemana : undefined,
       horario: data.horario !== undefined ? data.horario : undefined,
       duracion: data.duracion !== undefined ? data.duracion : undefined,
+      duracionMin: entero(data.duracionMin, 1, 1440) ?? undefined,
+      cupoPorSesion: entero(data.cupoPorSesion, 1, 500) ?? undefined,
       activo: data.activo !== undefined ? Boolean(data.activo) : undefined,
     },
   });
 };
 
 const eliminarCata = async (id) => {
+  const cataId = parseInt(id, 10);
+  const reservas = await prisma.reserva.count({ where: { sesion: { cataId } } });
+  if (reservas > 0) {
+    const err = new Error('Esta experiencia tiene reservas asociadas. Desactívala en lugar de eliminarla.');
+    err.status = 409;
+    throw err;
+  }
   return prisma.cata.delete({
-    where: { id: parseInt(id, 10) },
+    where: { id: cataId },
   });
 };
 

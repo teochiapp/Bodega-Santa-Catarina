@@ -58,6 +58,7 @@ const eliminarCata = async (req, res) => {
     res.status(204).send();
   } catch (err) {
     console.error('[catasController] Error al eliminar cata:', err.message);
+    if (err.status === 409) return res.status(409).json({ error: err.message });
     res.status(500).json({ error: 'Error interno al eliminar la cata' });
   }
 };
