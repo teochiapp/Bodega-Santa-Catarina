@@ -3,38 +3,47 @@ import { motion } from 'framer-motion';
 
 const Section = styled.section`
   width: 100%;
-  background-color: rgb(244, 242, 235);
+  background-color: rgb(242, 236, 228);
   box-sizing: border-box;
   overflow: hidden;
+  padding: clamp(3rem, 5vw, 5rem) clamp(1.5rem, 4vw, 4rem);
 `;
 
-const Grid = styled.div`
+const Container = styled.div`
+  max-width: 1380px;
+  margin: 0 auto;
+  box-sizing: border-box;
+`;
+
+const SplitCard = styled(motion.div)`
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  min-height: 80vh;
-  width: 100%;
   align-items: stretch;
+  background-color: #F2ECE4;
+  border: 1px solid rgb(224, 221, 213);
+  overflow: hidden;
 
   @media (max-width: 960px) {
     grid-template-columns: 1fr;
   }
 `;
 
-const ImageWrapper = styled(motion.div)`
+const ImageWrapper = styled.div`
   width: 100%;
   height: 100%;
-  min-height: 520px;
+  min-height: 480px;
   position: relative;
   overflow: hidden;
 
   @media (max-width: 960px) {
-    min-height: 380px;
-    height: 420px;
+    min-height: 320px;
+    height: 380px;
   }
 
   @media (max-width: 576px) {
-    min-height: 280px;
-    height: 320px;
+    min-height: 250px;
+    height: 290px;
   }
 `;
 
@@ -44,87 +53,88 @@ const Image = styled.img`
   object-fit: cover;
   object-position: center;
   display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &:hover {
+    transform: scale(1.025);
+  }
 `;
 
-const CopyContainer = styled(motion.div)`
+const CopyContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(3rem, 6vw, 6rem) clamp(2rem, 5vw, 5.5rem);
+  padding: clamp(2.5rem, 4.5vw, 4.2rem) clamp(2rem, 4.5vw, 3.8rem);
   box-sizing: border-box;
+  background-color: #F2ECE4;
 
-  @media (max-width: 600px) {
-    padding: 2.5rem 1.5rem;
+  @media (max-width: 960px) {
+    padding: clamp(2rem, 5vw, 2.75rem) clamp(1.5rem, 4vw, 2.25rem);
   }
 `;
 
 const Eyebrow = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.68rem;
-  letter-spacing: 0.22em;
+  font-size: 0.65rem;
+  letter-spacing: 0.24em;
   font-weight: 700;
   color: ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
   text-transform: uppercase;
-  margin: 0 0 18px 0;
+  margin: 0 0 16px 0;
 `;
 
 const DisplayTitle = styled.h2`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: clamp(2.4rem, 3.8vw, 4.1rem);
+  font-size: clamp(2rem, 3.2vw, 2.85rem);
   font-weight: 600;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   line-height: 1.15;
-  margin: 0 0 20px 0;
+  margin: 0 0 16px 0;
 `;
 
 const Intro = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: 1.15rem;
+  font-size: 1.08rem;
   font-style: italic;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  opacity: 0.9;
-  margin: 0 0 36px 0;
+  opacity: 0.92;
+  margin: 0 0 24px 0;
   line-height: 1.5;
 `;
 
 const DetailList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 16px;
 `;
 
 const DetailItem = styled.div`
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: 14px;
 `;
 
 const DetailMarker = styled.span`
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   border: 1.5px solid ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
   background-color: transparent;
-  margin-top: 6px;
+  margin-top: 5px;
   flex-shrink: 0;
-`;
-
-const ItemContent = styled.div`
-  display: flex;
-  flex-direction: column;
 `;
 
 const ItemTitle = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 700;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  margin: 0 0 4px 0;
+  margin: 0 0 3px 0;
 `;
 
 const ItemDescription = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   line-height: 1.65;
   color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
   opacity: 0.88;
@@ -156,52 +166,48 @@ const FILOSOFIA_ITEMS = [
 
 const CitaFilosofia = () => {
   return (
-    <Section className="bodega-feature-section">
-      <Grid>
-        <ImageWrapper
-          className="bodega-feature-image"
-          initial={{ opacity: 0, x: -24 }}
-          whileInView={{ opacity: 1, x: 0 }}
+    <Section id="filosofia" style={{ scrollMarginTop: '110px' }} className="bodega-feature-section">
+      <Container>
+        <SplitCard
+          className="bodega-content-section"
+          initial={{ opacity: 0, y: 22 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          <Image
-            alt="Selección manual de una uva en Son Aloy"
-            src="/assets/nuestra-filosofia-uva-DbAU8HPK.png"
-            loading="lazy"
-          />
-        </ImageWrapper>
+          <ImageWrapper className="bodega-content-image bodega-feature-image">
+            <Image
+              alt="Selección manual de una uva en Son Aloy"
+              src="/assets/nuestra-filosofia-uva-DbAU8HPK.png"
+              loading="lazy"
+            />
+          </ImageWrapper>
 
-        <CopyContainer
-          className="bodega-feature-copy"
-          initial={{ opacity: 0, x: 24 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <Eyebrow className="bodega-eyebrow">NUESTRA ESENCIA</Eyebrow>
+          <CopyContainer className="bodega-content-copy bodega-feature-copy">
+            <Eyebrow className="bodega-eyebrow">NUESTRA ESENCIA</Eyebrow>
 
-          <DisplayTitle className="bodega-display-title">
-            Una forma de vivir Mallorca
-          </DisplayTitle>
+            <DisplayTitle className="bodega-display-title">
+              Una forma de vivir Mallorca
+            </DisplayTitle>
 
-          <Intro className="bodega-intro">
-            <em>Creemos que una marca que pisa la tierra celebra la historia y proyecta el futuro.</em>
-          </Intro>
+            <Intro className="bodega-intro">
+              <em>Creemos que una marca que pisa la tierra celebra la historia y proyecta el futuro.</em>
+            </Intro>
 
-          <DetailList className="bodega-detail-list">
-            {FILOSOFIA_ITEMS.map((item, idx) => (
-              <DetailItem key={idx} className="bodega-detail-item">
-                <DetailMarker className="bodega-detail-marker" aria-hidden="true" />
-                <ItemContent>
-                  <ItemTitle>{item.title}</ItemTitle>
-                  <ItemDescription>{item.description}</ItemDescription>
-                </ItemContent>
-              </DetailItem>
-            ))}
-          </DetailList>
-        </CopyContainer>
-      </Grid>
+            <DetailList className="bodega-detail-list">
+              {FILOSOFIA_ITEMS.map((item, idx) => (
+                <DetailItem key={idx} className="bodega-detail-item">
+                  <DetailMarker className="bodega-detail-marker" aria-hidden="true" />
+                  <div>
+                    <ItemTitle>{item.title}</ItemTitle>
+                    <ItemDescription>{item.description}</ItemDescription>
+                  </div>
+                </DetailItem>
+              ))}
+            </DetailList>
+          </CopyContainer>
+        </SplitCard>
+      </Container>
     </Section>
   );
 };

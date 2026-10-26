@@ -37,3 +37,17 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-primary);
   font-weight: 600;
 }
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top right,
+    rgba(35, 15, 25, 0.36) 0%,
+    rgba(35, 15, 25, 0.16) 46%,
+    rgba(35, 15, 25, 0.04) 78%,
+    rgba(35, 15, 25, 0) 100%
+  );
+  pointer-events: none;
+}
+

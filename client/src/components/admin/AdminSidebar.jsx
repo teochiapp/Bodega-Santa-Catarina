@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   Images,
+  Layers,
 } from 'lucide-react';
 
 // ── Animaciones ───────────────────────────────────────────────────────────────
@@ -363,6 +364,7 @@ const NAV = [
   {
     group: 'Contenido & Tienda',
     items: [
+      { icon: <Layers size={17} strokeWidth={1.8} />, label: 'Cabeceras de Páginas', path: '/admin/heroes', disabled: false },
       { icon: <Newspaper size={17} strokeWidth={1.8} />, label: 'Blog & Novedades', path: '/admin/blog', disabled: false },
       { icon: <Gift size={17} strokeWidth={1.8} />, label: 'Catálogo de Bonos', path: '/admin/tarjetas', disabled: false },
       { icon: <Images size={17} strokeWidth={1.8} />, label: 'Galería Tienda Física', path: '/admin/tienda-galeria', disabled: false },

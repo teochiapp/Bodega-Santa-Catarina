@@ -1,3 +1,7 @@
-import EventosPage from './EventosPage';
+import { Navigate } from 'react-router-dom';
 
-export default EventosPage;
+const EventosBodas = () => {
+  return <Navigate to="/eventos/bodas" replace />;
+};
+
+export default EventosBodas;

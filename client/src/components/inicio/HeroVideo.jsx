@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
 import { ScrollLink } from '../common/ScrollToTop';
 
+import HeroOverlay from '../HeroOverlay';
+
 const HeroContainer = styled.section`
   position: relative;
   height: calc(100vh - 96px);
@@ -28,31 +30,7 @@ const BackgroundVideo = styled.video`
   height: 100%;
   object-fit: cover;
   object-position: center 55%;
-  filter: saturate(1.08) contrast(1.08);
-  pointer-events: none;
-`;
-
-/* Overlay 1: Degradado angular estilo vino */
-const AngledOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, rgba(35, 15, 25, 0.78) 0%, rgba(35, 15, 25, 0.24) 52%, rgba(35, 15, 25, 0.04) 78%);
-  pointer-events: none;
-`;
-
-/* Overlay 2: Degradado inferior para legibilidad */
-const BottomFadeOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(25, 10, 18, 0.62) 0%, transparent 55%);
-  pointer-events: none;
-`;
-
-/* Overlay 3: Viñeta perimetral */
-const VignetteOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  box-shadow: rgba(20, 8, 14, 0.3) 0px 0px 140px inset;
+  filter: brightness(1) contrast(1.02);
   pointer-events: none;
 `;
 
@@ -233,10 +211,8 @@ const HeroVideo = () => {
         aria-hidden="true"
       />
 
-      {/* Degradados y viñeta exactos según diseño */}
-      <AngledOverlay />
-      <BottomFadeOverlay />
-      <VignetteOverlay />
+      {/* Overlay compartido con degradado vino suave */}
+      <HeroOverlay />
 
       {/* Contenido en esquina inferior izquierda */}
       <ContentContainer
@@ -253,7 +229,7 @@ const HeroVideo = () => {
         </Description>
         <ButtonGroup>
           <PrimaryLink to="/enoturismo">
-            RESERVAR EXPERIENCIA
+            RESERVAR EXPERIENCIAS
           </PrimaryLink>
           <SecondaryLink to="/vinos">
             DESCUBRIR NUESTROS VINOS

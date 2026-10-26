@@ -15,7 +15,7 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 0 2rem;
   display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
+  grid-template-columns: 1.2fr 0.8fr;
   gap: 5rem;
   align-items: center;
 
@@ -134,6 +134,14 @@ const NuestraBodega = () => {
   return (
     <Section>
       <Container>
+        <ImageContainer>
+          <StyledImage
+            src="/inicio/about-image-card.webp"
+            alt="Vendimia en Bodega Santa Catarina"
+            loading="lazy"
+          />
+        </ImageContainer>
+
         <ContentWrapper>
           <Eyebrow>NUESTRA BODEGA</Eyebrow>
           <Title>{'UN\nLEGADO\nVIVO'}</Title>
@@ -142,7 +150,7 @@ const NuestraBodega = () => {
             pasión por el vino. Desde 1984 elaboramos vinos que expresan la esencia de Mallorca,
             respetando la naturaleza y mirando al futuro.
           </Description>
-          <ActionLink to="/la-bodega">
+          <ActionLink to="/elaboracion">
             <span>CONOCER NUESTRA HISTORIA</span>
             <ArrowIcon viewBox="0 0 16 10" fill="none" aria-hidden="true">
               <path
@@ -155,14 +163,6 @@ const NuestraBodega = () => {
             </ArrowIcon>
           </ActionLink>
         </ContentWrapper>
-
-        <ImageContainer>
-          <StyledImage
-            src="/inicio/about-image-card.webp"
-            alt="Vendimia en Bodega Santa Catarina"
-            loading="lazy"
-          />
-        </ImageContainer>
       </Container>
     </Section>
   );

@@ -57,8 +57,7 @@ const DarkGradient = styled.div`
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(34, 14, 24, 0.88) 0%,
-    rgba(34, 14, 24, 0.45) 45%,
+    rgba(34, 14, 24, 0.88),
     rgba(34, 14, 24, 0.08) 70%
   );
   pointer-events: none;
@@ -78,7 +77,7 @@ const LeftContent = styled.div`
 `;
 
 const Kicker = styled.p`
-  font-family: ${({ theme }) => theme.typography.fontFamily.body};
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
   font-size: 0.62rem;
   letter-spacing: 0.22em;
   font-weight: 600;
@@ -88,7 +87,7 @@ const Kicker = styled.p`
 `;
 
 const TitleLeft = styled.h2`
-  font-family: ${({ theme }) => theme.typography.fontFamily.heading};
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
   font-size: clamp(2.2rem, 3.5vw, 3.8rem);
   font-weight: 600;
   color: rgb(255, 255, 255);
@@ -97,7 +96,7 @@ const TitleLeft = styled.h2`
 `;
 
 const EventList = styled.ul`
-  font-family: ${({ theme }) => theme.typography.fontFamily.body};
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
   font-size: 0.88rem;
   line-height: 1.8;
   color: rgba(255, 255, 255, 0.82);
@@ -106,6 +105,12 @@ const EventList = styled.ul`
 
   li {
     margin-bottom: 4px;
+
+    strong {
+      color: #ffffff;
+      font-weight: 700;
+    }
+
     &::marker {
       color: rgb(194, 164, 120);
     }
@@ -113,7 +118,7 @@ const EventList = styled.ul`
 `;
 
 const OutlineButton = styled(ScrollLink)`
-  font-family: ${({ theme }) => theme.typography.fontFamily.body};
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
   font-size: 0.68rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -133,54 +138,77 @@ const OutlineButton = styled(ScrollLink)`
 `;
 
 const RightBlock = styled.div`
-  background-color: ${({ theme }) => theme.colors.primary || 'rgb(80, 43, 58)'};
+  position: relative;
   min-height: 520px;
+  overflow: hidden;
+  border-radius: 2px;
+  box-shadow: ${({ theme }) => theme.shadows?.sm || '0 2px 4px rgba(0,0,0,0.05)'};
+
+  @media (max-width: 576px) {
+    min-height: 460px;
+  }
+`;
+
+const RightBackgroundImage = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+
+  ${RightBlock}:hover & {
+    transform: scale(1.04);
+  }
+`;
+
+const RightDarkGradient = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(34, 14, 24, 0.86),
+    rgba(34, 14, 24, 0.18) 72%
+  );
+  pointer-events: none;
+`;
+
+const RightContent = styled.div`
+  position: absolute;
+  inset: 0;
   padding: clamp(2.5rem, 5vw, 5rem);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  border-radius: 2px;
-  box-shadow: ${({ theme }) => theme.shadows?.sm || '0 2px 4px rgba(0,0,0,0.05)'};
-`;
+  justify-content: flex-end;
+  z-index: 2;
 
-const KickerRight = styled.p`
-  font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: 0.62rem;
-  letter-spacing: 0.22em;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: rgb(194, 164, 120);
-  margin-bottom: 14px;
+  @media (max-width: 576px) {
+    padding: 1.75rem;
+  }
 `;
 
 const TitleRight = styled.h2`
-  font-family: ${({ theme }) => theme.typography.fontFamily.heading};
-  font-size: clamp(2.4rem, 4vw, 4.2rem);
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
+  font-size: clamp(2.4rem, 4vw, 4rem);
   font-weight: 600;
   line-height: 1.02;
   color: rgb(242, 236, 228);
-  margin: 0 0 22px 0;
+  margin: 0 0 28px 0;
+  max-width: 620px;
 `;
 
-const DescriptionRight = styled.p`
-  font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: 0.9rem;
-  line-height: 1.8;
-  color: rgba(242, 236, 228, 0.72);
-  margin: 0 0 30px 0;
-  max-width: 520px;
-`;
-
-const SolidButton = styled(ScrollLink)`
+const RoundedSolidButton = styled(ScrollLink)`
   align-self: flex-start;
-  font-family: ${({ theme }) => theme.typography.fontFamily.body};
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
   font-size: 0.68rem;
+  font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgb(80, 43, 58);
-  background: rgb(194, 164, 120);
-  border: none;
+  background: rgb(203, 160, 82);
+  border: 0;
+  border-radius: 100px;
   padding: 14px 24px;
   cursor: pointer;
   text-decoration: none;
@@ -190,15 +218,13 @@ const SolidButton = styled(ScrollLink)`
   &:hover {
     background: #d8b788;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
   }
 `;
 
 const DEFAULT_EVENTS = [
-  'Conciertos',
-  'Mercado de Navidad',
-  'Cenas maridaje',
-  'Tardeos',
+  { titulo: 'Mercado de Navidad', fecha: '5 y 6 de diciembre' },
+  { titulo: 'Conciertos', fecha: 'Fechas a anunciar a principios de año' },
 ];
 
 const ProximosEventos = () => {
@@ -212,7 +238,12 @@ const ProximosEventos = () => {
         if (Array.isArray(data) && data.length > 0) {
           const activos = data.filter((e) => e.activo !== false);
           if (activos.length > 0) {
-            setEventList(activos.map((e) => e.titulo).slice(0, 5));
+            setEventList(
+              activos.slice(0, 4).map((e) => ({
+                titulo: e.titulo,
+                fecha: e.fecha || e.descripcion || '',
+              }))
+            );
           }
         }
       })
@@ -228,7 +259,7 @@ const ProximosEventos = () => {
   return (
     <Section>
       <Container>
-        <Grid>
+        <Grid className="home-events-grid">
           {/* Bloque Izquierdo: Próximos Eventos */}
           <LeftBlock>
             <BackgroundImage
@@ -238,25 +269,34 @@ const ProximosEventos = () => {
             />
             <DarkGradient />
             <LeftContent>
-              <Kicker>AGENDA DE LA BODEGA</Kicker>
+              <Kicker>AGENDA DE ELABORACIÓN</Kicker>
               <TitleLeft>Próximos Eventos</TitleLeft>
               <EventList>
                 {eventList.map((evento, idx) => (
-                  <li key={idx}>{evento}</li>
+                  <li key={idx}>
+                    <strong>{evento.titulo}:</strong>
+                    {evento.fecha ? ` ${evento.fecha}` : ''}
+                  </li>
                 ))}
               </EventList>
               <OutlineButton to="/eventos">VER CALENDARIO</OutlineButton>
             </LeftContent>
           </LeftBlock>
 
-          {/* Bloque Derecho: Bodas y Celebraciones */}
+          {/* Bloque Derecho: Celebra tu evento en Santa Catarina */}
           <RightBlock>
-            <KickerRight>ESPACIOS Y EXPERIENCIAS</KickerRight>
-            <TitleRight>Bodas y Celebraciones</TitleRight>
-            <DescriptionRight>
-              Presentación de espacios y experiencias para bodas, celebraciones familiares y encuentros privados en Son Aloy.
-            </DescriptionRight>
-            <SolidButton to="/contacto">SOLICITAR INFORMACIÓN</SolidButton>
+            <RightBackgroundImage
+              src="/assets/Santa_Catarina_268-gAddmlwS.jpg"
+              alt="Celebración en Bodega Santa Catarina"
+              loading="lazy"
+            />
+            <RightDarkGradient />
+            <RightContent>
+              <TitleRight>Celebra tu evento en Santa Catarina</TitleRight>
+              <RoundedSolidButton to="/contacto">
+                SOLICITAR INFORMACIÓN
+              </RoundedSolidButton>
+            </RightContent>
           </RightBlock>
         </Grid>
       </Container>

@@ -5,14 +5,14 @@ export const MENU_ITEMS = [
     exact: true,
   },
   {
-    name: 'LA BODEGA',
-    path: '/la-bodega',
+    name: 'ELABORACIÓN',
+    path: '/elaboracion',
     submenu: [
-      { name: 'Nuestra Historia', path: '/la-bodega/historia' },
-      { name: 'La bodega', path: '/la-bodega/la-bodega' },
-      { name: 'Viñedos y elaboración', path: '/la-bodega/vinedos-y-elaboracion' },
-      { name: 'Nuestra filosofía', path: '/la-bodega/filosofia' },
-      { name: 'Sostenibilidad', path: '/la-bodega/sostenibilidad' },
+      { name: 'Nuestra historia', path: '/elaboracion/historia' },
+      { name: 'Viñedos', path: '/elaboracion/vinedos-elaboracion' },
+      { name: 'Elaboración', path: '/elaboracion/bodega' },
+      { name: 'Nuestra filosofía', path: '/elaboracion/filosofia-valores' },
+      { name: 'Sostenibilidad', path: '/elaboracion/sostenibilidad' },
     ],
   },
   {
@@ -35,15 +35,12 @@ export const MENU_ITEMS = [
   },
   {
     name: 'EVENTOS Y BODAS',
-    path: '/eventos',
+    path: '/eventos/nuestros-espacios',
     submenu: [
-      { name: 'Casa Son Aloy', path: '/eventos/casa-son-aloy' },
-      { name: 'Sala de Barricas', path: '/eventos/sala-de-barricas' },
-      { name: 'Terrazas', path: '/eventos/terrazas' },
-      { name: 'Zona Gravilla y Ajardinada', path: '/eventos/zona-gravilla' },
-      { name: 'Porche Delantero y Caseta con Porche', path: '/eventos/porche-delantero' },
-      { name: 'Sala Polivalente', path: '/eventos/sala-polivalente' },
-      { name: 'La Clastra', path: '/eventos/la-clastra' },
+      { name: 'Nuestros Espacios', path: '/eventos/nuestros-espacios' },
+      { name: 'MICE y eventos corporativos', path: '/eventos/mice-y-eventos-corporativos' },
+      { name: 'Celebraciones privadas', path: '/eventos/celebraciones-privadas' },
+      { name: 'Bodas', path: '/eventos/bodas' },
     ],
   },
   {

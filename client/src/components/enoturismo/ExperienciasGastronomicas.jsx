@@ -125,7 +125,7 @@ const CardHeading = styled.div`
 
 const CardTitle = styled.h3`
   font-family: ${({ theme }) => theme.typography.fontFamily.heading};
-  font-weight: ${({ theme }) => theme.typography.weights.regular};
+  font-weight: ${({ theme }) => theme.typography.weights.bold};
   font-size: 1.65rem;
   line-height: 1.15;
   color: ${({ theme }) => theme.colors.primary};
@@ -239,7 +239,7 @@ const DinnerNotice = styled.p`
     font: inherit;
     cursor: pointer;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 400;
     transition: color 0.2s ease;
 
     &:hover {

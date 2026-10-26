@@ -14,6 +14,7 @@ const tiendaGaleriaRoutes = require('./tiendaGaleriaRoutes');
 const newsletterRoutes = require('./newsletterRoutes');
 const reservasRoutes = require('./reservasRoutes');
 const pedidosTarjetasRoutes = require('./pedidosTarjetasRoutes');
+const heroesRoutes = require('./heroesRoutes');
 
 // Health check — verificar que la API está viva
 router.get('/health', (req, res) => {
@@ -34,5 +35,6 @@ router.use('/tienda-galeria', tiendaGaleriaRoutes);
 router.use('/newsletter', newsletterRoutes);
 router.use('/reservas', reservasRoutes);
 router.use('/pedidos-tarjetas', pedidosTarjetasRoutes);
+router.use('/heroes', heroesRoutes);
 
 module.exports = router;

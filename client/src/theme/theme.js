@@ -56,3 +56,14 @@ export const theme = {
     lg: '0 8px 16px rgba(0,0,0,0.15)',
   }
 };
+
+export const HERO_OVERLAY_STYLE = {
+  position: 'absolute',
+  inset: 0,
+  background:
+    'linear-gradient(to top right, rgba(35, 15, 25, 0.36) 0%, rgba(35, 15, 25, 0.16) 46%, rgba(35, 15, 25, 0.04) 78%, rgba(35, 15, 25, 0) 100%)',
+  pointerEvents: 'none',
+};
+
+export const HERO_IMAGE_FILTER = 'brightness(1) contrast(1.02)';
+

@@ -122,7 +122,7 @@ const CardHeading = styled.div`
 
 const CardTitle = styled.h3`
   font-family: ${({ theme }) => theme.typography.fontFamily.heading};
-  font-weight: ${({ theme }) => theme.typography.weights.regular};
+  font-weight: ${({ theme }) => theme.typography.weights.bold};
   font-size: 1.65rem;
   line-height: 1.15;
   color: ${({ theme }) => theme.colors.primary};

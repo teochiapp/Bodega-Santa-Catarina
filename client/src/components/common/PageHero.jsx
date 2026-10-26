@@ -1,6 +1,11 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { ScrollLink } from './ScrollToTop';
+import { useHeroes } from '../../context/HeroesContext';
+import { getResolvedImageUrl } from '../../services/api';
+
+import HeroOverlay from '../HeroOverlay';
 
 const HeroContainer = styled.section`
   position: relative;
@@ -30,17 +35,8 @@ const BackgroundImage = styled.img`
   height: 100%;
   object-fit: cover;
   object-position: ${({ $objectPosition }) => $objectPosition || 'center'};
+  filter: brightness(1) contrast(1.02);
   z-index: 0;
-`;
-
-const GradientOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: ${({ $overlay }) =>
-    $overlay ||
-    'linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 60%)'};
-  z-index: 1;
-  pointer-events: none;
 `;
 
 const Content = styled(motion.div)`
@@ -147,6 +143,7 @@ const Description = styled.p`
 `;
 
 const PageHero = ({
+  seccion,
   items = [],
   tag,
   category,
@@ -161,13 +158,54 @@ const PageHero = ({
   objectPosition,
   overlay,
 }) => {
-  const displayTag = tag || category || badge;
-  const displaySub = subtitle || description;
+  const location = useLocation();
+  const { getHero } = useHeroes();
+
+  // Buscar si hay configuración en la base de datos para esta sección o ruta
+  const dbHero = getHero(seccion) || getHero(location?.pathname);
+
+  const displayTag = dbHero?.tag !== undefined && dbHero?.tag !== null && dbHero?.tag !== ''
+    ? dbHero.tag
+    : (tag || category || badge);
+
+  const rawTitle = dbHero?.titulo || title;
+
+  const displaySub = dbHero?.subtitulo !== undefined && dbHero?.subtitulo !== null && dbHero?.subtitulo !== ''
+    ? dbHero.subtitulo
+    : (subtitle || description);
+
+  const displayImage = dbHero?.imagen
+    ? getResolvedImageUrl(dbHero.imagen)
+    : image;
+
+  const displayAlt = dbHero?.imagenAlt || imageAlt;
+  const displayPosition = dbHero?.posicion || objectPosition;
+
+  // Renderizar título soportando saltos de línea tanto de texto como JSX
+  const renderTitle = (val) => {
+    if (!val) return null;
+    if (typeof val === 'string' && val.includes('\n')) {
+      const lines = val.split('\n');
+      return lines.map((line, idx) => (
+        <span key={idx}>
+          {line}
+          {idx < lines.length - 1 && <br />}
+        </span>
+      ));
+    }
+    return val;
+  };
 
   return (
     <HeroContainer $height={height} $minHeight={minHeight}>
-      {image && <BackgroundImage src={image} alt={imageAlt} $objectPosition={objectPosition} />}
-      <GradientOverlay $overlay={overlay} />
+      {displayImage && (
+        <BackgroundImage
+          src={displayImage}
+          alt={displayAlt}
+          $objectPosition={displayPosition}
+        />
+      )}
+      <HeroOverlay style={overlay ? { background: overlay } : undefined} />
       <Content
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -194,10 +232,8 @@ const PageHero = ({
         )}
 
         {displayTag && <Tag>{displayTag}</Tag>}
-        {title && <Title>{title}</Title>}
-        {subtitle && <Subtitle>{subtitle}</Subtitle>}
-        {description && <Description>{description}</Description>}
-        {!subtitle && !description && displaySub && <Subtitle>{displaySub}</Subtitle>}
+        {rawTitle && <Title>{renderTitle(rawTitle)}</Title>}
+        {displaySub && <Subtitle>{displaySub}</Subtitle>}
       </Content>
     </HeroContainer>
   );

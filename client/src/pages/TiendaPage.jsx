@@ -1,5 +1,4 @@
 import PageHero from '../components/common/PageHero';
-import TiendaIntro from '../components/tienda/TiendaIntro';
 import TiendaGaleria from '../components/tienda/TiendaGaleria';
 import TiendaCta from '../components/tienda/TiendaCta';
 
@@ -13,7 +12,6 @@ const TiendaPage = () => {
         objectPosition="center 58%"
         height="500px"
       />
-      <TiendaIntro />
       <TiendaGaleria />
       <TiendaCta />
     </>

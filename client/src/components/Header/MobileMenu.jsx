@@ -160,8 +160,8 @@ const MobileMenu = () => {
     if (item.exact) {
       return location.pathname === item.path;
     }
-    if (item.path === '/la-bodega') {
-      return location.pathname.startsWith('/la-bodega');
+    if (item.path === '/elaboracion' || item.path === '/la-bodega') {
+      return location.pathname.startsWith('/elaboracion') || location.pathname.startsWith('/la-bodega');
     }
     if (item.path === '/vinos') {
       return location.pathname.startsWith('/vinos');
@@ -169,7 +169,7 @@ const MobileMenu = () => {
     if (item.path === '/enoturismo') {
       return location.pathname.startsWith('/enoturismo');
     }
-    if (item.path === '/eventos') {
+    if (item.path.startsWith('/eventos')) {
       return location.pathname.startsWith('/eventos');
     }
     if (item.path === '/tienda') {
@@ -179,6 +179,20 @@ const MobileMenu = () => {
       return location.pathname.startsWith('/blog');
     }
     return location.pathname === item.path;
+  };
+
+  const isSubActive = (subPath) => {
+    if (subPath.includes('#')) {
+      const [pathPart, hashPart] = subPath.split('#');
+      return (
+        (location.pathname === pathPart && location.hash === `#${hashPart}`) ||
+        location.pathname === `${pathPart}/${hashPart}`
+      );
+    }
+    if (subPath === '/elaboracion/historia' && (location.pathname === '/elaboracion' || location.pathname === '/elaboracion/')) {
+      return true;
+    }
+    return location.pathname === subPath;
   };
 
   return (
@@ -243,7 +257,7 @@ const MobileMenu = () => {
                               <SubMenuLink
                                 key={sub.name}
                                 to={sub.path}
-                                $isActive={location.pathname === sub.path}
+                                $isActive={isSubActive(sub.path)}
                                 onClick={closeMenu}
                               >
                                 {sub.name}
