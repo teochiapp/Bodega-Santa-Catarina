@@ -1,16 +1,14 @@
-import PageHero from '../components/common/PageHero';
-import InfoContacto from '../components/contacto/InfoContacto';
 import FormularioContacto from '../components/contacto/FormularioContacto';
-import MapaContacto from '../components/contacto/MapaContacto';
+import InfoContacto from '../components/contacto/InfoContacto';
+import ContactDepartamentos from '../components/contacto/ContactDepartamentos';
 
 const ContactoPage = () => {
   return (
-    <>
-      <PageHero title="Contacto" />
-      <InfoContacto />
+    <main style={{ backgroundColor: '#F2ECE4', minHeight: '100vh', width: '100%' }}>
       <FormularioContacto />
-      <MapaContacto />
-    </>
+      <InfoContacto />
+      <ContactDepartamentos />
+    </main>
   );
 };
 

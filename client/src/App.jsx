@@ -25,6 +25,7 @@ import EnoturismoPage from './pages/EnoturismoPage';
 import CatasYVisitasPage from './pages/CatasYVisitasPage';
 import ExperienciasGastronomicasPage from './pages/ExperienciasGastronomicasPage';
 import RegalaTuExperienciaPage from './pages/RegalaTuExperienciaPage';
+import EventosPage from './pages/EventosPage';
 import EventosNuestrosEspaciosPage from './pages/eventos/EventosNuestrosEspaciosPage';
 import EventosMicePage from './pages/eventos/EventosMicePage';
 import EventosCelebracionesPage from './pages/eventos/EventosCelebracionesPage';
@@ -48,16 +49,18 @@ import AdminTiendaGaleriaPage from './pages/admin/AdminTiendaGaleriaPage';
 import AdminConfiguracionPage from './pages/admin/AdminConfiguracionPage';
 import AdminHeroesPage from './pages/admin/AdminHeroesPage';
 import { HeroesProvider } from './context/HeroesContext';
+import { CookieProvider } from './context/CookieContext';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <AuthProvider>
-        <HeroesProvider>
-          <Router>
-            <ScrollToTop />
-          <Routes>
+      <CookieProvider>
+        <AuthProvider>
+          <HeroesProvider>
+            <Router>
+              <ScrollToTop />
+            <Routes>
             {/* ── Sitio público ── */}
             <Route element={<Layout />}>
               <Route path="/" element={<InicioPage />} />
@@ -86,8 +89,8 @@ function App() {
               <Route path="/enoturismo/regala-tu-experiencia" element={<RegalaTuExperienciaPage />} />
               <Route path="/enoturismo/regala" element={<Navigate to="/enoturismo/regala-tu-experiencia" replace />} />
 
-              {/* ── Eventos y Bodas (4 páginas independientes) ── */}
-              <Route path="/eventos" element={<Navigate to="/eventos/nuestros-espacios" replace />} />
+              {/* ── Eventos y Bodas (Portada + 4 páginas de categorías) ── */}
+              <Route path="/eventos" element={<EventosPage />} />
               <Route path="/eventos/nuestros-espacios" element={<EventosNuestrosEspaciosPage />} />
               <Route path="/eventos/espacios" element={<Navigate to="/eventos/nuestros-espacios" replace />} />
               <Route path="/eventos/mice-y-eventos-corporativos" element={<EventosMicePage />} />
@@ -95,9 +98,9 @@ function App() {
               <Route path="/eventos/celebraciones-privadas" element={<EventosCelebracionesPage />} />
               <Route path="/eventos/celebraciones" element={<Navigate to="/eventos/celebraciones-privadas" replace />} />
               <Route path="/eventos/bodas" element={<EventosBodasPage />} />
-              <Route path="/eventos-y-bodas" element={<Navigate to="/eventos/nuestros-espacios" replace />} />
+              <Route path="/eventos-y-bodas" element={<Navigate to="/eventos" replace />} />
               <Route path="/bodas" element={<Navigate to="/eventos/bodas" replace />} />
-              <Route path="/eventos/:slug" element={<Navigate to="/eventos/nuestros-espacios" replace />} />
+              <Route path="/eventos/:slug" element={<Navigate to="/eventos" replace />} />
               <Route path="/donde-comprar" element={<DondeComprarPage />} />
               <Route path="/tienda" element={<TiendaPage />} />
               <Route path="/tienda-fisica" element={<TiendaPage />} />
@@ -199,6 +202,7 @@ function App() {
         </Router>
         </HeroesProvider>
       </AuthProvider>
+      </CookieProvider>
     </ThemeProvider>
   );
 }

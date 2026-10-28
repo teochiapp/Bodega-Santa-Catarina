@@ -204,22 +204,22 @@ const Eyebrow = styled.p`
 
 const Title = styled.h2`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: clamp(2.3rem, 3.8vw, 3.6rem);
+  font-size: clamp(2.5rem, 4.1vw, 4.1rem);
   font-weight: 400;
-  line-height: 1.1;
+  line-height: 1.08;
   color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
-  margin: 0 0 1.5rem 0;
-  max-width: 480px;
+  margin: 0 0 1.75rem 0;
+  max-width: 450px;
 `;
 
 const Description = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   line-height: 1.75;
   color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
   opacity: 0.9;
-  margin: 0 0 2.25rem 0;
-  max-width: 540px;
+  margin: 0 0 2.75rem 0;
+  max-width: 520px;
 `;
 
 const DefinitionList = styled.dl`

@@ -48,7 +48,7 @@ const Description = styled.p`
 const BlockList = styled.div`
   max-width: 1140px;
   margin: 0 auto;
-  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+  padding: 0 clamp(1.25rem, 4vw, 2.5rem) 6rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -58,8 +58,9 @@ const BlockList = styled.div`
 const SpaceArticle = styled(motion.article)`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background-color: #FAF8F5;
-  border: 1px solid ${({ theme }) => theme.colors?.border || '#E0DCD3'};
+  background-color: #FAF7F2;
+  border: 1px solid #E4DFD7;
+  border-radius: 0;
   overflow: hidden;
   box-sizing: border-box;
   transition: transform 250ms ease, box-shadow 250ms ease;
@@ -76,7 +77,7 @@ const SpaceArticle = styled(motion.article)`
 const ImageContainer = styled.div`
   width: 100%;
   height: 100%;
-  min-height: 310px;
+  min-height: 320px;
   background-color: #ECE5DC;
   position: relative;
   overflow: hidden;
@@ -108,20 +109,26 @@ const SpaceCopy = styled.div`
 
   h3 {
     font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', serif"};
-    font-size: clamp(1.85rem, 2.6vw, 2.4rem);
+    font-size: clamp(2rem, 2.8vw, 2.6rem);
     font-weight: 400;
     color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
-    margin: 0 0 14px 0;
+    margin: 0 0 16px 0;
     line-height: 1.15;
   }
 
-  p {
-    font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-    font-size: 0.86rem;
-    line-height: 1.65;
-    color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
-    opacity: 0.85;
-    margin: 0 0 22px 0;
+  .event-space-description {
+    p {
+      font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+      opacity: 0.88;
+      margin: 0 0 14px 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 `;
 
@@ -129,9 +136,9 @@ const DetailsDl = styled.dl`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
-  border-top: 1px solid ${({ theme }) => theme.colors?.border || '#E0DCD3'};
-  padding-top: 18px;
-  margin: 0 0 24px 0;
+  border-top: 1px solid #DDD7CE;
+  padding-top: 20px;
+  margin: 22px 0 24px 0;
 
   div {
     display: flex;
@@ -140,41 +147,44 @@ const DetailsDl = styled.dl`
 
   dt {
     font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-    font-size: 0.65rem;
+    font-size: 0.68rem;
     font-weight: 700;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #8F7B6B;
-    margin-bottom: 5px;
+    color: #B59B73;
+    margin-bottom: 6px;
   }
 
   dd {
     margin: 0;
     font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-    font-size: 0.84rem;
+    font-size: 0.82rem;
     color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
-    font-weight: 500;
+    font-weight: 400;
+    line-height: 1.45;
+    white-space: pre-line;
   }
 `;
 
 const RequestButton = styled.button`
   align-self: flex-start;
-  padding: 10px 24px;
-  background-color: ${({ theme }) => theme.colors?.secondary || '#C2A478'};
-  color: #FFFFFF;
+  padding: 9px 24px;
+  background-color: #BFAB82;
+  color: #502B3A;
   border: none;
   border-radius: 20px;
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
   cursor: pointer;
-  transition: background-color 150ms ease, transform 150ms ease;
+  transition: background-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 
   &:hover {
-    background-color: #B09165;
+    background-color: #B09B70;
     transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(80, 43, 58, 0.12);
   }
 
   &:active {
@@ -187,49 +197,58 @@ const ESPACIOS_DATA = [
     id: 'casa-son-aloy',
     name: 'Casa Son Aloy',
     image: '/assets/Santa_Cararina_229-CzSpZpJL.jpg',
-    description:
-      'La casa mallorquina reúne la Sala Polivalente, climatizada y equipada para reuniones y presentaciones, y el Porche Delantero, abierto a los viñedos.',
-    superficie: '—',
+    paragraphs: [
+      'Diferentes espacios interiores y exteriores, office, patio trasero a disposición para catering, baños, aire acondicionado, climatización, 12 altavoces móviles, pantalla TV 75 pulgadas.',
+      'Una sala polivalente para reuniones, banquetes, etc. con porche delantero y 2 terrazas superiores panorámicas.',
+    ],
+    superficie: '117 m²',
     capacidad: 'Hasta 40 personas en interior',
   },
   {
     id: 'bodega',
     name: 'Bodega',
     image: '/assets/Santa_Cararina_390-3-RBJCEfHL.jpg',
-    description:
-      'Un conjunto singular formado por la Sala de Barricas, la Sala de Catas y la terraza rampa, ideal para combinar reuniones, gastronomía y cultura del vino.',
-    superficie: '—',
-    capacidad: 'Hasta 80 personas en Sala de Barricas',
+    paragraphs: [
+      'Acceso por escalera desde el lobby o ascensor. Sala climatizada y acondicionada, con diferentes juegos de luces y contigua a nuestra sala de conferencias (Wine Lounge).',
+    ],
+    superficie: '300 m²',
+    capacidad: 'Hasta 300 personas (formato teatro).\nHasta 200 personas (formato banquete).',
   },
   {
     id: 'clastra-exterior',
     name: 'Clastra Exterior',
     image: '/assets/la-clastra-CL6xFguL.jpeg',
-    description:
-      'Un espacio al aire libre entre la tradición de la casa mallorquina y la arquitectura contemporánea de la bodega, idóneo para recepciones y banquetes.',
+    paragraphs: [
+      'Espectacular espacio al aire libre que se encuentra entre la tradición de la casa mallorquina y la innovación de la bodega, rodeado de un idílico paisaje de viñedos y las maravillosas montañas de la Tramuntana.',
+      'Acceso directo desde el parking por un camino pavimentado.',
+      'Diseñado para adaptarse a distintas necesidades y formatos.',
+    ],
     superficie: '600 m²',
-    capacidad: 'Hasta 270 personas',
+    capacidad: '270 personas (formato banquete).',
   },
   {
     id: 'caseta',
     name: 'Caseta',
     image: '/assets/eventos-caseta-porche-N8X2oZRm.png',
-    description:
-      'Un rincón recogido con porche para encuentros de grupos reducidos y experiencias gastronómicas privadas en un ambiente exclusivo.',
-    superficie: '—',
-    capacidad: '—',
+    paragraphs: [
+      'Lugar espectacular para acoger a grupos reducidos de personas para una experiencia gastronómica muy privatizada y exclusiva, o para realizar bienvenidas en un lugar idílico rodeado de las mejores vistas a la Tramuntana.',
+    ],
+    superficie: null,
+    capacidad: 'Hasta 15 personas.',
   },
 ];
 
 const NuestrosEspacios = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSpace, setSelectedSpace] = useState('');
 
-  const handleSelectSpace = (spaceName) => {
+  const handleOpenModal = (spaceName = '') => {
     setSelectedSpace(spaceName);
-    const formElement = document.getElementById('formulario-evento');
-    if (formElement) {
-      formElement.scrollIntoView({ behavior: 'smooth' });
-    }
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -264,13 +283,20 @@ const NuestrosEspacios = () => {
 
             <SpaceCopy className="event-space-standard-copy">
               <h3>{space.name}</h3>
-              <p>{space.description}</p>
+
+              <div className="event-space-description">
+                {space.paragraphs.map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))}
+              </div>
 
               <DetailsDl className="event-space-details">
-                <div>
-                  <dt>Superficie</dt>
-                  <dd>{space.superficie}</dd>
-                </div>
+                {space.superficie && (
+                  <div>
+                    <dt>Superficie</dt>
+                    <dd>{space.superficie}</dd>
+                  </div>
+                )}
                 <div>
                   <dt>Capacidad</dt>
                   <dd>{space.capacidad}</dd>
@@ -278,11 +304,12 @@ const NuestrosEspacios = () => {
               </DetailsDl>
 
               <RequestButton
+                className="event-inquiry-button"
                 type="button"
-                onClick={() => handleSelectSpace(space.name)}
+                onClick={() => handleOpenModal(space.name)}
                 aria-label={`Solicitar información sobre ${space.name}`}
               >
-                SOLICITAR INFORMACIÓN
+                Solicitar información
               </RequestButton>
             </SpaceCopy>
           </SpaceArticle>
@@ -290,6 +317,8 @@ const NuestrosEspacios = () => {
       </BlockList>
 
       <FormularioEventos
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
         defaultTipoEvento="Solicitud de espacio"
         selectedSpace={selectedSpace}
         onSpaceChange={setSelectedSpace}

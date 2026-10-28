@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import FormularioEventos from './FormularioEventos';
@@ -8,11 +9,10 @@ const MainWrapper = styled.main`
   box-sizing: border-box;
 `;
 
-const EditorialIntro = styled.div`
-  max-width: 900px;
+const IntroSection = styled.div`
+  max-width: 1140px;
   margin: 0 auto;
   padding: clamp(3.5rem, 6vw, 5rem) clamp(1.25rem, 4vw, 2.5rem) 2.5rem;
-  text-align: center;
   box-sizing: border-box;
 `;
 
@@ -32,7 +32,7 @@ const Heading = styled.h2`
   font-weight: 400;
   color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
   margin: 0 0 16px 0;
-  line-height: 1.12;
+  line-height: 1.1;
 `;
 
 const Description = styled.p`
@@ -41,138 +41,114 @@ const Description = styled.p`
   line-height: 1.65;
   color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
   opacity: 0.85;
-  margin: 0 auto;
-  max-width: 640px;
+  margin: 0;
+  max-width: 720px;
 `;
 
-const ImageContainerPrimary = styled.div`
+const BlockList = styled.div`
   max-width: 1140px;
-  margin: 0 auto 3rem;
-  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 2.5rem) 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
   box-sizing: border-box;
 `;
 
-const EditorialImagePrimary = styled.img`
-  width: 100%;
-  height: auto;
-  max-height: 560px;
-  object-fit: cover;
-  display: block;
-  border-radius: 2px;
-  box-shadow: 0 4px 20px rgba(80, 43, 58, 0.06);
-`;
-
-const FeatureGrid = styled.div`
-  max-width: 1140px;
-  margin: 0 auto 3rem;
-  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+const SpaceArticle = styled(motion.article)`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  background-color: #FAF7F2;
+  border: 1px solid #E4DFD7;
+  border-radius: 0;
+  overflow: hidden;
   box-sizing: border-box;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-`;
-
-const FeatureArticle = styled(motion.article)`
-  background: #FAF8F5;
-  border: 1px solid ${({ theme }) => theme.colors?.border || '#E0DCD3'};
-  padding: clamp(1.5rem, 2.5vw, 2.25rem);
-  display: flex;
-  align-items: flex-start;
-  gap: 18px;
-  box-sizing: border-box;
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  transition: transform 250ms ease, box-shadow 250ms ease;
 
   &:hover {
-    box-shadow: 0 6px 18px rgba(80, 43, 58, 0.05);
+    box-shadow: 0 8px 24px rgba(80, 43, 58, 0.06);
+  }
+
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-const IconWrapper = styled.span`
-  color: ${({ theme }) => theme.colors?.secondary || '#C2A478'};
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 2px;
-
-  svg {
-    width: 28px;
-    height: 28px;
-  }
-`;
-
-const FeatureContent = styled.div`
-  h3 {
-    font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', serif"};
-    font-size: 1.45rem;
-    font-weight: 500;
-    color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
-    margin: 0 0 6px 0;
-    line-height: 1.2;
-  }
-
-  p {
-    font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-    font-size: 0.85rem;
-    line-height: 1.6;
-    color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
-    opacity: 0.85;
-    margin: 0;
-  }
-`;
-
-const ImageContainerSecondary = styled.div`
-  max-width: 1140px;
-  margin: 0 auto;
-  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
-  box-sizing: border-box;
-`;
-
-const EditorialImageSecondary = styled.img`
+const ImageContainer = styled.div`
   width: 100%;
-  height: auto;
-  max-height: 480px;
+  height: 100%;
+  min-height: 320px;
+  background-color: #ECE5DC;
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 860px) {
+    min-height: 260px;
+    height: 280px;
+  }
+`;
+
+const SpaceImage = styled.img`
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: 2px;
-  box-shadow: 0 4px 20px rgba(80, 43, 58, 0.06);
+  transition: transform 600ms ease;
+
+  ${SpaceArticle}:hover & {
+    transform: scale(1.03);
+  }
 `;
 
-const CtaContainer = styled.div`
-  max-width: 1140px;
-  margin: 2.5rem auto 1.5rem;
-  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+const SpaceCopy = styled.div`
+  padding: clamp(2rem, 3.5vw, 3rem);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
+
+  h3 {
+    font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', serif"};
+    font-size: clamp(2rem, 2.8vw, 2.6rem);
+    font-weight: 400;
+    color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+    margin: 0 0 16px 0;
+    line-height: 1.15;
+  }
+
+  .event-space-description {
+    margin-bottom: 24px;
+
+    p {
+      font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+      opacity: 0.88;
+      margin: 0;
+    }
+  }
 `;
 
-const CtaButton = styled.button`
-  padding: 14px 34px;
-  background-color: ${({ theme }) => theme.colors?.secondary || '#C2A478'};
-  color: #FFFFFF;
+const RequestButton = styled.button`
+  align-self: flex-start;
+  padding: 9px 24px;
+  background-color: #BFAB82;
+  color: #502B3A;
   border: none;
-  border-radius: 25px;
+  border-radius: 20px;
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
   cursor: pointer;
   transition: background-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
-  box-shadow: 0 2px 8px rgba(194, 164, 120, 0.25);
 
   &:hover {
-    background-color: #B09165;
+    background-color: #B09B70;
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(194, 164, 120, 0.35);
+    box-shadow: 0 3px 8px rgba(80, 43, 58, 0.12);
   }
 
   &:active {
@@ -180,163 +156,100 @@ const CtaButton = styled.button`
   }
 `;
 
+const MICE_DATA = [
+  {
+    id: 'alquiler-salas-espacios',
+    name: 'Alquiler de salas y espacios',
+    image: '/assets/COMIDA_SALAPOLIVALENTE-Dh7a8Yyy.png',
+    description: 'Distintos espacios adaptados a cada formato de reunión o evento.',
+  },
+  {
+    id: 'jornadas-completas',
+    name: 'Jornadas completas',
+    image: '/assets/Santa_Cararina_367-DLf8Imzi.jpg',
+    description: 'Reuniones, team buildings, visitas guiadas, catas y comidas.',
+  },
+  {
+    id: 'almuerzos-cenas-empresa',
+    name: 'Almuerzos y cenas de empresa',
+    image: '/assets/Santa_Catarina_361-DFXuees_.jpg',
+    description: 'Propuestas gastronómicas en un entorno único.',
+  },
+  {
+    id: 'regalos-corporativos',
+    name: 'Regalos corporativos',
+    image: '/assets/Gemini_Generated_Image_pldkkipldkkipldk-Bl4U6DI3.jpeg',
+    description: 'Nuestros vinos, con condiciones especiales para empresas y la posibilidad de crear un vino personalizado para vuestra marca.',
+  },
+];
+
 const MiceCorporativos = () => {
-  const scrollToForm = () => {
-    const formElement = document.getElementById('formulario-evento');
-    if (formElement) {
-      formElement.scrollIntoView({ behavior: 'smooth' });
-    }
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState('');
+
+  const handleOpenModal = (itemName) => {
+    setSelectedItem(itemName);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
-    <MainWrapper id="eventos-mice" className="event-editorial">
-      <EditorialIntro className="event-editorial-introduction">
-        <Eyebrow className="event-eyebrow">EVENTOS CORPORATIVOS</Eyebrow>
-        <h2>Un lugar diferente para encontrarnos.</h2>
+    <MainWrapper id="eventos-mice" className="event-content">
+      <IntroSection className="event-page-introduction">
+        <Eyebrow className="event-eyebrow">MICE Y EVENTOS CORPORATIVOS</Eyebrow>
+        <Heading>MICE y eventos corporativos</Heading>
         <Description>
-          Reuniones, convenciones, presentaciones, jornadas de empresa y experiencias a medida en un entorno inspirador.
+          Organizamos reuniones, convenciones, presentaciones de producto, jornadas de empresa y cenas corporativas en espacios versátiles rodeados de viñedos.
         </Description>
-      </EditorialIntro>
+      </IntroSection>
 
-      <ImageContainerPrimary>
-        <EditorialImagePrimary
-          className="event-editorial-image event-editorial-image-primary"
-          alt="Cena elegante en Sala de Barricas"
-          src="/assets/CENAELEGANTE_SALABARRICAS2-BnLV_zoJ.jpeg"
-          loading="eager"
-        />
-      </ImageContainerPrimary>
+      <BlockList className="event-block-list">
+        {MICE_DATA.map((item, index) => (
+          <SpaceArticle
+            key={item.id}
+            className="event-space-standard"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.5, delay: index * 0.08 }}
+          >
+            <ImageContainer>
+              <SpaceImage
+                className="event-space-standard-image"
+                src={item.image}
+                alt={item.name}
+                loading={index === 0 ? 'eager' : 'lazy'}
+              />
+            </ImageContainer>
 
-      <FeatureGrid className="event-feature-grid">
-        <FeatureArticle
-          className="event-feature"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-        >
-          <IconWrapper className="event-feature-icon">
-            <svg
-              viewBox="0 0 32 32"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.35"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M5 27V10l11-5 11 5v17M10 27v-8h12v8M10 13h3M19 13h3" />
-            </svg>
-          </IconWrapper>
-          <FeatureContent>
-            <h3>Alquiler de salas y espacios</h3>
-            <p>Distintos espacios adaptados a cada formato de reunión o evento.</p>
-          </FeatureContent>
-        </FeatureArticle>
+            <SpaceCopy className="event-space-standard-copy">
+              <h3>{item.name}</h3>
 
-        <FeatureArticle
-          className="event-feature"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.08 }}
-        >
-          <IconWrapper className="event-feature-icon">
-            <svg
-              viewBox="0 0 32 32"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.35"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <rect x="5" y="7" width="22" height="20" />
-              <path d="M10 4v6M22 4v6M5 13h22M10 18h4M10 22h8" />
-            </svg>
-          </IconWrapper>
-          <FeatureContent>
-            <h3>Jornadas completas</h3>
-            <p>Reuniones, team buildings, visitas guiadas, catas y comidas.</p>
-          </FeatureContent>
-        </FeatureArticle>
+              <div className="event-space-description">
+                <p>{item.description}</p>
+              </div>
 
-        <FeatureArticle
-          className="event-feature"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.16 }}
-        >
-          <IconWrapper className="event-feature-icon">
-            <svg
-              viewBox="0 0 32 32"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.35"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="16" cy="17" r="8" />
-              <circle cx="16" cy="17" r="4" />
-              <path d="M5 5v8M3 5v5c0 2 4 2 4 0V5M5 13v14M26 5v22M23 10c0-3 1-5 3-5" />
-            </svg>
-          </IconWrapper>
-          <FeatureContent>
-            <h3>Almuerzos y cenas de empresa</h3>
-            <p>Propuestas gastronómicas en un entorno único.</p>
-          </FeatureContent>
-        </FeatureArticle>
+              <RequestButton
+                type="button"
+                className="event-inquiry-button"
+                onClick={() => handleOpenModal(item.name)}
+              >
+                Solicitar información
+              </RequestButton>
+            </SpaceCopy>
+          </SpaceArticle>
+        ))}
+      </BlockList>
 
-        <FeatureArticle
-          className="event-feature"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.24 }}
-        >
-          <IconWrapper className="event-feature-icon">
-            <svg
-              viewBox="0 0 32 32"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.35"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M5 13h22v14H5zM3 9h26v5H3zM16 9v18M16 9c-5 0-7-2-7-4 0-1.5 1.2-2.5 2.8-2.5C14 2.5 16 5.5 16 9ZM16 9c5 0 7-2 7-4 0-1.5-1.2-2.5-2.8-2.5C18 2.5 16 5.5 16 9Z" />
-            </svg>
-          </IconWrapper>
-          <FeatureContent>
-            <h3>Regalos corporativos</h3>
-            <p>Nuestros vinos, con condiciones especiales para empresas.</p>
-          </FeatureContent>
-        </FeatureArticle>
-      </FeatureGrid>
-
-      <ImageContainerSecondary>
-        <EditorialImageSecondary
-          className="event-editorial-image event-editorial-image-secondary"
-          alt="Instalaciones para eventos corporativos en Bodega Santa Catarina"
-          src="/assets/Santa_Cararina_149-zAvTT5Pv.jpg"
-          loading="lazy"
-        />
-      </ImageContainerSecondary>
-
-      <CtaContainer>
-        <CtaButton
-          className="event-editorial-cta"
-          type="button"
-          onClick={scrollToForm}
-        >
-          SOLICITAR PROPUESTA PARA TU EMPRESA
-        </CtaButton>
-      </CtaContainer>
-
-      {/* Formulario reutilizable al pie */}
-      <FormularioEventos defaultTipoEvento="MICE y eventos corporativos" />
+      {/* Modal dialog con formulario preseleccionado en MICE y eventos corporativos */}
+      <FormularioEventos
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        defaultTipoEvento="MICE y eventos corporativos"
+      />
     </MainWrapper>
   );
 };

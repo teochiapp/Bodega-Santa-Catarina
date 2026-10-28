@@ -2,19 +2,94 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const Section = styled.section`
-  padding: clamp(3.5rem, 6vw, 5.5rem) clamp(1.25rem, 4vw, 2.5rem) 6rem;
-  background-color: ${({ theme }) => theme.colors?.background || '#F2ECE4'};
-  scroll-margin-top: 100px;
+const ModalOverlay = styled(motion.div)`
+  position: fixed;
+  inset: 0;
+  background-color: rgba(35, 18, 25, 0.72);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 3500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  box-sizing: border-box;
+  overflow-y: auto;
+`;
+
+const ModalDialog = styled(motion.div)`
+  position: relative;
+  background: #FAF8F5;
+  border: 1px solid ${({ theme }) => theme.colors?.border || '#E0DCD3'};
+  width: 100%;
+  max-width: 820px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  padding: clamp(1.75rem, 4vw, 3rem);
+
+  /* Scrollbar estético */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors?.secondary || '#C2A478'};
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #F2ECE4;
+  }
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 150ms ease, transform 150ms ease;
+  z-index: 10;
+  border-radius: 4px;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors?.secondary || '#C2A478'};
+    transform: scale(1.1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors?.secondary || '#C2A478'};
+  }
+`;
+
+const VisuallyHiddenTitle = styled.span`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 `;
 
 const Inner = styled.div`
-  max-width: 960px;
-  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const HeaderBox = styled.div`
-  margin-bottom: 2.25rem;
+  margin-bottom: 2rem;
+  padding-right: 2.5rem; /* Margen para no chocar con botón cerrar */
 `;
 
 const Eyebrow = styled.p`
@@ -29,28 +104,21 @@ const Eyebrow = styled.p`
 
 const Title = styled.h2`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', serif"};
-  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
   font-weight: 500;
   color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
-  margin: 0 0 14px 0;
+  margin: 0 0 12px 0;
   line-height: 1.15;
 `;
 
 const Intro = styled.p`
   font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-  font-size: 0.92rem;
-  line-height: 1.65;
+  font-size: 0.9rem;
+  line-height: 1.6;
   color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
   opacity: 0.88;
   margin: 0;
-  max-width: 720px;
-`;
-
-const FormCard = styled.div`
-  background: #FAF8F5;
-  border: 1px solid ${({ theme }) => theme.colors?.border || '#E0DCD3'};
-  padding: clamp(1.5rem, 3.5vw, 2.75rem);
-  box-sizing: border-box;
+  max-width: 680px;
 `;
 
 const StyledForm = styled.form`
@@ -69,10 +137,10 @@ const StyledForm = styled.form`
 const Input = styled.input`
   width: 100%;
   padding: 14px;
-  border: 1px solid ${({ theme }) => theme.colors?.border || '#E0DCD3'};
-  background: ${({ theme }) => theme.colors?.background || '#F2ECE4'};
-  color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+  border: 1px solid rgb(224, 221, 213);
+  background: rgb(242, 236, 228);
+  color: rgb(80, 43, 58);
+  font-family: 'Manrope', 'Raleway', sans-serif;
   font-size: 0.88rem;
   box-sizing: border-box;
   outline: none;
@@ -97,10 +165,10 @@ const Input = styled.input`
 const Select = styled.select`
   width: 100%;
   padding: 14px;
-  border: 1px solid ${({ theme }) => theme.colors?.border || '#E0DCD3'};
-  background: ${({ theme }) => theme.colors?.background || '#F2ECE4'};
-  color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+  border: 1px solid rgb(224, 221, 213);
+  background: rgb(242, 236, 228);
+  color: rgb(80, 43, 58);
+  font-family: 'Manrope', 'Raleway', sans-serif;
   font-size: 0.88rem;
   box-sizing: border-box;
   outline: none;
@@ -122,16 +190,16 @@ const Textarea = styled.textarea`
   grid-column: 1 / -1;
   width: 100%;
   padding: 14px;
-  border: 1px solid ${({ theme }) => theme.colors?.border || '#E0DCD3'};
-  background: ${({ theme }) => theme.colors?.background || '#F2ECE4'};
-  color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+  border: 1px solid rgb(224, 221, 213);
+  background: rgb(242, 236, 228);
+  color: rgb(80, 43, 58);
+  font-family: 'Manrope', 'Raleway', sans-serif;
   font-size: 0.88rem;
   line-height: 1.6;
   box-sizing: border-box;
   outline: none;
   resize: vertical;
-  min-height: 130px;
+  min-height: 120px;
   transition: border-color 150ms ease, background-color 150ms ease;
 
   &::placeholder {
@@ -215,6 +283,8 @@ const SuccessAlert = styled(motion.div)`
 `;
 
 const FormularioEventos = ({
+  isOpen = false,
+  onClose,
   defaultTipoEvento = 'Solicitud de espacio',
   selectedSpace = '',
   onSpaceChange,
@@ -234,18 +304,38 @@ const FormularioEventos = ({
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Sincronizar si cambian las props
+  // Sincronizar datos al abrir el modal o cambiar props
   useEffect(() => {
-    if (defaultTipoEvento) {
-      setFormData((prev) => ({ ...prev, eventType: defaultTipoEvento }));
+    if (isOpen) {
+      setFormData((prev) => ({
+        ...prev,
+        eventType: defaultTipoEvento || 'Solicitud de espacio',
+        space: selectedSpace || '',
+      }));
+      setSubmitted(false);
+      setIsSubmitting(false);
     }
-  }, [defaultTipoEvento]);
+  }, [isOpen, defaultTipoEvento, selectedSpace]);
 
+  // Manejo de tecla Escape y bloqueo de scroll de la página
   useEffect(() => {
-    if (selectedSpace) {
-      setFormData((prev) => ({ ...prev, space: selectedSpace }));
-    }
-  }, [selectedSpace]);
+    if (!isOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onClose) {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen, onClose]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -279,138 +369,237 @@ const FormularioEventos = ({
           message: '',
           privacy: false,
         });
-      }, 7000);
+        if (onClose) {
+          onClose();
+        }
+      }, 3500);
     }, 600);
   };
 
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget && onClose) {
+      onClose();
+    }
+  };
+
   return (
-    <Section id="formulario-evento" className="event-contact-section">
-      <Inner className="event-contact-inner">
-        <HeaderBox>
-          <Eyebrow className="event-eyebrow">SOLICITA INFORMACIÓN</Eyebrow>
-          <Title className="event-form-title">Cuéntanos cómo imaginas tu evento</Title>
-          <Intro className="event-form-intro">
-            Completa los datos y nuestro equipo se pondrá en contacto contigo para preparar una propuesta personalizada.
-          </Intro>
-        </HeaderBox>
-
-        <FormCard>
-          <StyledForm className="event-contact-form" onSubmit={handleSubmit}>
-            <AnimatePresence>
-              {submitted && (
-                <SuccessAlert
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  ¡Gracias por contactarnos! Hemos recibido tu solicitud para{' '}
-                  <strong>{formData.space || formData.eventType}</strong>. Nuestro equipo se pondrá en contacto contigo muy pronto.
-                </SuccessAlert>
-              )}
-            </AnimatePresence>
-
-            <Input
-              required
-              placeholder="Nombre"
-              aria-label="Nombre"
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-            />
-
-            <Input
-              required
-              placeholder="Email"
-              aria-label="Email"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-
-            <Input
-              required
-              placeholder="Teléfono"
-              aria-label="Teléfono"
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-            />
-
-            <Input
-              readOnly
-              aria-label="Tipo de evento"
-              type="text"
-              name="eventType"
-              value={formData.eventType}
-              title="Tipo de evento predeterminado"
-            />
-
-            <Select
-              required
-              name="space"
-              aria-label="Espacio de interés"
-              value={formData.space}
-              onChange={handleChange}
+    <AnimatePresence>
+      {isOpen && (
+        <ModalOverlay
+          className="event-modal-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={handleOverlayClick}
+        >
+          <ModalDialog
+            className="event-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="event-modal-title"
+            initial={{ opacity: 0, y: 16, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 12, scale: 0.97 }}
+            transition={{ duration: 0.24, ease: 'easeOut' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <CloseButton
+              className="event-modal-close"
+              type="button"
+              aria-label="Cerrar formulario"
+              onClick={onClose}
             >
-              <option value="" disabled={formData.space !== ''}>
-                Espacio de interés
-              </option>
-              <option value="Casa Son Aloy">Casa Son Aloy</option>
-              <option value="Bodega">Bodega</option>
-              <option value="Clastra Exterior">Clastra Exterior</option>
-              <option value="Caseta">Caseta</option>
-            </Select>
+              <span aria-hidden="true">×</span>
+            </CloseButton>
 
-            <Input
-              aria-label="Fecha aproximada"
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-            />
+            <VisuallyHiddenTitle id="event-modal-title" className="event-modal-title">
+              Solicitud de información
+            </VisuallyHiddenTitle>
 
-            <Input
-              required
-              min="1"
-              placeholder="Número de personas"
-              aria-label="Número de personas"
-              type="number"
-              name="guests"
-              value={formData.guests}
-              onChange={handleChange}
-            />
+            <Inner className="event-contact-inner">
+              <HeaderBox>
+                <Eyebrow className="event-eyebrow">SOLICITA INFORMACIÓN</Eyebrow>
+                <Title className="event-form-title">Cuéntanos cómo imaginas tu evento</Title>
+                <Intro className="event-form-intro">
+                  Completa los datos y nuestro equipo se pondrá en contacto contigo para preparar una propuesta personalizada.
+                </Intro>
+              </HeaderBox>
 
-            <Textarea
-              name="message"
-              rows="5"
-              placeholder="Mensaje"
-              aria-label="Mensaje"
-              value={formData.message}
-              onChange={handleChange}
-            />
+              <StyledForm className="event-contact-form" onSubmit={handleSubmit}>
+                <AnimatePresence>
+                  {submitted && (
+                    <SuccessAlert
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      ¡Gracias por contactarnos! Hemos recibido tu solicitud para{' '}
+                      <strong>{formData.space || formData.eventType}</strong>. Nuestro equipo se pondrá en contacto contigo muy pronto.
+                    </SuccessAlert>
+                  )}
+                </AnimatePresence>
 
-            <PrivacyLabel className="event-privacy">
-              <input
-                required
-                type="checkbox"
-                name="privacy"
-                checked={formData.privacy}
-                onChange={handleChange}
-              />
-              <span>He leído y acepto la política de privacidad.</span>
-            </PrivacyLabel>
+                <Input
+                  required
+                  placeholder="Nombre"
+                  aria-label="Nombre"
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  style={{
+                    padding: '14px',
+                    border: '1px solid rgb(224, 221, 213)',
+                    background: 'rgb(242, 236, 228)',
+                    color: 'rgb(80, 43, 58)',
+                    fontFamily: 'Manrope, Raleway, sans-serif',
+                  }}
+                />
 
-            <SubmitButton className="event-submit" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'ENVIANDO...' : 'SOLICITAR INFORMACIÓN'}
-            </SubmitButton>
-          </StyledForm>
-        </FormCard>
-      </Inner>
-    </Section>
+                <Input
+                  required
+                  placeholder="Email"
+                  aria-label="Email"
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  style={{
+                    padding: '14px',
+                    border: '1px solid rgb(224, 221, 213)',
+                    background: 'rgb(242, 236, 228)',
+                    color: 'rgb(80, 43, 58)',
+                    fontFamily: 'Manrope, Raleway, sans-serif',
+                  }}
+                />
+
+                <Input
+                  required
+                  placeholder="Teléfono"
+                  aria-label="Teléfono"
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  style={{
+                    padding: '14px',
+                    border: '1px solid rgb(224, 221, 213)',
+                    background: 'rgb(242, 236, 228)',
+                    color: 'rgb(80, 43, 58)',
+                    fontFamily: 'Manrope, Raleway, sans-serif',
+                  }}
+                />
+
+                <Input
+                  readOnly
+                  aria-label="Tipo de evento"
+                  type="text"
+                  name="eventType"
+                  value={formData.eventType}
+                  title="Tipo de evento"
+                  style={{
+                    padding: '14px',
+                    border: '1px solid rgb(224, 221, 213)',
+                    background: 'rgb(242, 236, 228)',
+                    color: 'rgb(80, 43, 58)',
+                    fontFamily: 'Manrope, Raleway, sans-serif',
+                  }}
+                />
+
+                <Select
+                  required
+                  name="space"
+                  aria-label="Espacio de interés"
+                  value={formData.space}
+                  onChange={handleChange}
+                  style={{
+                    padding: '14px',
+                    border: '1px solid rgb(224, 221, 213)',
+                    background: 'rgb(242, 236, 228)',
+                    color: 'rgb(80, 43, 58)',
+                    fontFamily: 'Manrope, Raleway, sans-serif',
+                  }}
+                >
+                  <option value="">Espacio de interés</option>
+                  <option value="Casa Son Aloy">Casa Son Aloy</option>
+                  <option value="Bodega">Bodega</option>
+                  <option value="Clastra Exterior">Clastra Exterior</option>
+                  <option value="Caseta">Caseta</option>
+                </Select>
+
+                <Input
+                  aria-label="Fecha aproximada"
+                  type="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleChange}
+                  style={{
+                    padding: '14px',
+                    border: '1px solid rgb(224, 221, 213)',
+                    background: 'rgb(242, 236, 228)',
+                    color: 'rgb(80, 43, 58)',
+                    fontFamily: 'Manrope, Raleway, sans-serif',
+                  }}
+                />
+
+                <Input
+                  required
+                  min="1"
+                  placeholder="Número de personas"
+                  aria-label="Número de personas"
+                  type="number"
+                  name="guests"
+                  value={formData.guests}
+                  onChange={handleChange}
+                  style={{
+                    padding: '14px',
+                    border: '1px solid rgb(224, 221, 213)',
+                    background: 'rgb(242, 236, 228)',
+                    color: 'rgb(80, 43, 58)',
+                    fontFamily: 'Manrope, Raleway, sans-serif',
+                  }}
+                />
+
+                <Textarea
+                  name="message"
+                  rows={5}
+                  placeholder="Mensaje"
+                  aria-label="Mensaje"
+                  value={formData.message}
+                  onChange={handleChange}
+                  style={{
+                    padding: '14px',
+                    border: '1px solid rgb(224, 221, 213)',
+                    background: 'rgb(242, 236, 228)',
+                    color: 'rgb(80, 43, 58)',
+                    fontFamily: 'Manrope, Raleway, sans-serif',
+                    gridColumn: '1 / -1',
+                    resize: 'vertical',
+                  }}
+                />
+
+                <PrivacyLabel className="event-privacy">
+                  <input
+                    required
+                    type="checkbox"
+                    name="privacy"
+                    checked={formData.privacy}
+                    onChange={handleChange}
+                  />
+                  <span>He leído y acepto la política de privacidad.</span>
+                </PrivacyLabel>
+
+                <SubmitButton className="event-submit" type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? 'ENVIANDO...' : 'SOLICITAR INFORMACIÓN'}
+                </SubmitButton>
+              </StyledForm>
+            </Inner>
+          </ModalDialog>
+        </ModalOverlay>
+      )}
+    </AnimatePresence>
   );
 };
 

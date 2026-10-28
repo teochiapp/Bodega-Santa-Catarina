@@ -1,172 +1,215 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import FormularioEventos from './FormularioEventos';
 
-const MainWrapper = styled.main`
+const PageWrapper = styled.div`
   background-color: ${({ theme }) => theme.colors?.background || '#F2ECE4'};
   width: 100%;
   box-sizing: border-box;
 `;
 
-const EditorialIntro = styled.div`
-  max-width: 900px;
-  margin: 0 auto;
-  padding: clamp(3.5rem, 6vw, 5rem) clamp(1.25rem, 4vw, 2.5rem) 2.5rem;
-  text-align: center;
-  box-sizing: border-box;
-`;
-
-const Eyebrow = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-  font-size: 0.68rem;
-  letter-spacing: 0.24em;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors?.secondary || '#C2A478'};
-  text-transform: uppercase;
-  margin: 0 0 12px 0;
-`;
-
-const Heading = styled.h2`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', serif"};
-  font-size: clamp(2.6rem, 4.5vw, 3.8rem);
-  font-weight: 400;
-  color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
-  margin: 0 0 16px 0;
-  line-height: 1.12;
-`;
-
-const Description = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-  font-size: 0.95rem;
-  line-height: 1.65;
-  color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
-  opacity: 0.85;
-  margin: 0 auto;
-  max-width: 640px;
-`;
-
-const ImageContainerPrimary = styled.div`
-  max-width: 1140px;
-  margin: 0 auto 3rem;
-  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
-  box-sizing: border-box;
-`;
-
-const EditorialImagePrimary = styled.img`
+const HeroSection = styled.section`
+  position: relative;
   width: 100%;
-  height: auto;
-  max-height: 560px;
-  object-fit: cover;
-  display: block;
-  border-radius: 2px;
-  box-shadow: 0 4px 20px rgba(80, 43, 58, 0.06);
-`;
-
-const FeatureGrid = styled.div`
-  max-width: 1140px;
-  margin: 0 auto 3rem;
-  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  box-sizing: border-box;
-
-  &.is-compact {
-    gap: 1.25rem;
-  }
+  height: 500px;
+  min-height: 500px;
+  overflow: hidden;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    height: 400px;
+    min-height: 400px;
   }
 `;
 
-const FeatureArticle = styled(motion.article)`
-  background: #FAF8F5;
-  border: 1px solid ${({ theme }) => theme.colors?.border || '#E0DCD3'};
-  padding: clamp(1.4rem, 2vw, 1.85rem) clamp(1.5rem, 2.5vw, 2.25rem);
-  display: flex;
-  align-items: center;
-  gap: 18px;
+const HeroImage = styled.img`
+  position: static;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(1) contrast(1.02);
+`;
+
+const HeroOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right top,
+    rgba(35, 15, 25, 0.45) 0%,
+    rgba(35, 15, 25, 0.22) 46%,
+    rgba(35, 15, 25, 0.05) 78%,
+    rgba(35, 15, 25, 0) 100%
+  );
+  pointer-events: none;
+`;
+
+const HeroContent = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-width: 820px;
+  height: auto;
+  padding: 2rem clamp(1.5rem, 5vw, 3.5rem);
   box-sizing: border-box;
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  color: #FAF7F2;
 
-  &:hover {
-    box-shadow: 0 6px 18px rgba(80, 43, 58, 0.05);
+  .event-hero-eyebrow {
+    font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+    font-size: 0.68rem;
+    letter-spacing: 0.24em;
+    font-weight: 700;
+    color: #FAF7F2;
+    opacity: 0.92;
+    text-transform: uppercase;
+    margin: 0 0 10px 0;
   }
-`;
 
-const IconWrapper = styled.span`
-  color: ${({ theme }) => theme.colors?.secondary || '#C2A478'};
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  svg {
-    width: 28px;
-    height: 28px;
-  }
-`;
-
-const FeatureContent = styled.div`
-  h3 {
+  .event-hero-title {
     font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', serif"};
-    font-size: 1.45rem;
-    font-weight: 500;
-    color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+    font-size: clamp(2.6rem, 5vw, 4rem);
+    font-weight: 400;
+    color: #FAF7F2;
+    margin: 0 0 12px 0;
+    line-height: 1.1;
+  }
+
+  .event-hero-description {
+    font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: #FAF7F2;
+    opacity: 0.92;
     margin: 0;
-    line-height: 1.2;
+    max-width: 620px;
   }
 `;
 
-const ImageContainerSecondary = styled.div`
+const MainContent = styled.main`
   max-width: 1140px;
   margin: 0 auto;
-  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+  padding: clamp(3rem, 5vw, 4.5rem) clamp(1.25rem, 4vw, 2.5rem) 6rem;
   box-sizing: border-box;
 `;
 
-const EditorialImageSecondary = styled.img`
-  width: 100%;
-  height: auto;
-  max-height: 480px;
-  object-fit: cover;
-  display: block;
-  border-radius: 2px;
-  box-shadow: 0 4px 20px rgba(80, 43, 58, 0.06);
-`;
-
-const CtaContainer = styled.div`
-  max-width: 1140px;
-  margin: 2.5rem auto 1.5rem;
-  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
-  display: flex;
-  justify-content: center;
+const CelebrationsCard = styled(motion.article)`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: #FAF7F2;
+  border: 1px solid #E4DFD7;
+  border-radius: 0;
+  overflow: hidden;
   box-sizing: border-box;
-`;
-
-const CtaButton = styled.button`
-  padding: 14px 34px;
-  background-color: ${({ theme }) => theme.colors?.secondary || '#C2A478'};
-  color: #FFFFFF;
-  border: none;
-  border-radius: 25px;
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
-  box-shadow: 0 2px 8px rgba(194, 164, 120, 0.25);
+  box-shadow: 0 4px 20px rgba(80, 43, 58, 0.04);
+  transition: transform 250ms ease, box-shadow 250ms ease;
 
   &:hover {
-    background-color: #B09165;
+    box-shadow: 0 8px 24px rgba(80, 43, 58, 0.08);
+  }
+
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const CardImageContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  min-height: 440px;
+  background-color: #ECE5DC;
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 860px) {
+    min-height: 300px;
+    height: 320px;
+  }
+`;
+
+const CardImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+  display: block;
+  transition: transform 600ms ease;
+
+  ${CelebrationsCard}:hover & {
+    transform: scale(1.03);
+  }
+`;
+
+const CardCopy = styled.div`
+  padding: clamp(2rem, 3.5vw, 3.25rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+
+  .bodega-eyebrow {
+    font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+    font-size: 0.68rem;
+    letter-spacing: 0.24em;
+    font-weight: 700;
+    color: ${({ theme }) => theme.colors?.secondary || '#C2A478'};
+    text-transform: uppercase;
+    margin: 0 0 12px 0;
+  }
+
+  h2.bodega-display-title {
+    font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', serif"};
+    font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+    font-weight: 400;
+    color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+    margin: 0 0 14px 0;
+    line-height: 1.16;
+  }
+
+  p.bodega-body {
+    font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+    font-size: 0.88rem;
+    line-height: 1.62;
+    color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+    opacity: 0.88;
+    margin: 0 0 14px 0;
+  }
+
+  .event-celebrations-divider {
+    border-top: 1px solid #DDD7CE;
+    padding-top: 22px;
+    margin-top: 8px;
+
+    h2.bodega-display-title {
+      font-size: clamp(1.6rem, 2.2vw, 2.1rem);
+      margin: 0 0 12px 0;
+    }
+
+    p.bodega-body {
+      margin-bottom: 24px;
+    }
+  }
+`;
+
+const RequestButton = styled.button`
+  align-self: flex-start;
+  padding: 9px 24px;
+  background-color: #BFAB82;
+  color: #502B3A;
+  border: none;
+  border-radius: 20px;
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  cursor: pointer;
+  transition: background-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+
+  &:hover {
+    background-color: #B09B70;
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(194, 164, 120, 0.35);
+    box-shadow: 0 3px 8px rgba(80, 43, 58, 0.12);
   }
 
   &:active {
@@ -175,157 +218,87 @@ const CtaButton = styled.button`
 `;
 
 const CelebracionesPrivadas = () => {
-  const scrollToForm = () => {
-    const formElement = document.getElementById('formulario-evento');
-    if (formElement) {
-      formElement.scrollIntoView({ behavior: 'smooth' });
-    }
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
-    <MainWrapper id="eventos-celebraciones" className="event-editorial">
-      <EditorialIntro className="event-editorial-introduction">
-        <Eyebrow className="event-eyebrow">CELEBRACIONES PRIVADAS</Eyebrow>
-        <h2>Momentos que merecen un lugar especial.</h2>
-        <Description>
-          Cumpleaños, aniversarios, bautizos, comuniones y otras celebraciones familiares en un entorno único.
-        </Description>
-      </EditorialIntro>
-
-      <ImageContainerPrimary>
-        <EditorialImagePrimary
-          className="event-editorial-image event-editorial-image-primary"
-          alt="Celebraciones privadas entre viñedos en Bodega Santa Catarina"
-          src="/assets/Ivan_Pomposo_Photography___Design_-_Bodega_Santa_Catarina_-_0086-BIDckyB8.jpg"
+    <PageWrapper className="eventos-page">
+      {/* Hero section */}
+      <HeroSection>
+        <HeroImage
+          alt="Paisaje de viñedos y finca Bodega Santa Catarina"
+          src="/assets/Santa_Catarina_442-CiFOov63.jpg"
           loading="eager"
         />
-      </ImageContainerPrimary>
+        <HeroOverlay aria-hidden="true" />
+        <HeroContent>
+          <p className="event-hero-eyebrow">CELEBRACIONES PRIVADAS</p>
+          <h1 className="event-hero-title">Celebraciones privadas</h1>
+          <p className="event-hero-description">
+            Celebraciones personales en un entorno mallorquín lleno de historia y naturaleza.
+          </p>
+        </HeroContent>
+      </HeroSection>
 
-      <FeatureGrid className="event-feature-grid is-compact">
-        <FeatureArticle
-          className="event-feature"
-          initial={{ opacity: 0, y: 16 }}
+      {/* Main content with celebrations editorial card */}
+      <MainContent id="eventos-celebraciones">
+        <CelebrationsCard
+          className="bodega-content-section bodega-vineyard-intro event-celebrations-layout"
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.5 }}
         >
-          <IconWrapper className="event-feature-icon">
-            <svg
-              viewBox="0 0 32 32"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.35"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M7 15h18v12H7zM5 21h22M10 15v-3h12v3M11 8c0-1.8 2-2.5 2-4 1.5 1.4 1.6 2.9 0 4M19 8c0-1.8 2-2.5 2-4 1.5 1.4 1.6 2.9 0 4M13 12V9M21 12V9" />
-            </svg>
-          </IconWrapper>
-          <FeatureContent>
-            <h3>Cumpleaños</h3>
-          </FeatureContent>
-        </FeatureArticle>
+          <CardImageContainer>
+            <CardImage
+              className="bodega-content-image"
+              alt="Celebración privada en Bodega Santa Catarina"
+              src="/assets/Santa_Catarina_261-BH88SUbG.jpg"
+              loading="lazy"
+            />
+          </CardImageContainer>
 
-        <FeatureArticle
-          className="event-feature"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.08 }}
-        >
-          <IconWrapper className="event-feature-icon">
-            <svg
-              viewBox="0 0 32 32"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.35"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M16 27S5 20.5 5 12.5C5 8.5 7.8 6 11 6c2.2 0 4 1.2 5 3 1-1.8 2.8-3 5-3 3.2 0 6 2.5 6 6.5 0 8-11 14.5-11 14.5Z" />
-            </svg>
-          </IconWrapper>
-          <FeatureContent>
-            <h3>Aniversarios</h3>
-          </FeatureContent>
-        </FeatureArticle>
+          <CardCopy className="bodega-content-copy">
+            <p className="bodega-eyebrow">CELEBRACIONES PRIVADAS</p>
+            <h2 className="bodega-display-title">Momentos especiales, en un lugar único</h2>
+            <p className="bodega-body">
+              En Bodega Santa Catarina, rodeada de viñedos y en el corazón de Mallorca, encontrarás el entorno ideal para celebrar momentos especiales.
+            </p>
+            <p className="bodega-body">
+              Ponemos a vuestra disposición diferentes espacios y propuestas personalizadas para cumpleaños, aniversarios, reuniones familiares y encuentros privados, adaptándonos a las necesidades de cada ocasión para crear una experiencia única.
+            </p>
 
-        <FeatureArticle
-          className="event-feature"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.16 }}
-        >
-          <IconWrapper className="event-feature-icon">
-            <svg
-              viewBox="0 0 32 32"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.35"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M16 3S8 13 8 20a8 8 0 0 0 16 0c0-7-8-17-8-17Z" />
-              <path d="M13 20c.5 2 1.7 3 3.5 3" />
-            </svg>
-          </IconWrapper>
-          <FeatureContent>
-            <h3>Bautizos</h3>
-          </FeatureContent>
-        </FeatureArticle>
+            <div className="event-celebrations-divider">
+              <h2 className="bodega-display-title">Un espacio para cada ocasión</h2>
+              <p className="bodega-body">
+                Desde una comida íntima hasta un encuentro más amplio, adaptamos el espacio, el formato y la propuesta gastronómica a cada celebración, para que todo fluya con naturalidad.
+              </p>
+              <RequestButton
+                type="button"
+                className="event-inquiry-button"
+                onClick={handleOpenModal}
+              >
+                Solicitar información
+              </RequestButton>
+            </div>
+          </CardCopy>
+        </CelebrationsCard>
+      </MainContent>
 
-        <FeatureArticle
-          className="event-feature"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.24 }}
-        >
-          <IconWrapper className="event-feature-icon">
-            <svg
-              viewBox="0 0 32 32"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.35"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M8 27V10l8-5 8 5v17M12 27v-7h8v7M13 12h6M16 9v6" />
-            </svg>
-          </IconWrapper>
-          <FeatureContent>
-            <h3>Comuniones</h3>
-          </FeatureContent>
-        </FeatureArticle>
-      </FeatureGrid>
-
-      <ImageContainerSecondary>
-        <EditorialImageSecondary
-          className="event-editorial-image event-editorial-image-secondary"
-          alt="Enclave mágico para celebraciones en Son Aloy"
-          src="/assets/78a30be1-542e-4587-ba08-82b7ab40be39-DTCPa1MG.jpeg"
-          loading="lazy"
-        />
-      </ImageContainerSecondary>
-
-      <CtaContainer>
-        <CtaButton
-          className="event-editorial-cta"
-          type="button"
-          onClick={scrollToForm}
-        >
-          CUÉNTANOS TU CELEBRACIÓN
-        </CtaButton>
-      </CtaContainer>
-
-      {/* Formulario reutilizable al pie */}
-      <FormularioEventos defaultTipoEvento="Celebraciones privadas" />
-    </MainWrapper>
+      {/* Formulario modal reutilizable preseleccionado con "Celebración privada" */}
+      <FormularioEventos
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        defaultTipoEvento="Celebración privada"
+      />
+    </PageWrapper>
   );
 };
 

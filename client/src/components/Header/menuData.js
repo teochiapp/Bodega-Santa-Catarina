@@ -35,7 +35,7 @@ export const MENU_ITEMS = [
   },
   {
     name: 'EVENTOS Y BODAS',
-    path: '/eventos/nuestros-espacios',
+    path: '/eventos',
     submenu: [
       { name: 'Nuestros Espacios', path: '/eventos/nuestros-espacios' },
       { name: 'MICE y eventos corporativos', path: '/eventos/mice-y-eventos-corporativos' },

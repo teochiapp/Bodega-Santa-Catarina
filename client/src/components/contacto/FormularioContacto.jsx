@@ -1,597 +1,473 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
 
-const SectionWrapper = styled.section`
+const SectionWrapper = styled.div`
   width: 100%;
-  background-color: ${({ theme }) => theme.colors.background || 'rgb(242, 236, 228)'};
+  background-color: ${({ theme }) => theme.colors?.background || '#F2ECE4'};
+  position: relative;
   box-sizing: border-box;
 `;
 
-const Container = styled.div`
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: clamp(3.5rem, 6vw, 5.5rem) clamp(1.5rem, 4vw, 3.5rem);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(3rem, 5vw, 5rem);
-  align-items: start;
+/* ─── HERO BANNER CON FOTO Y TÍTULO ─── */
+const HeroSection = styled.div`
+  position: relative;
+  width: 100%;
+  height: clamp(420px, 48vh, 520px);
+  background-image: url('/assets/contacto-hero.jpg');
+  background-size: cover;
+  background-position: center 40%;
+  display: flex;
+  align-items: flex-end;
   box-sizing: border-box;
 
   @media (max-width: 960px) {
-    grid-template-columns: 1fr;
-    gap: 3.5rem;
+    height: clamp(320px, 42vh, 400px);
   }
 `;
 
-/* ─── COLUMNA IZQUIERDA: FORMULARIO ─── */
-const FormColumn = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-`;
-
-const Eyebrow = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.68rem;
-  letter-spacing: 0.22em;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors?.secondary || 'rgb(203, 160, 82)'};
-  text-transform: uppercase;
-  margin: 0 0 12px 0;
-`;
-
-const Title = styled.h2`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: clamp(2rem, 3.2vw, 2.75rem);
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  margin: 0 0 2rem 0;
-  line-height: 1.15;
-
-  span {
-    display: inline-block;
-  }
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  width: 100%;
-`;
-
-const RowTwoCols = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-
-  @media (max-width: 576px) {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-  }
-`;
-
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const Label = styled.label`
-  display: block;
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  margin-bottom: 6px;
-  text-transform: uppercase;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 0.85rem 1rem;
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.88rem;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  background-color: #FFFFFF;
-  border: 1px solid rgba(80, 43, 58, 0.16);
-  border-radius: 2px;
-  outline: none;
-  box-sizing: border-box;
-  transition: border-color 200ms ease, box-shadow 200ms ease;
-
-  &::placeholder {
-    color: rgba(80, 43, 58, 0.4);
-  }
-
-  &:focus {
-    border-color: ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
-    box-shadow: 0 0 0 2px rgba(194, 164, 120, 0.18);
-  }
-`;
-
-const SelectWrapper = styled.div`
-  position: relative;
-  width: 100%;
-`;
-
-const Select = styled.select`
-  width: 100%;
-  padding: 0.85rem 2.5rem 0.85rem 1rem;
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.88rem;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  background-color: #FFFFFF;
-  border: 1px solid rgba(80, 43, 58, 0.16);
-  border-radius: 2px;
-  outline: none;
-  box-sizing: border-box;
-  cursor: pointer;
-  appearance: none;
-  transition: border-color 200ms ease, box-shadow 200ms ease;
-
-  &:focus {
-    border-color: ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
-    box-shadow: 0 0 0 2px rgba(194, 164, 120, 0.18);
-  }
-`;
-
-const SelectCaret = styled.span`
+const HeroOverlay = styled.div`
   position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(25, 12, 18, 0.12) 0%,
+    rgba(25, 12, 18, 0.3) 50%,
+    rgba(25, 12, 18, 0.72) 100%
+  );
   pointer-events: none;
-  display: flex;
-  align-items: center;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  opacity: 0.7;
-
-  svg {
-    width: 12px;
-    height: 12px;
-  }
 `;
 
-const Textarea = styled.textarea`
+const HeroInner = styled.div`
+  position: relative;
+  z-index: 2;
   width: 100%;
-  padding: 0.85rem 1rem;
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.88rem;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  background-color: #FFFFFF;
-  border: 1px solid rgba(80, 43, 58, 0.16);
-  border-radius: 2px;
-  outline: none;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 4vw, 3rem);
+  padding-bottom: clamp(2rem, 3.5vw, 3rem);
   box-sizing: border-box;
-  transition: border-color 200ms ease, box-shadow 200ms ease;
-  resize: vertical;
-  min-height: 130px;
 
-  &::placeholder {
-    color: rgba(80, 43, 58, 0.4);
+  @media (max-width: 960px) {
+    padding-bottom: clamp(3.2rem, 8vw, 4.5rem);
   }
 
-  &:focus {
-    border-color: ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
-    box-shadow: 0 0 0 2px rgba(194, 164, 120, 0.18);
-  }
-`;
-
-const SubmitBtn = styled.button`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.71rem;
-  letter-spacing: 0.2em;
-  font-weight: 700;
-  padding: 1.05rem;
-  background-color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  color: rgb(242, 236, 228);
-  border: none;
-  cursor: pointer;
-  margin-top: 4px;
-  width: 100%;
-  text-transform: uppercase;
-  transition: background-color 200ms ease, transform 150ms ease;
-
-  &:hover {
-    background-color: #643547;
-  }
-
-  &:active {
-    transform: scale(0.99);
-  }
-`;
-
-const PrivacyText = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.74rem;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  line-height: 1.6;
-  opacity: 0.88;
-  margin: 4px 0 0 0;
-`;
-
-const SuccessNotification = styled(motion.div)`
-  background-color: #2e7d32;
-  color: #FFFFFF;
-  padding: 1rem 1.25rem;
-  border-radius: 4px;
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-  font-size: 0.88rem;
-  line-height: 1.5;
-  margin-bottom: 1.25rem;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-`;
-
-/* ─── COLUMNA DERECHA: TARJETAS REGALO, CÓMO LLEGAR Y SÍGUENOS ─── */
-const SideColumn = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-`;
-
-const GiftCardBox = styled.div`
-  background: rgb(244, 242, 235);
-  border: 1px solid rgb(224, 221, 213);
-  border-radius: 8px;
-  padding: 1.6rem;
-  margin-bottom: 2.25rem;
-`;
-
-const GiftEyebrow = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.66rem;
-  letter-spacing: 0.2em;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
-  margin: 0 0 10px 0;
-  text-transform: uppercase;
-`;
-
-const GiftTitle = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: 1.21rem;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  margin: 0 0 8px 0;
-  line-height: 1.25;
-`;
-
-const GiftDescription = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.86rem;
-  line-height: 1.7;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  opacity: 0.9;
-  margin: 0 0 12px 0;
-`;
-
-const GiftLink = styled.a`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.71rem;
-  letter-spacing: 0.12em;
-  color: ${({ theme }) => theme.colors?.secondary || 'rgb(194, 164, 120)'};
-  text-decoration: underline;
-  font-weight: 600;
-  display: inline-block;
-  transition: opacity 150ms ease;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
-const DirectionsSection = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const DirectionsHeading = styled.h3`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
-  font-size: 1.41rem;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  margin: 0 0 1.25rem 0;
-`;
-
-const DirectionItem = styled.div`
-  margin-bottom: 1.25rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid rgba(203, 160, 82, 0.18);
-
-  &:last-of-type {
-    border-bottom: 1px solid rgba(203, 160, 82, 0.18);
-  }
-`;
-
-const DirectionTitle = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  margin: 0 0 4px 0;
-`;
-
-const DirectionDescription = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.84rem;
-  line-height: 1.7;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  opacity: 0.9;
-  margin: 0;
-`;
-
-const SocialSection = styled.div`
-  margin-top: 1.75rem;
-`;
-
-const SocialLabel = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.68rem;
-  letter-spacing: 0.2em;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  margin: 0 0 14px 0;
-  text-transform: uppercase;
-`;
-
-const SocialButtonsList = styled.div`
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-`;
-
-const SocialPill = styled.a`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
-  border: 1px solid rgba(203, 160, 82, 0.35);
-  padding: 0.45rem 0.95rem;
-  text-decoration: none;
-  background-color: transparent;
-  border-radius: 2px;
-  transition: all 200ms ease;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
+  h1.contact-hero-title {
+    font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', serif"};
+    font-size: clamp(3.2rem, 5.5vw, 4.8rem);
+    font-weight: 500;
     color: #FFFFFF;
-    border-color: ${({ theme }) => theme.colors?.primary || 'rgb(80, 43, 58)'};
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
   }
+`;
+
+/* ─── GRID PRINCIPAL DE CONTACTO ─── */
+const GridContainer = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+
+  .contact-main-grid {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 4vw, 3rem);
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: start;
+    box-sizing: border-box;
+
+    @media (max-width: 960px) {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+
+  /* Columna derecha en desktop: Formulario flotante */
+  .contact-form-column {
+    grid-column: 2;
+    grid-row: 1;
+    margin-top: -240px;
+    position: relative;
+    z-index: 10;
+
+    @media (max-width: 960px) {
+      grid-column: 1;
+      grid-row: 1;
+      margin-top: -24px;
+      width: 100%;
+    }
+  }
+
+  /* Formulario flotante */
+  .contact-floating-form {
+    background-color: #FAF8F5;
+    border-radius: 18px;
+    box-shadow: 0 16px 40px rgba(80, 43, 58, 0.08), 0 2px 8px rgba(0, 0, 0, 0.03);
+    padding: clamp(1.75rem, 3.5vw, 2.75rem);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 1.15rem;
+
+    label {
+      font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+
+      span {
+        color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+        font-weight: 700;
+        margin-left: 2px;
+      }
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      background-color: #FFFFFF;
+      border: 1px solid #DFD9CF;
+      border-radius: 6px;
+      padding: 0.8rem 1rem;
+      font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+      font-size: 0.92rem;
+      color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: #BFAB82;
+        box-shadow: 0 0 0 3px rgba(191, 171, 130, 0.25);
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 130px;
+      line-height: 1.5;
+    }
+  }
+
+  .contact-submit-button {
+    margin-top: 0.75rem;
+    width: 100%;
+    background-color: #BFAB82;
+    color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+    border: none;
+    border-radius: 9999px;
+    padding: 0.95rem 2rem;
+    font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(191, 171, 130, 0.3);
+
+    &:hover {
+      background-color: #B29D72;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(191, 171, 130, 0.45);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  /* Columna izquierda en desktop: Cómo llegar y Redes */
+  .contact-details-column {
+    grid-column: 1;
+    grid-row: 1;
+    padding-top: 3.5rem;
+    box-sizing: border-box;
+
+    @media (max-width: 960px) {
+      grid-column: 1;
+      grid-row: 2;
+      padding-top: 0.5rem;
+    }
+  }
+
+  .contact-how-to {
+    h2 {
+      font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', serif"};
+      font-size: clamp(2rem, 3vw, 2.4rem);
+      font-weight: 600;
+      color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+      margin: 0 0 1.5rem 0;
+    }
+  }
+
+  .contact-direction-item {
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(80, 43, 58, 0.12);
+    margin-bottom: 1.25rem;
+
+    h3 {
+      font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+      margin: 0 0 0.45rem 0;
+    }
+
+    p {
+      font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: #66555C;
+      margin: 0;
+    }
+  }
+
+  .contact-page-social {
+    margin-top: 2.25rem;
+
+    h2 {
+      font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', serif"};
+      font-size: clamp(1.8rem, 2.5vw, 2.2rem);
+      font-weight: 600;
+      color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+      margin: 0 0 1.25rem 0;
+    }
+  }
+
+  .contact-social-links {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .contact-social-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid ${({ theme }) => theme.colors?.primary || '#502B3A'};
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+    background: transparent;
+    transition: all 0.25s ease;
+    text-decoration: none;
+
+    svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      transition: transform 0.2s ease;
+    }
+
+    svg path,
+    svg .contact-social-icon-dot {
+      fill: currentColor;
+    }
+
+    &:hover {
+      background-color: ${({ theme }) => theme.colors?.primary || '#502B3A'};
+      color: #FAF8F5;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(80, 43, 58, 0.2);
+    }
+  }
+`;
+
+const FeedbackMessage = styled.div`
+  margin-top: 1.15rem;
+  padding: 0.95rem 1.15rem;
+  border-radius: 8px;
+  background-color: rgba(56, 142, 60, 0.1);
+  border: 1px solid rgba(56, 142, 60, 0.25);
+  color: #2E7D32;
+  font-size: 0.86rem;
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+  line-height: 1.55;
+  text-align: center;
 `;
 
 const FormularioContacto = () => {
   const [formData, setFormData] = useState({
     nombre: '',
-    telefono: '',
+    apellido: '',
     email: '',
-    asunto: 'general',
-    mensaje: '',
+    asunto: '',
+    mensaje: ''
   });
-  const [submitted, setSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (field) => (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: e.target.value
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    // Reset visual tras 6 segundos
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({
-        nombre: '',
-        telefono: '',
-        email: '',
-        asunto: 'general',
-        mensaje: '',
-      });
-    }, 6000);
+
+    const subjectText = formData.asunto.trim() || `Contacto Bodega Santa Catarina - ${formData.nombre} ${formData.apellido}`;
+    const bodyText = `Nombre: ${formData.nombre} ${formData.apellido}
+Email: ${formData.email}
+Asunto: ${formData.asunto}
+
+Mensaje:
+${formData.mensaje}`;
+
+    const mailtoUrl = `mailto:info@bodegasantacatarina.com?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText)}`;
+
+    window.location.href = mailtoUrl;
+    setIsSubmitted(true);
   };
 
   return (
     <SectionWrapper>
-      <Container>
-        {/* ── COLUMNA IZQUIERDA ── */}
-        <FormColumn
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <Eyebrow>ESCRÍBENOS</Eyebrow>
-          <Title>
-            <span>¿En qué podemos</span>
-            <br />
-            <span>ayudarte?</span>
-          </Title>
+      {/* HERO BANNER FOTOGRÁFICO */}
+      <HeroSection>
+        <HeroOverlay />
+        <HeroInner>
+          <h1 className="contact-hero-title">CONTACTO</h1>
+        </HeroInner>
+      </HeroSection>
 
-          <AnimatePresence>
-            {submitted && (
-              <SuccessNotification
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-              >
-                ¡Gracias por escribirnos! Tu mensaje ha sido enviado con éxito. Nos pondremos en contacto contigo a la brevedad.
-              </SuccessNotification>
-            )}
-          </AnimatePresence>
-
-          <Form onSubmit={handleSubmit}>
-            <RowTwoCols>
-              <FormGroup>
-                <Label htmlFor="input-nombre">NOMBRE *</Label>
-                <Input
-                  id="input-nombre"
-                  name="nombre"
-                  type="text"
+      {/* GRID PRINCIPAL: FORMULARIO FLOTANTE Y DETALLES */}
+      <GridContainer>
+        <section className="contact-main-grid">
+          {/* COLUMNA FORMULARIO */}
+          <div className="contact-form-column">
+            <form className="contact-floating-form" onSubmit={handleSubmit}>
+              <div className="contact-field">
+                <label htmlFor="contact-name">
+                  Nombre <span aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="contact-name"
                   required
-                  placeholder="Tu nombre"
+                  autoComplete="given-name"
+                  type="text"
                   value={formData.nombre}
-                  onChange={handleChange}
+                  onChange={handleChange('nombre')}
                 />
-              </FormGroup>
+              </div>
 
-              <FormGroup>
-                <Label htmlFor="input-telefono">TELÉFONO</Label>
-                <Input
-                  id="input-telefono"
-                  name="telefono"
-                  type="tel"
-                  placeholder="+34 ..."
-                  value={formData.telefono}
-                  onChange={handleChange}
+              <div className="contact-field">
+                <label htmlFor="contact-surname">
+                  Apellido <span aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="contact-surname"
+                  required
+                  autoComplete="family-name"
+                  type="text"
+                  value={formData.apellido}
+                  onChange={handleChange('apellido')}
                 />
-              </FormGroup>
-            </RowTwoCols>
+              </div>
 
-            <FormGroup>
-              <Label htmlFor="input-email">EMAIL *</Label>
-              <Input
-                id="input-email"
-                name="email"
-                type="email"
-                required
-                placeholder="tu@email.com"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </FormGroup>
+              <div className="contact-field">
+                <label htmlFor="contact-email">
+                  E-mail <span aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="contact-email"
+                  required
+                  autoComplete="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange('email')}
+                />
+              </div>
 
-            <FormGroup>
-              <Label htmlFor="input-asunto">ASUNTO</Label>
-              <SelectWrapper>
-                <Select
-                  id="input-asunto"
-                  name="asunto"
+              <div className="contact-field">
+                <label htmlFor="contact-subject">Asunto</label>
+                <input
+                  id="contact-subject"
+                  type="text"
                   value={formData.asunto}
-                  onChange={handleChange}
+                  onChange={handleChange('asunto')}
+                />
+              </div>
+
+              <div className="contact-field">
+                <label htmlFor="contact-message">Mensaje</label>
+                <textarea
+                  id="contact-message"
+                  rows={6}
+                  value={formData.mensaje}
+                  onChange={handleChange('mensaje')}
+                />
+              </div>
+
+              <button className="contact-submit-button" type="submit">
+                Enviar
+              </button>
+
+              {isSubmitted && (
+                <FeedbackMessage>
+                  ✓ Tu mensaje ha sido preparado. Se abrirá tu aplicación de correo para enviar la consulta a <strong>info@bodegasantacatarina.com</strong>.
+                </FeedbackMessage>
+              )}
+            </form>
+          </div>
+
+          {/* COLUMNA DETALLES: CÓMO LLEGAR Y REDES SOCIALES */}
+          <div className="contact-details-column">
+            <div className="contact-how-to">
+              <h2>Cómo llegar</h2>
+              <div className="contact-direction-item">
+                <h3>En coche</h3>
+                <p>Desde Palma: dirección Inca por la MA-13, salida Sencelles. 30 minutos desde el centro de Palma.</p>
+              </div>
+              <div className="contact-direction-item">
+                <h3>Desde el aeropuerto</h3>
+                <p>Aeropuerto de Palma de Mallorca (PMI) a 35 km. Recomendamos alquilar un vehículo.</p>
+              </div>
+            </div>
+
+            <div className="contact-page-social">
+              <h2>Redes sociales</h2>
+              <div className="contact-social-links">
+                <a
+                  className="contact-social-icon"
+                  href="https://www.instagram.com/bodegasantacatarina/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
                 >
-                  <option value="general">Consulta general</option>
-                  <option value="enoturismo">Reserva de experiencia</option>
-                  <option value="eventos">Eventos y bodas</option>
-                  <option value="tienda">Consulta sobre tienda física</option>
-                  <option value="regalo">Tarjeta regalo</option>
-                  <option value="prensa">Prensa y comunicación</option>
-                </Select>
-                <SelectCaret aria-hidden="true">
-                  <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.8">
-                    <path d="M1 1L5 5L9 1" strokeLinecap="round" strokeLinejoin="round" />
+                  <svg aria-hidden="true" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                    <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                    <circle cx="17.4" cy="6.7" r="1" className="contact-social-icon-dot" fill="currentColor" />
                   </svg>
-                </SelectCaret>
-              </SelectWrapper>
-            </FormGroup>
-
-            <FormGroup>
-              <Label htmlFor="input-mensaje">MENSAJE *</Label>
-              <Textarea
-                id="input-mensaje"
-                name="mensaje"
-                required
-                rows="5"
-                placeholder="Cuéntanos cómo podemos ayudarte..."
-                value={formData.mensaje}
-                onChange={handleChange}
-              />
-            </FormGroup>
-
-            <SubmitBtn type="submit">
-              ENVIAR MENSAJE
-            </SubmitBtn>
-
-            <PrivacyText>
-              Al enviar este formulario aceptas nuestra política de privacidad. Tus datos serán tratados exclusivamente para responder a tu consulta.
-            </PrivacyText>
-          </Form>
-        </FormColumn>
-
-        {/* ── COLUMNA DERECHA ── */}
-        <SideColumn
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        >
-          {/* Tarjetas Regalo */}
-          <GiftCardBox>
-            <GiftEyebrow>TARJETAS REGALO</GiftEyebrow>
-            <GiftTitle>Disponibles en formato físico y digital</GiftTitle>
-            <GiftDescription>
-              Canjeables por cualquiera de nuestras experiencias — catas, visitas guiadas, experiencias gastronómicas... Válidas 12 meses. Contáctanos para solicitar tu tarjeta regalo.
-            </GiftDescription>
-            <GiftLink href="mailto:info@bodegasantacatarina.com">
-              info@bodegasantacatarina.com
-            </GiftLink>
-          </GiftCardBox>
-
-          {/* Cómo llegar */}
-          <DirectionsSection>
-            <DirectionsHeading>Cómo llegar</DirectionsHeading>
-
-            <DirectionItem>
-              <DirectionTitle>En coche</DirectionTitle>
-              <DirectionDescription>
-                Desde Palma: dirección Inca por la MA-13, salida Sencelles. 30 minutos desde el centro de Palma.
-              </DirectionDescription>
-            </DirectionItem>
-
-            <DirectionItem>
-              <DirectionTitle>Desde el aeropuerto</DirectionTitle>
-              <DirectionDescription>
-                Aeropuerto de Palma de Mallorca (PMI) a 35 km. Recomendamos alquilar un vehículo o solicitar transfer privado.
-              </DirectionDescription>
-            </DirectionItem>
-
-            <DirectionItem>
-              <DirectionTitle>Transfer privado</DirectionTitle>
-              <DirectionDescription>
-                Organizamos transfers desde tu hotel o el aeropuerto. Consúltalo al reservar tu experiencia.
-              </DirectionDescription>
-            </DirectionItem>
-          </DirectionsSection>
-
-          {/* Síguenos */}
-          <SocialSection>
-            <SocialLabel>SÍGUENOS</SocialLabel>
-            <SocialButtonsList>
-              <SocialPill
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Instagram
-              </SocialPill>
-              <SocialPill
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Facebook
-              </SocialPill>
-              <SocialPill
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                LinkedIn
-              </SocialPill>
-              <SocialPill
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                YouTube
-              </SocialPill>
-            </SocialButtonsList>
-          </SocialSection>
-        </SideColumn>
-      </Container>
+                </a>
+                <a
+                  className="contact-social-icon"
+                  href="https://www.facebook.com/Bodega-Santa-Catarina-101403018851927/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                >
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.52 1.49-3.91 3.77-3.91 1.09 0 2.23.2 2.23.2v2.46h-1.25c-1.24 0-1.62.77-1.62 1.56v1.9h2.76l-.44 2.91h-2.32V22C18.34 21.24 22 17.08 22 12.06Z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </GridContainer>
     </SectionWrapper>
   );
 };

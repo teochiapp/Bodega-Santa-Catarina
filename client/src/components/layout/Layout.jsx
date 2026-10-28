@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import { ScrollLink, BackToTopButton } from '../common/ScrollToTop';
+import CookieManager from '../cookies/CookieManager';
 import api from '../../services/api';
 
 const LayoutContainer = styled.div`
@@ -76,6 +77,7 @@ const Layout = () => {
       </MainContent>
       <Footer />
       <BackToTopButton />
+      <CookieManager />
     </LayoutContainer>
   );
 };
