@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
@@ -16,6 +16,10 @@ const LayoutContainer = styled.div`
 
 const MainContent = styled.main`
   flex: 1;
+`;
+
+const RouteStage = styled.div`
+  width: 100%;
 `;
 
 const AnnouncementBanner = styled.div`
@@ -54,6 +58,7 @@ const AnnouncementBanner = styled.div`
 const Layout = () => {
   const [config, setConfig] = useState(null);
   const layoutRef = useRef(null);
+  const location = useLocation();
 
   useEffect(() => {
     api.get('/configuracion')
@@ -75,7 +80,9 @@ const Layout = () => {
       )}
       <Header />
       <MainContent>
-        <Outlet />
+        <RouteStage key={location.pathname}>
+          <Outlet />
+        </RouteStage>
       </MainContent>
       <Footer />
       <ScrollRevealObserver containerRef={layoutRef} />

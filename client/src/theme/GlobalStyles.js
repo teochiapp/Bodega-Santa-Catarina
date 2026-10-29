@@ -10,7 +10,6 @@ export const GlobalStyles = createGlobalStyle`
 
   html {
     font-size: 16px;
-    scroll-behavior: smooth;
   }
 
   body {
@@ -57,33 +56,27 @@ export const GlobalStyles = createGlobalStyle`
     display: block;
   }
 
-  /* ─── Scroll Appear Editorial (leve, fluido y sin alterar transform/modales) ─── */
-  @keyframes scEditorialAppear {
-    from {
-      opacity: 0;
-      translate: 0 var(--sc-reveal-y, 20px);
-    }
-  }
-
-  @keyframes scEditorialAppearMedia {
-    from {
-      opacity: 0;
-      translate: 0 var(--sc-reveal-y, 16px);
-      scale: 0.985;
-    }
-  }
-
+  /* ─── Scroll Appear Editorial (transición GPU fiable en navegación SPA) ─── */
   @media (prefers-reduced-motion: no-preference) {
     [data-sc-reveal="pending"] {
-      opacity: 0 !important;
+      opacity: 0;
+      translate: 0 var(--sc-reveal-y, 18px);
+      will-change: opacity, translate;
+    }
+
+    [data-sc-reveal="pending"][data-reveal="media"] {
+      scale: 0.985;
+      will-change: opacity, translate, scale;
     }
 
     [data-sc-reveal="visible"] {
-      animation: scEditorialAppear 0.78s cubic-bezier(0.16, 1, 0.3, 1) var(--sc-reveal-delay, 0ms) backwards;
-    }
-
-    [data-sc-reveal="visible"][data-reveal="media"] {
-      animation: scEditorialAppearMedia 0.86s cubic-bezier(0.16, 1, 0.3, 1) var(--sc-reveal-delay, 0ms) backwards;
+      opacity: 1;
+      translate: 0 0;
+      scale: 1;
+      transition:
+        opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1) var(--sc-reveal-delay, 0ms),
+        translate 0.72s cubic-bezier(0.16, 1, 0.3, 1) var(--sc-reveal-delay, 0ms),
+        scale 0.78s cubic-bezier(0.16, 1, 0.3, 1) var(--sc-reveal-delay, 0ms);
     }
   }
 `;

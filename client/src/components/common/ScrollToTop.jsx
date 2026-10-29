@@ -1,67 +1,97 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useLocation, Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { ArrowUp } from 'lucide-react';
-import { scrollToTop, smoothScrollTo } from '../../utils/scroll';
+import { instantScrollToTop, scrollToTop, smoothScrollTo } from '../../utils/scroll';
 
 /**
  * Componente ScrollToTop global para React Router.
- * Se monta dentro del <Router> y escucha los cambios de ruta (pathname y hash).
- * Al cambiar de página con ancla (#seccion), desplaza suavemente la ventana con animación elegante.
+ * Se monta dentro del <Router> antes de <Routes> y gestiona los cambios de ruta:
+ * - En cambios de página (SPA), reposiciona la ventana en (0, 0) de forma síncrona
+ *   en useLayoutEffect (antes del pintado y antes de que Framer Motion / IntersectionObserver
+ *   evalúen la visibilidad de las secciones), replicando el comportamiento exacto de una recarga.
+ * - Si la navegación incluye un ancla (#seccion), desplaza suavemente hacia el destino
+ *   respetando la altura del header fijo.
  */
 const ScrollToTop = () => {
-  const { pathname, hash } = useLocation();
+  const { pathname, search, hash } = useLocation();
+  const prevRouteRef = useRef(`${pathname}${search}`);
 
-  useEffect(() => {
-    // Si la navegación incluye un ancla (#seccion), desplazarse con animación fluida respetando el alto del header
+  useLayoutEffect(() => {
+    if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    const currentRoute = `${pathname}${search}`;
+    const didRouteChange = prevRouteRef.current !== currentRoute;
+    prevRouteRef.current = currentRoute;
+
+    // Si la navegación incluye un ancla (#seccion), desplazarse al objetivo respetando el header
     if (hash) {
-      const targetId = hash.replace('#', '');
+      if (didRouteChange) {
+        instantScrollToTop();
+      }
+
+      const rawId = hash.replace(/^#/, '');
+      let targetId = rawId;
+      try {
+        targetId = decodeURIComponent(rawId);
+      } catch {
+        targetId = rawId;
+      }
+
       const scrollToTarget = () => {
         const element = document.getElementById(targetId);
         if (element) {
           const headerOffset = 110;
           const elementPosition = element.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-          smoothScrollTo(Math.max(0, offsetPosition), 750);
+          const offsetPosition = elementPosition + window.scrollY - headerOffset;
+          smoothScrollTo(Math.max(0, offsetPosition), 700);
           return true;
         }
         return false;
       };
 
       if (!scrollToTarget()) {
-        const timer1 = setTimeout(scrollToTarget, 80);
-        const timer2 = setTimeout(scrollToTarget, 250);
-        const timer3 = setTimeout(scrollToTarget, 500);
+        const timer1 = window.setTimeout(scrollToTarget, 80);
+        const timer2 = window.setTimeout(scrollToTarget, 250);
+        const timer3 = window.setTimeout(scrollToTarget, 550);
         return () => {
-          clearTimeout(timer1);
-          clearTimeout(timer2);
-          clearTimeout(timer3);
+          window.clearTimeout(timer1);
+          window.clearTimeout(timer2);
+          window.clearTimeout(timer3);
         };
       }
-      return;
+      return undefined;
     }
 
-    // Al cambiar de página sin hash, ejecutar el scroll suave a la parte superior
-    const frameId = requestAnimationFrame(() => {
-      scrollToTop(true, 500);
+    // Cambio de ruta SPA sin hash: reset síncrono a (0, 0) antes del primer pintado
+    instantScrollToTop();
+
+    const frameId = window.requestAnimationFrame(() => {
+      window.dispatchEvent(new Event('scroll'));
     });
 
-    return () => cancelAnimationFrame(frameId);
-  }, [pathname, hash]);
+    return () => window.cancelAnimationFrame(frameId);
+  }, [pathname, search, hash]);
 
   return null;
 };
 
 /**
  * Enlace con comportamiento de scroll suave garantizado.
- * Si el usuario pulsa un enlace con ancla (#seccion) o a la página actual,
- * realiza el scroll suave animado hacia el elemento o arriba.
+ * Si el usuario pulsa un enlace con ancla (#seccion) en la ruta actual o un enlace a la misma página,
+ * realiza el scroll suave animado hacia el elemento o arriba. En cambio de ruta distinta,
+ * delega el posicionamiento instantáneo a ScrollToTop.
  */
 export const ScrollLink = ({ to, onClick, children, ...props }) => {
   const location = useLocation();
 
   const handleClick = (e) => {
     if (onClick) onClick(e);
+    if (e.defaultPrevented) return;
 
     if (typeof to === 'string' && to.includes('#')) {
       const [pathPart, hashPart] = to.split('#');
@@ -71,12 +101,12 @@ export const ScrollLink = ({ to, onClick, children, ...props }) => {
         if (el) {
           const headerOffset = 110;
           const elementPosition = el.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-          smoothScrollTo(Math.max(0, offsetPosition), 750);
+          const offsetPosition = elementPosition + window.scrollY - headerOffset;
+          smoothScrollTo(Math.max(0, offsetPosition), 700);
         }
       }
-    } else if (location.pathname === to) {
-      scrollToTop(true, 500);
+    } else if (location.pathname === to && !location.hash) {
+      scrollToTop(true, 550);
     }
   };
 
@@ -95,6 +125,7 @@ export const ScrollNavLink = ({ to, onClick, children, ...props }) => {
 
   const handleClick = (e) => {
     if (onClick) onClick(e);
+    if (e.defaultPrevented) return;
 
     if (typeof to === 'string' && to.includes('#')) {
       const [pathPart, hashPart] = to.split('#');
@@ -104,12 +135,12 @@ export const ScrollNavLink = ({ to, onClick, children, ...props }) => {
         if (el) {
           const headerOffset = 110;
           const elementPosition = el.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-          smoothScrollTo(Math.max(0, offsetPosition), 750);
+          const offsetPosition = elementPosition + window.scrollY - headerOffset;
+          smoothScrollTo(Math.max(0, offsetPosition), 700);
         }
       }
-    } else if (location.pathname === to) {
-      scrollToTop(true, 500);
+    } else if (location.pathname === to && !location.hash) {
+      scrollToTop(true, 550);
     }
   };
 
@@ -169,7 +200,9 @@ const FloatingBtn = styled.button`
 `;
 
 export const BackToTopButton = ({ className, style }) => {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(() =>
+    typeof window !== 'undefined' ? window.scrollY > 300 : false
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -177,7 +210,6 @@ export const BackToTopButton = ({ className, style }) => {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
