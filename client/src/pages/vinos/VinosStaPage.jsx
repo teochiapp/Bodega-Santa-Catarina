@@ -5,6 +5,7 @@ const VinosStaPage = () => {
   return (
     <>
       <PageHero
+        seccion="vinos-sta"
         tag="NUESTRA COLECCIÓN · GAMA STA"
         title={
           <>
@@ -14,7 +15,7 @@ const VinosStaPage = () => {
           </>
         }
         description="Manto Negro, Callet, Prensal Blanc y Giró Ros. La máxima pureza y nobleza de las variedades autóctonas de Mallorca cultivadas en Finca Son Aloy."
-        image="/assets/Santa_Catarina_372.jpg"
+        image="/images/heros/hero-vinos.webp"
       />
       <CatalogoVinos filtroColeccion="sta" />
     </>

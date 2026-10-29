@@ -133,15 +133,6 @@ const Subtitle = styled.h2`
   line-height: 1.5;
 `;
 
-const Description = styled.p`
-  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
-  font-size: 0.84rem;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.78);
-  max-width: 600px;
-  margin: 0;
-`;
-
 const PageHero = ({
   seccion,
   items = [],
@@ -151,7 +142,7 @@ const PageHero = ({
   title,
   subtitle,
   description,
-  image = '/assets/Santa_Catarina_372.jpg',
+  image = '/images/heros/hero-vinos.webp',
   imageAlt = 'Bodega Santa Catarina · Mallorca',
   height,
   minHeight,
@@ -161,23 +152,13 @@ const PageHero = ({
   const location = useLocation();
   const { getHero } = useHeroes();
 
-  // Buscar si hay configuración en la base de datos para esta sección o ruta
+  // Buscar configuración dinámica en el panel de administración (por sección o ruta actual)
   const dbHero = getHero(seccion) || getHero(location?.pathname);
 
-  const displayTag = dbHero?.tag !== undefined && dbHero?.tag !== null && dbHero?.tag !== ''
-    ? dbHero.tag
-    : (tag || category || badge);
-
-  const rawTitle = dbHero?.titulo || title;
-
-  const displaySub = dbHero?.subtitulo !== undefined && dbHero?.subtitulo !== null && dbHero?.subtitulo !== ''
-    ? dbHero.subtitulo
-    : (subtitle || description);
-
-  const displayImage = dbHero?.imagen
-    ? getResolvedImageUrl(dbHero.imagen)
-    : image;
-
+  const displayTag = dbHero ? dbHero.tag : (tag || category || badge);
+  const rawTitle = dbHero ? (dbHero.titulo || title) : title;
+  const displaySub = dbHero ? dbHero.subtitulo : (subtitle || description);
+  const displayImage = dbHero?.imagen ? getResolvedImageUrl(dbHero.imagen) : image;
   const displayAlt = dbHero?.imagenAlt || imageAlt;
   const displayPosition = dbHero?.posicion || objectPosition;
 
@@ -197,7 +178,7 @@ const PageHero = ({
   };
 
   return (
-    <HeroContainer $height={height} $minHeight={minHeight}>
+    <HeroContainer data-no-scroll-reveal="true" $height={height} $minHeight={minHeight}>
       {displayImage && (
         <BackgroundImage
           src={displayImage}

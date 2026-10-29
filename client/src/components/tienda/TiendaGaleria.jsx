@@ -329,6 +329,7 @@ const TiendaGaleria = () => {
         {/* Columna Izquierda: Carrusel y Miniaturas */}
         <GalleryColumn
           className="physical-store-gallery"
+          data-reveal="media"
           aria-label="Galería de la tienda física"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
@@ -390,7 +391,7 @@ const TiendaGaleria = () => {
         </GalleryColumn>
 
         {/* Columna Derecha: Texto descriptivo y datos de ubicación/visita */}
-        <CopyColumn className="physical-store-copy">
+        <CopyColumn className="physical-store-copy" data-reveal="up" data-reveal-delay="110">
           <Eyebrow className="physical-store-eyebrow">BODEGA SANTA CATARINA</Eyebrow>
           <h2>Un rincón de Mallorca para llevarte a casa</h2>
           <p>

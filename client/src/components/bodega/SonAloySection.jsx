@@ -154,7 +154,7 @@ const SonAloySection = () => {
         >
           <ImageWrapper className="bodega-content-image">
             <Image
-              src="/assets/Santa_Cararina_360-D8zUx32I.jpg"
+              src="/images/elaboracion/elaboracion-finca.webp"
               alt="Finca Son Aloy, Bodega Santa Catarina"
               loading="lazy"
             />

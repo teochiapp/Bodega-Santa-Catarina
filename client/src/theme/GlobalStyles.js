@@ -56,4 +56,34 @@ export const GlobalStyles = createGlobalStyle`
     height: auto;
     display: block;
   }
+
+  /* ─── Scroll Appear Editorial (leve, fluido y sin alterar transform/modales) ─── */
+  @keyframes scEditorialAppear {
+    from {
+      opacity: 0;
+      translate: 0 var(--sc-reveal-y, 20px);
+    }
+  }
+
+  @keyframes scEditorialAppearMedia {
+    from {
+      opacity: 0;
+      translate: 0 var(--sc-reveal-y, 16px);
+      scale: 0.985;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-sc-reveal="pending"] {
+      opacity: 0 !important;
+    }
+
+    [data-sc-reveal="visible"] {
+      animation: scEditorialAppear 0.78s cubic-bezier(0.16, 1, 0.3, 1) var(--sc-reveal-delay, 0ms) backwards;
+    }
+
+    [data-sc-reveal="visible"][data-reveal="media"] {
+      animation: scEditorialAppearMedia 0.86s cubic-bezier(0.16, 1, 0.3, 1) var(--sc-reveal-delay, 0ms) backwards;
+    }
+  }
 `;

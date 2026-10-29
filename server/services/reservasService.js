@@ -269,7 +269,7 @@ const validarDatosReserva = (b) => {
 };
 
 // ─── Includes comunes ───────────────────────────────────────────────────────
-const includeReserva = { sesion: { include: { cata: { select: { id: true, titulo: true, duracion: true, precio: true } } } } };
+const includeReserva = { sesion: { include: { cata: { select: { id: true, titulo: true, subtitulo: true, duracion: true, precio: true } } } } };
 const includeReservaMenu = { sesion: { include: { menu: { select: { id: true, titulo: true, duracion: true, precio: true } } } } };
 
 // ─── Casos de uso ───────────────────────────────────────────────────────────

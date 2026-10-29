@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import { ScrollLink, BackToTopButton } from '../common/ScrollToTop';
+import ScrollRevealObserver from '../common/ScrollRevealObserver';
 import CookieManager from '../cookies/CookieManager';
 import api from '../../services/api';
 
@@ -52,6 +53,7 @@ const AnnouncementBanner = styled.div`
 
 const Layout = () => {
   const [config, setConfig] = useState(null);
+  const layoutRef = useRef(null);
 
   useEffect(() => {
     api.get('/configuracion')
@@ -62,7 +64,7 @@ const Layout = () => {
   const bannerTexto = config?.bannerTexto?.trim() || '';
 
   return (
-    <LayoutContainer>
+    <LayoutContainer ref={layoutRef}>
       {Boolean(config?.bannerActivo && bannerTexto) && (
         <AnnouncementBanner>
           <span>{bannerTexto}</span>
@@ -76,6 +78,7 @@ const Layout = () => {
         <Outlet />
       </MainContent>
       <Footer />
+      <ScrollRevealObserver containerRef={layoutRef} />
       <BackToTopButton />
       <CookieManager />
     </LayoutContainer>

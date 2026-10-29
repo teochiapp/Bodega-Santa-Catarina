@@ -787,7 +787,7 @@ Bodega Santa Catarina · Finca Son Aloy, Mallorca
             )}
 
             {!ocultarHeaderGama && (
-              <GamaHeader $isTargeted={isTargeted}>
+              <GamaHeader className="gama-header-reveal" $isTargeted={isTargeted}>
                 <GamaSubtitle>{seccion.subtitulo || 'COLECCIÓN'}</GamaSubtitle>
                 <GamaTitle>{seccion.gama}</GamaTitle>
               </GamaHeader>

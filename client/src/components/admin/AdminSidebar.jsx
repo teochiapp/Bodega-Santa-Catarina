@@ -6,7 +6,6 @@ import {
   Wine,
   Sparkles,
   UtensilsCrossed,
-  CalendarHeart,
   CalendarCheck,
   Newspaper,
   Gift,
@@ -359,6 +358,7 @@ const NAV = [
     items: [
       { icon: <Sparkles size={17} strokeWidth={1.8} />, label: 'Catas y Degustaciones', path: '/admin/catas', disabled: false },
       { icon: <UtensilsCrossed size={17} strokeWidth={1.8} />, label: 'Menús Gastronómicos', path: '/admin/menus', disabled: false },
+      { icon: <Gift size={17} strokeWidth={1.8} />, label: 'Catálogo de Bonos', path: '/admin/tarjetas', disabled: false },
     ],
   },
   {
@@ -366,7 +366,6 @@ const NAV = [
     items: [
       { icon: <Layers size={17} strokeWidth={1.8} />, label: 'Cabeceras de Páginas', path: '/admin/heroes', disabled: false },
       { icon: <Newspaper size={17} strokeWidth={1.8} />, label: 'Blog & Novedades', path: '/admin/blog', disabled: false },
-      { icon: <Gift size={17} strokeWidth={1.8} />, label: 'Catálogo de Bonos', path: '/admin/tarjetas', disabled: false },
       { icon: <Images size={17} strokeWidth={1.8} />, label: 'Galería Tienda Física', path: '/admin/tienda-galeria', disabled: false },
     ],
   },

@@ -181,7 +181,7 @@ const ElaboracionProcesoSection = () => {
           >
             <ImageWrapper className="bodega-content-image">
               <Image
-                src="/assets/elaboracion-uvas-BofYQazS.jpg"
+                src="/images/elaboracion/elaboracion-viñedo-uvas.webp"
                 alt="Elaboración en bodega y selección de uvas en Santa Catarina"
                 loading="lazy"
               />

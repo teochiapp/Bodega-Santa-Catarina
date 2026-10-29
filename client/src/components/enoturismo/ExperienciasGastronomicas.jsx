@@ -256,7 +256,7 @@ const DEFAULT_MENUS = [
     descripcion: 'Selección de tapas tradicionales mallorquinas maridadas con 3 de nuestros vinos de autor. Una experiencia gastronómica íntima en nuestra terraza con vistas a la Sierra de Tramuntana.',
     duracion: '2 horas',
     cupoPorSesion: 12,
-    portada: '/assets/Santa_Catarina_526-yhzhdQ3t.jpg',
+    portada: '/images/catas-menus-experiencias/menu-mallorquin-526.webp',
   },
   {
     id: 2,
@@ -265,7 +265,7 @@ const DEFAULT_MENUS = [
     descripcion: 'Auténtica paella ciega de marisco o mixta cocinada a la leña frente a los comensales. Incluye entrantes locales, postre casero y barra libre de vinos Santa Catarina durante la comida.',
     duracion: '2.5 horas',
     cupoPorSesion: 16,
-    portada: '/assets/yellow-rice-with-chicken-vegetables-black-slate-background-CxOQ-5eS.jpg',
+    portada: '/images/catas-menus-experiencias/menu-paella.webp',
   },
   {
     id: 3,
@@ -274,9 +274,19 @@ const DEFAULT_MENUS = [
     descripcion: 'Cortes selectos de carne a la brasa de sarmiento con guarniciones de la huerta, ensaladas mediterráneas y degustación de nuestros tintos de guarda. Ideal para grupos y celebraciones entre viñas.',
     duracion: '3 horas',
     cupoPorSesion: 20,
-    portada: '/assets/grilled-meat-cutlet-with-eggplant-mushroom-tomatoes-rosemary-board-tiVwnjVv.jpg',
+    portada: '/images/catas-menus-experiencias/menu-barbacoa.webp',
   },
 ];
+
+const resolveMenuImage = (menu) => {
+  const title = (menu.titulo || '').toLowerCase();
+  if (!menu.portada || menu.portada.startsWith('/assets/') || menu.portada === '/isologo.png') {
+    if (title.includes('paella')) return '/images/catas-menus-experiencias/menu-paella.webp';
+    if (title.includes('barbacoa')) return '/images/catas-menus-experiencias/menu-barbacoa.webp';
+    return '/images/catas-menus-experiencias/menu-mallorquin-526.webp';
+  }
+  return menu.portada;
+};
 
 const formatearDuracion = (menu) => {
   if (menu.duracion) return menu.duracion;
@@ -329,7 +339,7 @@ const ExperienciasGastronomicas = () => {
   return (
     <SectionWrapper id="experiencias-gastronomicas">
       <Section id="experiencias-enoturismo" className="enoturismo-experiences-section">
-        <Heading className="enoturismo-section-heading">
+        <Heading className="enoturismo-section-heading" data-reveal="up">
           <div>
             <Eyebrow className="enoturismo-panel-eyebrow">NUESTRAS EXPERIENCIAS</Eyebrow>
             <Title>Descubre los sabores de Mallorca</Title>
@@ -342,10 +352,15 @@ const ExperienciasGastronomicas = () => {
           </Intro>
         </Heading>
 
-        <Grid className="enoturismo-card-grid is-three-columns">
+        <Grid
+          className="enoturismo-card-grid is-three-columns"
+          data-reveal-group="85"
+          data-reveal-group-type="media"
+          data-reveal-cols="3"
+        >
           {menus.map((menu) => {
             const isInfoOpen = infoAbierta === menu.id;
-            const imgSrc = getResolvedImageUrl(menu.portada || '/assets/Santa_Catarina_526-yhzhdQ3t.jpg');
+            const imgSrc = getResolvedImageUrl(resolveMenuImage(menu));
             return (
               <Card key={menu.id} className="enoturismo-experience-card">
                 <CardImage className="enoturismo-card-image">

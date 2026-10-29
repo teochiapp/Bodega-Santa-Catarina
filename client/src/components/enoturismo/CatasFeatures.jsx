@@ -64,7 +64,7 @@ const svgProps = {
 
 const CatasFeatures = () => (
   <Wrap>
-    <Bar aria-label="Información práctica">
+    <Bar aria-label="Información práctica" data-reveal-group="85" data-reveal-cols="3">
       <Item>
         <Icon aria-hidden="true">
           <svg {...svgProps}><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></svg>

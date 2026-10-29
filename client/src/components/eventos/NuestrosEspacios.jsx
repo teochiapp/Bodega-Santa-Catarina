@@ -196,7 +196,7 @@ const ESPACIOS_DATA = [
   {
     id: 'casa-son-aloy',
     name: 'Casa Son Aloy',
-    image: '/assets/Santa_Cararina_229-CzSpZpJL.jpg',
+    image: '/images/espacios/espacios-casa-son-aloy.webp',
     paragraphs: [
       'Diferentes espacios interiores y exteriores, office, patio trasero a disposición para catering, baños, aire acondicionado, climatización, 12 altavoces móviles, pantalla TV 75 pulgadas.',
       'Una sala polivalente para reuniones, banquetes, etc. con porche delantero y 2 terrazas superiores panorámicas.',
@@ -207,7 +207,7 @@ const ESPACIOS_DATA = [
   {
     id: 'bodega',
     name: 'Bodega',
-    image: '/assets/Santa_Cararina_390-3-RBJCEfHL.jpg',
+    image: '/images/espacios/espacios-sala-barricas.webp',
     paragraphs: [
       'Acceso por escalera desde el lobby o ascensor. Sala climatizada y acondicionada, con diferentes juegos de luces y contigua a nuestra sala de conferencias (Wine Lounge).',
     ],
@@ -217,7 +217,7 @@ const ESPACIOS_DATA = [
   {
     id: 'clastra-exterior',
     name: 'Clastra Exterior',
-    image: '/assets/la-clastra-CL6xFguL.jpeg',
+    image: '/images/espacios/espacios-clastra-exterior.webp',
     paragraphs: [
       'Espectacular espacio al aire libre que se encuentra entre la tradición de la casa mallorquina y la innovación de la bodega, rodeado de un idílico paisaje de viñedos y las maravillosas montañas de la Tramuntana.',
       'Acceso directo desde el parking por un camino pavimentado.',
@@ -229,7 +229,7 @@ const ESPACIOS_DATA = [
   {
     id: 'caseta',
     name: 'Caseta',
-    image: '/assets/eventos-caseta-porche-N8X2oZRm.png',
+    image: '/images/eventos/eventos-caseta.webp',
     paragraphs: [
       'Lugar espectacular para acoger a grupos reducidos de personas para una experiencia gastronómica muy privatizada y exclusiva, o para realizar bienvenidas en un lugar idílico rodeado de las mejores vistas a la Tramuntana.',
     ],

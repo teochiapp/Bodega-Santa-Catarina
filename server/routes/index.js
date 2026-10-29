@@ -15,6 +15,8 @@ const newsletterRoutes = require('./newsletterRoutes');
 const reservasRoutes = require('./reservasRoutes');
 const pedidosTarjetasRoutes = require('./pedidosTarjetasRoutes');
 const heroesRoutes = require('./heroesRoutes');
+const eventosSolicitudRoutes = require('./eventosSolicitudRoutes');
+const contactoRoutes = require('./contactoRoutes');
 
 // Health check — verificar que la API está viva
 router.get('/health', (req, res) => {
@@ -36,5 +38,7 @@ router.use('/newsletter', newsletterRoutes);
 router.use('/reservas', reservasRoutes);
 router.use('/pedidos-tarjetas', pedidosTarjetasRoutes);
 router.use('/heroes', heroesRoutes);
+router.use('/eventos-solicitud', eventosSolicitudRoutes);
+router.use('/contacto', contactoRoutes);
 
 module.exports = router;

@@ -15,7 +15,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const generarCodigo = () => `BR-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
 const limpiar = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
-const crearPedido = async (body = {}) => {
+const crearPedido = async (body = {}, baseUrl) => {
   const nombre = limpiar(body.nombre, 120);
   const email = limpiar(body.email, 160).toLowerCase();
   const telefono = limpiar(body.telefono, 40);
@@ -45,7 +45,17 @@ const crearPedido = async (body = {}) => {
     },
   });
 
-  enviarConfirmacionPedidoTarjeta(pedido);
+  enviarConfirmacionPedidoTarjeta(pedido, baseUrl);
+  return pedido;
+};
+
+const obtenerPedidoPorCodigo = async (codigo) => {
+  const limpio = limpiar(codigo, 32).toUpperCase();
+  if (!limpio) throw new PedidoError('Código de bono no válido.', 400);
+  const pedido = await prisma.pedidoTarjeta.findUnique({ where: { codigo: limpio } });
+  if (!pedido || pedido.estado === 'CANCELADO') {
+    throw new PedidoError('Bono regalo no encontrado.', 404);
+  }
   return pedido;
 };
 
@@ -65,7 +75,7 @@ const listarPedidos = async ({ estado, q } = {}) => {
   return prisma.pedidoTarjeta.findMany({ where, orderBy: { createdAt: 'desc' } });
 };
 
-const cambiarEstado = async (id, estado) => {
+const cambiarEstado = async (id, estado, baseUrl) => {
   if (!ESTADOS.includes(estado)) throw new PedidoError('Estado no válido.');
   const pedidoId = parseInt(id, 10);
   const actual = await prisma.pedidoTarjeta.findUnique({ where: { id: pedidoId } });
@@ -76,8 +86,16 @@ const cambiarEstado = async (id, estado) => {
     where: { id: pedidoId },
     data: { estado, canceladoAt: estado === 'CANCELADO' ? new Date() : null },
   });
-  if (estado === 'COMPLETADO' || estado === 'CANCELADO') enviarCambioEstadoPedidoTarjeta(pedido);
+  if (estado === 'COMPLETADO' || estado === 'CANCELADO') {
+    enviarCambioEstadoPedidoTarjeta(pedido, baseUrl);
+  }
   return pedido;
 };
 
-module.exports = { PedidoError, crearPedido, listarPedidos, cambiarEstado };
+module.exports = {
+  PedidoError,
+  crearPedido,
+  obtenerPedidoPorCodigo,
+  listarPedidos,
+  cambiarEstado,
+};

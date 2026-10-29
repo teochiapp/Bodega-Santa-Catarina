@@ -1,12 +1,12 @@
 const { obtenerRemitente, BREVO_API_URL } = require('./brevoService');
-const { generarHtmlReserva, formatearFecha, escapeHtml } = require('../templates/reservaEmailTemplate');
+const { generarHtmlReserva, formatearFecha, formatearTituloExperiencia, escapeHtml } = require('../templates/reservaEmailTemplate');
 const prisma = require('./prismaClient');
 
 /**
  * Envío transaccional vía Brevo. Nunca lanza: un fallo de email no debe romper la reserva.
  * Sin BREVO_API_KEY opera en modo simulado (log por consola), igual que la newsletter.
  */
-const enviarEmail = async ({ to, subject, htmlContent }) => {
+const enviarEmail = async ({ to, subject, htmlContent, replyTo }) => {
   const apiKey = process.env.BREVO_API_KEY;
   if (!apiKey) {
     console.warn(`[reservaEmail] BREVO_API_KEY ausente. Email simulado a ${to}: "${subject}"`);
@@ -14,10 +14,17 @@ const enviarEmail = async ({ to, subject, htmlContent }) => {
   }
   try {
     const sender = await obtenerRemitente(apiKey);
+    const payload = {
+      sender,
+      to: [{ email: to }],
+      subject,
+      htmlContent,
+      ...(replyTo && typeof replyTo === 'string' && replyTo.includes('@') ? { replyTo: { email: replyTo } } : {}),
+    };
     const res = await fetch(`${BREVO_API_URL}/smtp/email`, {
       method: 'POST',
       headers: { 'api-key': apiKey, 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ sender, to: [{ email: to }], subject, htmlContent }),
+      body: JSON.stringify(payload),
     });
     if (!res.ok) {
       console.warn('[reservaEmail] Brevo rechazó el email:', await res.json().catch(() => ({})));
@@ -37,10 +44,11 @@ const notificarBodega = async (subject, reserva) => {
     const destino = config?.emailReservas || process.env.BREVO_ADMIN_EMAIL;
     if (!destino || !destino.includes('@')) return;
     const { sesion } = reserva;
-    const expTitulo = sesion.cata?.titulo || sesion.menu?.titulo || 'Experiencia';
+    const expTitulo = formatearTituloExperiencia(sesion);
     await enviarEmail({
       to: destino,
       subject,
+      replyTo: reserva.email,
       htmlContent: `<p><strong>${escapeHtml(reserva.nombre)}</strong> (${escapeHtml(reserva.email)}, ${escapeHtml(reserva.telefono)})<br>
         ${escapeHtml(expTitulo)} · ${formatearFecha(sesion.fecha)} ${sesion.hora} · ${reserva.personas} pax<br>
         Código: ${escapeHtml(reserva.codigo)}</p>`,
@@ -51,7 +59,7 @@ const notificarBodega = async (subject, reserva) => {
 };
 
 const enviarConfirmacionReserva = (reserva) => {
-  const expTitulo = reserva.sesion?.cata?.titulo || reserva.sesion?.menu?.titulo || 'Experiencia';
+  const expTitulo = formatearTituloExperiencia(reserva.sesion);
   enviarEmail({
     to: reserva.email,
     subject: `Reserva confirmada · ${expTitulo}`,
@@ -65,7 +73,7 @@ const enviarConfirmacionReserva = (reserva) => {
 };
 
 const enviarCancelacionReserva = (reserva) => {
-  const expTitulo = reserva.sesion?.cata?.titulo || reserva.sesion?.menu?.titulo || 'Experiencia';
+  const expTitulo = formatearTituloExperiencia(reserva.sesion);
   enviarEmail({
     to: reserva.email,
     subject: `Reserva cancelada · ${expTitulo}`,
@@ -79,7 +87,7 @@ const enviarCancelacionReserva = (reserva) => {
 };
 
 const enviarReprogramacionReserva = (reserva, sesionAnterior) => {
-  const expTitulo = reserva.sesion?.cata?.titulo || reserva.sesion?.menu?.titulo || 'Experiencia';
+  const expTitulo = formatearTituloExperiencia(reserva.sesion);
   enviarEmail({
     to: reserva.email,
     subject: `Reserva reprogramada · ${expTitulo}`,

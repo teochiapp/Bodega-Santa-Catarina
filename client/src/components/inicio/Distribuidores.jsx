@@ -149,7 +149,7 @@ const Distribuidores = () => {
       <GradientOverlay />
 
       <Container>
-        <Content>
+        <Content data-reveal="up">
           <Kicker>DISTRIBUIDORES</Kicker>
           <Title>Nuestra red, más cerca de ti</Title>
           <TextBlock>

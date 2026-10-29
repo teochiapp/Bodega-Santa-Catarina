@@ -10,9 +10,6 @@ import {
   CheckCircle2,
   X,
   Layers,
-  Image as ImageIcon,
-  Eye,
-  EyeOff,
   Sparkles,
 } from 'lucide-react';
 import api, { getResolvedImageUrl } from '../../services/api';
@@ -646,11 +643,12 @@ const ModalFooter = styled.div`
 // ── Grupos de navegación para filtrado rápido ──
 const GRUPOS = [
   { id: 'todos', label: 'Todas las páginas' },
-  { id: 'bodega', label: 'La Bodega' },
+  { id: 'inicio', label: 'Inicio' },
+  { id: 'bodega', label: 'Elaboración' },
   { id: 'vinos', label: 'Vinos' },
   { id: 'enoturismo', label: 'Enoturismo' },
   { id: 'eventos', label: 'Eventos' },
-  { id: 'tienda-blog', label: 'Tienda & Blog' },
+  { id: 'tienda-blog', label: 'Tienda, Distribución & Blog' },
   { id: 'contacto', label: 'Contacto' },
 ];
 
@@ -696,13 +694,33 @@ const AdminHeroesList = () => {
   };
 
   useEffect(() => {
-    loadHeroes();
+    let active = true;
+    api
+      .get('/heroes')
+      .then((data) => {
+        if (active && Array.isArray(data)) {
+          setHeroes(data);
+        }
+      })
+      .catch((err) => {
+        console.error('Error al cargar heroes:', err);
+        if (active) showToast('Error al cargar los heroes de páginas');
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
   // Filtrado de heroes
   const filteredHeroes = useMemo(() => {
     return heroes.filter((h) => {
       // Filtro por grupo
+      if (activeGroup === 'inicio' && h.seccion !== 'inicio') {
+        return false;
+      }
       if (activeGroup === 'bodega' && !h.seccion?.startsWith('bodega') && h.seccion !== 'la-bodega') {
         return false;
       }
@@ -715,7 +733,12 @@ const AdminHeroesList = () => {
       if (activeGroup === 'eventos' && !h.seccion?.startsWith('eventos')) {
         return false;
       }
-      if (activeGroup === 'tienda-blog' && h.seccion !== 'tienda-fisica' && h.seccion !== 'blog') {
+      if (
+        activeGroup === 'tienda-blog' &&
+        h.seccion !== 'tienda-fisica' &&
+        h.seccion !== 'donde-comprar' &&
+        h.seccion !== 'blog'
+      ) {
         return false;
       }
       if (activeGroup === 'contacto' && h.seccion !== 'contacto') {
@@ -751,7 +774,7 @@ const AdminHeroesList = () => {
       titulo: '',
       subtitulo: '',
       descripcion: '',
-      imagen: '/assets/Santa_Catarina_372.jpg',
+      imagen: '/images/heros/hero-vinos.webp',
       imagenAlt: 'Bodega Santa Catarina · Mallorca',
       posicion: 'center',
       orden: heroes.length + 1,
@@ -928,7 +951,7 @@ const AdminHeroesList = () => {
       ) : (
         <HeroesGrid>
           {filteredHeroes.map((hero) => {
-            const previewImg = getResolvedImageUrl(hero.imagen) || '/assets/Santa_Catarina_372.jpg';
+            const previewImg = getResolvedImageUrl(hero.imagen) || '/images/heros/hero-vinos.webp';
             return (
               <Card key={hero.id}>
                 <CardHeader>
@@ -1043,7 +1066,7 @@ const AdminHeroesList = () => {
                     <LiveBannerBg
                       src={
                         getResolvedImageUrl(editingHero.imagen) ||
-                        '/assets/Santa_Catarina_372.jpg'
+                        '/images/heros/hero-vinos.webp'
                       }
                       alt={editingHero.imagenAlt || editingHero.titulo || 'Hero Preview'}
                       $pos={editingHero.posicion}
@@ -1131,8 +1154,9 @@ const AdminHeroesList = () => {
 
                   <FormGroup $fullWidth>
                     <FormLabel>Título Principal * (Admite salto de línea)</FormLabel>
-                    <Input
-                      type="text"
+                    <Textarea
+                      rows={2}
+                      style={{ minHeight: '54px' }}
                       placeholder="Ej: Monovarietales Autóctonos"
                       value={editingHero.titulo || ''}
                       onChange={(e) =>
@@ -1175,11 +1199,14 @@ const AdminHeroesList = () => {
                       }
                     >
                       <option value="center">Centrada (center)</option>
+                      <option value="center 20%">Ajustada Elaboración / Viñedos (center 20%)</option>
+                      <option value="center 30%">Ligeramente arriba (center 30%)</option>
+                      <option value="center 40%">Ajustada Contacto (center 40%)</option>
+                      <option value="center 55%">Ajustada Inicio (center 55%)</option>
                       <option value="center 58%">Ajustada Tienda (center 58%)</option>
+                      <option value="center 70%">Ligeramente abajo (center 70%)</option>
                       <option value="top">Superior (top)</option>
                       <option value="bottom">Inferior (bottom)</option>
-                      <option value="center 30%">Ligeramente arriba (center 30%)</option>
-                      <option value="center 70%">Ligeramente abajo (center 70%)</option>
                     </Select>
                   </FormGroup>
 
@@ -1258,7 +1285,7 @@ const AdminHeroesList = () => {
       <AdminConfirmModal
         isOpen={isResetConfirmOpen}
         title="Restaurar Cabeceras a Valores Iniciales"
-        message="¿Deseas restaurar todas las 16 cabeceras de página a sus títulos, subtítulos, etiquetas e imágenes originales? Esta acción sobrescribirá las modificaciones actuales."
+        message="¿Deseas restaurar todas las cabeceras de página a sus títulos, subtítulos, etiquetas e imágenes originales? Esta acción sobrescribirá las modificaciones actuales."
         confirmText={resetting ? 'Restaurando...' : 'Restaurar Valores'}
         cancelText="Cancelar"
         danger={false}

@@ -47,43 +47,77 @@ async function main() {
     });
   }
 
-  // 3. Catas
+  // 3. Catas (experiencias actuales reales de la web)
   const catasCount = await prisma.cata.count();
   if (catasCount === 0) {
-    await prisma.cata.createMany({
-      data: [
-        {
-          titulo: 'Cata Descubrimiento Santa Catarina',
-          precio: 25.0,
-          descripcion: 'Recorrido por los viñedos de la finca, visita a la sala de barricas y degustación guiada de 3 vinos selectos acompañados de pamboli mallorquín tradicional.',
-          diaSemana: 'Lunes a Sábado',
-          horario: '11:30 y 16:30',
-          duracion: '1 hora 15 min',
-          portada: '/isologo.png',
-          activo: true,
-        },
-        {
-          titulo: 'Cata Premium Selección de Barrica',
-          precio: 45.0,
-          descripcion: 'Experiencia exclusiva para amantes del vino: cata técnica de 5 vinos de alta gama, incluyendo añadas históricas y maridaje con quesos artesanos de la isla.',
-          diaSemana: 'Miércoles a Domingo',
-          horario: '12:00',
-          duracion: '2 horas',
-          portada: '/isologo.png',
-          activo: true,
-        },
-        {
-          titulo: 'Paseo al Atardecer entre Viñedos',
-          precio: 55.0,
-          descripcion: 'Paseo guiado a la caída del sol con copa en mano por los bancales de Son Aloy, seguido de cata maridada bajo la pérgola centenaria.',
-          diaSemana: 'Jueves a Sábado',
-          horario: '18:30 (verano)',
-          duracion: '2 horas 30 min',
-          portada: '/isologo.png',
-          activo: true,
-        },
-      ],
-    });
+    const catasIniciales = [
+      {
+        titulo: 'Cata de 3 vinos',
+        subtitulo: null,
+        precio: 20.0,
+        descripcion: 'Recorrido por la bodega y cata guiada de 3 de nuestros vinos más representativos en Son Aloy para descubrir la tradición y autenticidad de Santa Catarina.',
+        diaSemana: 'Lunes a Viernes',
+        horario: '10:00, 11:30, 13:00 y 15:00',
+        duracion: '1h 30min',
+        duracionMin: 90,
+        cupoPorSesion: 10,
+        portada: '/images/catas-menus-experiencias/cata-3-vinos.webp',
+        activo: true,
+      },
+      {
+        titulo: 'Cata de 5 vinos',
+        subtitulo: null,
+        precio: 25.0,
+        descripcion: 'Una experiencia de degustación profunda con 5 vinos seleccionados de nuestras diferentes colecciones, profundizando en las variedades autóctonas y el terruño mallorquín.',
+        diaSemana: 'Lunes a Viernes',
+        horario: '10:00, 11:30, 13:00 y 15:00',
+        duracion: '1h 30min',
+        duracionMin: 90,
+        cupoPorSesion: 10,
+        portada: '/images/catas-menus-experiencias/cata-5-vinos.webp',
+        activo: true,
+      },
+      {
+        titulo: 'Visita al viñedo',
+        subtitulo: 'Bodega + cata de 3 vinos + pa amb oli mallorquín',
+        precio: 40.0,
+        descripcion: 'Paseo guiado entre los viñedos de Son Aloy, visita completa a la bodega de elaboración y cata de 3 vinos maridados con un auténtico pa amb oli mallorquín tradicional.',
+        diaSemana: 'Lunes a Viernes',
+        horario: '10:00, 11:30, 13:00 y 15:00',
+        duracion: '2 horas',
+        duracionMin: 120,
+        cupoPorSesion: 10,
+        portada: '/images/catas-menus-experiencias/experiencia-3-vinos.webp',
+        activo: true,
+      },
+      {
+        titulo: 'Visita al viñedo',
+        subtitulo: 'Bodega + cata de 5 vinos + pa amb oli mallorquín',
+        precio: 45.0,
+        descripcion: 'Nuestra vivencia enoturística más completa: paseo entre cepas, recorrido técnico por las instalaciones, cata de 5 vinos de autor y almuerzo con pa amb oli en la finca.',
+        diaSemana: 'Lunes a Viernes',
+        horario: '10:00, 11:30, 13:00 y 15:00',
+        duracion: '2 horas 30 min',
+        duracionMin: 150,
+        cupoPorSesion: 10,
+        portada: '/images/catas-menus-experiencias/experiencia-5-vinos.webp',
+        activo: true,
+      },
+    ];
+
+    for (const item of catasIniciales) {
+      const creada = await prisma.cata.create({ data: item });
+      await prisma.horarioCata.createMany({
+        data: [1, 2, 3, 4, 5].flatMap((diaSemana) =>
+          ['10:00', '11:30', '13:00', '15:00'].map((hora) => ({
+            cataId: creada.id,
+            diaSemana,
+            hora,
+            activo: true,
+          }))
+        ),
+      });
+    }
   }
 
   // 4. Menús Gastronómicos

@@ -7,9 +7,18 @@ const formatearFecha = (fecha) =>
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
   });
 
+const formatearTituloExperiencia = (sesion) => {
+  if (sesion?.cata) {
+    return sesion.cata.subtitulo
+      ? `${sesion.cata.titulo} (${sesion.cata.subtitulo})`
+      : sesion.cata.titulo;
+  }
+  return sesion?.menu?.titulo || 'Experiencia';
+};
+
 const generarHtmlReserva = ({ titulo, intro, reserva, detalleExtra = '' }) => {
   const { sesion } = reserva;
-  const experienciaTitulo = sesion?.cata?.titulo || sesion?.menu?.titulo || 'Experiencia';
+  const experienciaTitulo = formatearTituloExperiencia(sesion);
   const filas = [
     ['Experiencia', experienciaTitulo],
     ['Fecha', formatearFecha(sesion.fecha)],
@@ -44,4 +53,4 @@ const generarHtmlReserva = ({ titulo, intro, reserva, detalleExtra = '' }) => {
   </td></tr></table></body></html>`;
 };
 
-module.exports = { generarHtmlReserva, formatearFecha, escapeHtml };
+module.exports = { generarHtmlReserva, formatearFecha, formatearTituloExperiencia, escapeHtml };

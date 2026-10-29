@@ -160,25 +160,25 @@ const BODAS_DATA = [
   {
     id: 'ceremonia',
     name: 'Ceremonia',
-    image: '/assets/Ivan_Pomposo_Photography___Design_-_Bodega_Santa_Catarina_-_0036-BwbLxc7B.jpg',
+    image: '/images/eventos/bodas-ceremonias.webp',
     description: 'Un entorno exterior con personalidad para crear una ceremonia emotiva y completamente vuestra.',
   },
   {
     id: 'coctel',
     name: 'Cóctel',
-    image: '/assets/Santa_Catarina_258-D1kRZh3N.jpg',
+    image: '/images/eventos/bodas-coctel.webp',
     description: 'Recibe a tus invitados entre la casa, la bodega y los viñedos con una propuesta dinámica y elegante.',
   },
   {
     id: 'banquete',
     name: 'Banquete',
-    image: '/assets/Santa_Catarina_514-CFfH6RrE.jpg',
+    image: '/images/eventos/bodas-banquete.webp',
     description: 'Configura el banquete en el espacio que mejor se adapte al estilo, el formato y el número de invitados.',
   },
   {
     id: 'celebracion',
     name: 'Celebración',
-    image: '/assets/Santa_Cararina_093-p8-95a11.jpg',
+    image: '/images/eventos/bodas-celebracion.webp',
     description: 'Completa el día con música y baile en un ambiente privado, cuidado y lleno de carácter.',
   },
 ];
@@ -248,7 +248,7 @@ const Bodas = () => {
       <FormularioEventos
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        defaultTipoEvento="Boda"
+        defaultTipoEvento={selectedItem ? `Boda · ${selectedItem}` : 'Boda'}
       />
     </MainWrapper>
   );

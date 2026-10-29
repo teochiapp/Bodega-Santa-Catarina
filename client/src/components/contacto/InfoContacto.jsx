@@ -115,7 +115,7 @@ const InteractiveLink = styled.a`
 const InfoContacto = () => {
   return (
     <SectionWrapper>
-      <Grid>
+      <Grid data-reveal-group="75" data-reveal-cols="4">
         {/* DIRECCIÓN */}
         <ColumnCard>
           <IconWrapper>

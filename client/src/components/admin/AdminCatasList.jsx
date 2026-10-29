@@ -193,6 +193,7 @@ const AdminCatasList = () => {
   const [cataDelete, setCataDelete] = useState(null);
   const [formData, setFormData] = useState({
     titulo: '',
+    subtitulo: '',
     precio: '',
     descripcion: '',
     diaSemana: '',
@@ -201,6 +202,7 @@ const AdminCatasList = () => {
     duracionMin: 90,
     cupoPorSesion: 10,
     portada: '',
+    activo: true,
   });
   const [horarios, setHorarios] = useState([]);
 
@@ -242,6 +244,7 @@ const AdminCatasList = () => {
     setCataEdit(null);
     setFormData({
       titulo: '',
+      subtitulo: '',
       precio: '',
       descripcion: '',
       diaSemana: '',
@@ -250,6 +253,7 @@ const AdminCatasList = () => {
       duracionMin: 90,
       cupoPorSesion: 10,
       portada: '',
+      activo: true,
     });
     setHorarios(HORARIOS_POR_DEFECTO);
     setModalOpen(true);
@@ -259,6 +263,7 @@ const AdminCatasList = () => {
     setCataEdit(cata);
     setFormData({
       titulo: cata.titulo || '',
+      subtitulo: cata.subtitulo || '',
       precio: cata.precio || '',
       descripcion: cata.descripcion || '',
       diaSemana: cata.diaSemana || '',
@@ -267,6 +272,7 @@ const AdminCatasList = () => {
       duracionMin: cata.duracionMin ?? 90,
       cupoPorSesion: cata.cupoPorSesion ?? 10,
       portada: cata.portada || '',
+      activo: cata.activo !== false,
     });
     setHorarios((cata.horarios || []).map((h) => ({ diaSemana: h.diaSemana, hora: h.hora, cupo: h.cupo })));
     setModalOpen(true);
@@ -330,10 +336,22 @@ const AdminCatasList = () => {
             </thead>
             <tbody>
               {catas.map((cata) => (
-                <tr key={cata.id}>
+                <tr key={cata.id} style={cata.activo === false ? { opacity: 0.6 } : undefined}>
                   <Td>
-                    <strong>{cata.titulo}</strong>
-                    <div style={{ fontSize: 12, color: 'var(--tn-muted)', maxWidth: 280, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                      <strong>{cata.titulo}</strong>
+                      {cata.subtitulo && (
+                        <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--tn-acc-700)', background: 'rgba(194, 164, 120, 0.16)', padding: '2px 7px', borderRadius: 999 }}>
+                          {cata.subtitulo}
+                        </span>
+                      )}
+                      {cata.activo === false && (
+                        <span style={{ fontSize: 11, fontWeight: 600, color: '#8c1d1d', background: 'rgba(140, 29, 29, 0.1)', padding: '2px 7px', borderRadius: 999 }}>
+                          Oculta
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ fontSize: 12, color: 'var(--tn-muted)', maxWidth: 280, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: 2 }}>
                       {cata.descripcion}
                     </div>
                   </Td>
@@ -378,16 +396,27 @@ const AdminCatasList = () => {
               </button>
             </ModalHeader>
             <ModalBody onSubmit={handleGuardar}>
-              <FormGroup>
-                <label>Título de la Experiencia</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.titulo}
-                  onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
-                  placeholder="Ej: Cata Descubrimiento Santa Catarina"
-                />
-              </FormGroup>
+              <FormRow>
+                <FormGroup>
+                  <label>Título de la Experiencia</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.titulo}
+                    onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
+                    placeholder="Ej: Cata de 3 vinos / Visita al viñedo"
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <label>Subtítulo (opcional)</label>
+                  <input
+                    type="text"
+                    value={formData.subtitulo}
+                    onChange={(e) => setFormData({ ...formData, subtitulo: e.target.value })}
+                    placeholder="Ej: 3 vinos / 5 vinos"
+                  />
+                </FormGroup>
+              </FormRow>
 
               <FormRow>
                 <FormGroup>
@@ -459,6 +488,18 @@ const AdminCatasList = () => {
                   value={formData.portada}
                   onChange={(url) => setFormData((prev) => ({ ...prev, portada: url }))}
                 />
+              </FormGroup>
+
+              <FormGroup>
+                <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 500 }}>
+                  <input
+                    type="checkbox"
+                    checked={Boolean(formData.activo)}
+                    onChange={(e) => setFormData({ ...formData, activo: e.target.checked })}
+                    style={{ width: 16, height: 16 }}
+                  />
+                  Experiencia activa (visible en el catálogo y motor de reservas)
+                </label>
               </FormGroup>
 
               <ModalFooter>

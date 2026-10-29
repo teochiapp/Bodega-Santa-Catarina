@@ -178,7 +178,7 @@ const CitaFilosofia = () => {
           <ImageWrapper className="bodega-content-image bodega-feature-image">
             <Image
               alt="Selección manual de una uva en Son Aloy"
-              src="/assets/nuestra-filosofia-uva-DbAU8HPK.png"
+              src="/images/elaboracion/elaboracion-filosofia-uva.webp"
               loading="lazy"
             />
           </ImageWrapper>

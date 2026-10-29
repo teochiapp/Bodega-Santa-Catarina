@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import api, { getResolvedImageUrl } from '../../services/api';
+import { useHeroes } from '../../context/HeroesContext';
 
 const SectionWrapper = styled.div`
   width: 100%;
@@ -13,9 +15,9 @@ const HeroSection = styled.div`
   position: relative;
   width: 100%;
   height: clamp(420px, 48vh, 520px);
-  background-image: url('/assets/contacto-hero.jpg');
+  background-image: url('${({ $bgImage }) => $bgImage || '/assets/contacto-hero.jpg'}');
   background-size: cover;
-  background-position: center 40%;
+  background-position: ${({ $bgPosition }) => $bgPosition || 'center 40%'};
   display: flex;
   align-items: flex-end;
   box-sizing: border-box;
@@ -62,6 +64,36 @@ const HeroInner = styled.div`
     line-height: 1;
     text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
   }
+`;
+
+const HeroCopyBox = styled.div`
+  max-width: 600px;
+
+  @media (max-width: 960px) {
+    max-width: 100%;
+  }
+`;
+
+const HeroTag = styled.span`
+  display: block;
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #C9A96E;
+  margin-bottom: 0.65rem;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+`;
+
+const HeroSubtitle = styled.p`
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+  font-size: clamp(0.92rem, 1.15vw, 1.05rem);
+  font-weight: 300;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0.75rem 0 0 0;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
 `;
 
 /* ─── GRID PRINCIPAL DE CONTACTO ─── */
@@ -184,6 +216,12 @@ const GridContainer = styled.div`
     &:active {
       transform: translateY(0);
     }
+
+    &:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
   }
 
   /* Columna izquierda en desktop: Cómo llegar y Redes */
@@ -298,7 +336,33 @@ const FeedbackMessage = styled.div`
   text-align: center;
 `;
 
+const ErrorMessage = styled.div`
+  margin-top: 1.15rem;
+  padding: 0.95rem 1.15rem;
+  border-radius: 8px;
+  background-color: rgba(140, 29, 29, 0.08);
+  border: 1px solid rgba(140, 29, 29, 0.25);
+  color: #8c1d1d;
+  font-size: 0.86rem;
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+  line-height: 1.55;
+  text-align: center;
+`;
+
 const FormularioContacto = () => {
+  const { getHero } = useHeroes();
+  const dbHero = getHero('contacto') || getHero('/contacto');
+
+  const displayTag = dbHero ? dbHero.tag : '';
+  const displayTitle = dbHero ? (dbHero.titulo || 'CONTACTO') : 'CONTACTO';
+  const displaySubtitle = dbHero ? dbHero.subtitulo : '';
+  const displayBgImage = (dbHero && dbHero.imagen)
+    ? getResolvedImageUrl(dbHero.imagen)
+    : '/assets/contacto-hero.jpg';
+  const displayBgPosition = (dbHero && dbHero.posicion)
+    ? dbHero.posicion
+    : 'center 40%';
+
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
@@ -307,6 +371,8 @@ const FormularioContacto = () => {
     mensaje: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleChange = (field) => (e) => {
     setFormData((prev) => ({
@@ -315,30 +381,47 @@ const FormularioContacto = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMsg('');
+    setIsSubmitted(false);
 
-    const subjectText = formData.asunto.trim() || `Contacto Bodega Santa Catarina - ${formData.nombre} ${formData.apellido}`;
-    const bodyText = `Nombre: ${formData.nombre} ${formData.apellido}
-Email: ${formData.email}
-Asunto: ${formData.asunto}
-
-Mensaje:
-${formData.mensaje}`;
-
-    const mailtoUrl = `mailto:info@bodegasantacatarina.com?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText)}`;
-
-    window.location.href = mailtoUrl;
-    setIsSubmitted(true);
+    try {
+      await api.post('/contacto', formData);
+      setIsSubmitted(true);
+      setFormData({
+        nombre: '',
+        apellido: '',
+        email: '',
+        asunto: '',
+        mensaje: ''
+      });
+    } catch (err) {
+      setErrorMsg(err.message || 'No se pudo enviar tu consulta. Inténtalo de nuevo en unos instantes.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <SectionWrapper>
       {/* HERO BANNER FOTOGRÁFICO */}
-      <HeroSection>
+      <HeroSection data-no-scroll-reveal="true" $bgImage={displayBgImage} $bgPosition={displayBgPosition}>
         <HeroOverlay />
         <HeroInner>
-          <h1 className="contact-hero-title">CONTACTO</h1>
+          <HeroCopyBox>
+            {displayTag && <HeroTag>{displayTag}</HeroTag>}
+            <h1 className="contact-hero-title">
+              {displayTitle.split('\n').map((line, idx, arr) => (
+                <span key={idx}>
+                  {line}
+                  {idx < arr.length - 1 && <br />}
+                </span>
+              ))}
+            </h1>
+            {displaySubtitle && <HeroSubtitle>{displaySubtitle}</HeroSubtitle>}
+          </HeroCopyBox>
         </HeroInner>
       </HeroSection>
 
@@ -346,7 +429,7 @@ ${formData.mensaje}`;
       <GridContainer>
         <section className="contact-main-grid">
           {/* COLUMNA FORMULARIO */}
-          <div className="contact-form-column">
+          <div className="contact-form-column" data-reveal="up" data-reveal-delay="80">
             <form className="contact-floating-form" onSubmit={handleSubmit}>
               <div className="contact-field">
                 <label htmlFor="contact-name">
@@ -401,29 +484,38 @@ ${formData.mensaje}`;
               </div>
 
               <div className="contact-field">
-                <label htmlFor="contact-message">Mensaje</label>
+                <label htmlFor="contact-message">
+                  Mensaje <span aria-hidden="true">*</span>
+                </label>
                 <textarea
                   id="contact-message"
+                  required
                   rows={6}
                   value={formData.mensaje}
                   onChange={handleChange('mensaje')}
                 />
               </div>
 
-              <button className="contact-submit-button" type="submit">
-                Enviar
+              <button className="contact-submit-button" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Enviando...' : 'Enviar'}
               </button>
 
               {isSubmitted && (
                 <FeedbackMessage>
-                  ✓ Tu mensaje ha sido preparado. Se abrirá tu aplicación de correo para enviar la consulta a <strong>info@bodegasantacatarina.com</strong>.
+                  ✓ Hemos recibido tu consulta correctamente y te hemos enviado un acuse de recibo por correo electrónico. Nuestro equipo te responderá muy pronto.
                 </FeedbackMessage>
+              )}
+
+              {errorMsg && (
+                <ErrorMessage role="alert">
+                  {errorMsg}
+                </ErrorMessage>
               )}
             </form>
           </div>
 
           {/* COLUMNA DETALLES: CÓMO LLEGAR Y REDES SOCIALES */}
-          <div className="contact-details-column">
+          <div className="contact-details-column" data-reveal="up">
             <div className="contact-how-to">
               <h2>Cómo llegar</h2>
               <div className="contact-direction-item">

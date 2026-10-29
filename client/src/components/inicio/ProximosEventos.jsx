@@ -261,9 +261,9 @@ const ProximosEventos = () => {
       <Container>
         <Grid className="home-events-grid">
           {/* Bloque Izquierdo: Próximos Eventos */}
-          <LeftBlock>
+          <LeftBlock data-reveal="media">
             <BackgroundImage
-              src="/inicio/proximos-eventos.webp"
+              src="/images/inicio/inicio-proximos-eventos.webp"
               alt="Eventos en Bodega Santa Catarina"
               loading="lazy"
             />
@@ -284,9 +284,9 @@ const ProximosEventos = () => {
           </LeftBlock>
 
           {/* Bloque Derecho: Celebra tu evento en Santa Catarina */}
-          <RightBlock>
+          <RightBlock data-reveal="media" data-reveal-delay="110">
             <RightBackgroundImage
-              src="/assets/Santa_Catarina_268-gAddmlwS.jpg"
+              src="/images/inicio/inicio-celebra-eventos.webp"
               alt="Celebración en Bodega Santa Catarina"
               loading="lazy"
             />

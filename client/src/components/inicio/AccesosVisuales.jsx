@@ -151,14 +151,6 @@ const CardLink = styled(ScrollLink)`
 
 const ACCESOS = [
   {
-    id: 'enoturismo',
-    title: 'ENOTURISMO',
-    subtitle: 'Vive una experiencia única entre viñedos.',
-    image: '/inicio/enoturismo-card.webp',
-    path: '/enoturismo',
-    ariaLabel: 'Ir a ENOTURISMO',
-  },
-  {
     id: 'vinos',
     title: 'NUESTROS VINOS',
     subtitle: 'La esencia de Mallorca en cada copa.',
@@ -167,27 +159,35 @@ const ACCESOS = [
     ariaLabel: 'Ir a NUESTROS VINOS',
   },
   {
-    id: 'eventos',
-    title: 'EVENTOS Y BODAS',
-    subtitle: 'Momentos inolvidables en un entorno mágico.',
-    image: '/inicio/eventos-y-bodas-card.webp',
-    path: '/eventos',
-    ariaLabel: 'Ir a EVENTOS Y BODAS',
-  },
-  {
     id: 'tienda',
-    title: 'TIENDA ONLINE',
+    title: 'TIENDA FÍSICA',
     subtitle: 'Llévate Santa Catarina a casa.',
     image: '/inicio/tienda-fisica-card.webp',
     path: '/tienda',
-    ariaLabel: 'Ir a TIENDA ONLINE',
+    ariaLabel: 'Ir a TIENDA FÍSICA',
+  },
+  {
+    id: 'enoturismo',
+    title: 'ENOTURISMO',
+    subtitle: 'Vive una experiencia única entre viñedos.',
+    image: '/inicio/enoturismo-card.webp',
+    path: '/enoturismo',
+    ariaLabel: 'Ir a ENOTURISMO',
+  },
+  {
+    id: 'eventos',
+    title: 'EVENTOS Y BODAS',
+    subtitle: 'Momentos inolvidables en un entorno mágico.',
+    image: '/images/inicio/inicio-celebra-eventos.webp',
+    path: '/eventos',
+    ariaLabel: 'Ir a EVENTOS Y BODAS',
   },
 ];
 
 const AccesosVisuales = () => {
   return (
     <SectionWrapper>
-      <SectionContainer>
+      <SectionContainer data-reveal-group="85" data-reveal-group-type="media" data-reveal-cols="4">
         {ACCESOS.map((acceso) => (
           <CardLink
             key={acceso.id}

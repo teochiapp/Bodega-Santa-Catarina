@@ -12,7 +12,7 @@ const seedMenus = async () => {
       duracion: '2 horas',
       duracionMin: 120,
       cupoPorSesion: 12,
-      portada: '/assets/Santa_Catarina_526-yhzhdQ3t.jpg',
+      portada: '/images/catas-menus-experiencias/menu-mallorquin-526.webp',
       diasSemanaIndices: [4, 5, 6, 0], // Jueves (4), Viernes (5), Sábado (6), Domingo (0)
       horas: ['13:30'],
     },
@@ -26,7 +26,7 @@ const seedMenus = async () => {
       duracion: '2.5 horas',
       duracionMin: 150,
       cupoPorSesion: 16,
-      portada: '/assets/yellow-rice-with-chicken-vegetables-black-slate-background-CxOQ-5eS.jpg',
+      portada: '/images/catas-menus-experiencias/menu-paella.webp',
       diasSemanaIndices: [5, 6, 0], // Viernes (5), Sábado (6), Domingo (0)
       horas: ['14:00'],
     },
@@ -40,7 +40,7 @@ const seedMenus = async () => {
       duracion: '3 horas',
       duracionMin: 180,
       cupoPorSesion: 20,
-      portada: '/assets/grilled-meat-cutlet-with-eggplant-mushroom-tomatoes-rosemary-board-tiVwnjVv.jpg',
+      portada: '/images/catas-menus-experiencias/menu-barbacoa.webp',
       diasSemanaIndices: [6, 0], // Sábado (6), Domingo (0)
       horas: ['14:00'],
     },

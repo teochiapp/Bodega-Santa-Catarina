@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { postPedido, getPedidos, putEstado } = require('../controllers/pedidosTarjetasController');
+const { postPedido, getBonoHtml, getPedidos, putEstado } = require('../controllers/pedidosTarjetasController');
 const { verificarToken } = require('../middlewares/authMiddleware');
 const rateLimit = require('../middlewares/rateLimit');
 
@@ -12,6 +12,7 @@ const limitarCreacion = rateLimit({
 
 // Público
 router.post('/', limitarCreacion, postPedido);
+router.get('/bono/:codigo', getBonoHtml);
 
 // Admin
 router.get('/', verificarToken, getPedidos);

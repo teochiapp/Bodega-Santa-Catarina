@@ -160,25 +160,25 @@ const MICE_DATA = [
   {
     id: 'alquiler-salas-espacios',
     name: 'Alquiler de salas y espacios',
-    image: '/assets/COMIDA_SALAPOLIVALENTE-Dh7a8Yyy.png',
+    image: '/images/eventos/eventos-salas.webp',
     description: 'Distintos espacios adaptados a cada formato de reunión o evento.',
   },
   {
     id: 'jornadas-completas',
     name: 'Jornadas completas',
-    image: '/assets/Santa_Cararina_367-DLf8Imzi.jpg',
+    image: '/images/espacios/salas-jornadas-completas.webp',
     description: 'Reuniones, team buildings, visitas guiadas, catas y comidas.',
   },
   {
     id: 'almuerzos-cenas-empresa',
     name: 'Almuerzos y cenas de empresa',
-    image: '/assets/Santa_Catarina_361-DFXuees_.jpg',
+    image: '/images/espacios/espacios-cena-almuerzo.webp',
     description: 'Propuestas gastronómicas en un entorno único.',
   },
   {
     id: 'regalos-corporativos',
     name: 'Regalos corporativos',
-    image: '/assets/Gemini_Generated_Image_pldkkipldkkipldk-Bl4U6DI3.jpeg',
+    image: '/images/espacios/espacios-regalos-corporativos.webp',
     description: 'Nuestros vinos, con condiciones especiales para empresas y la posibilidad de crear un vino personalizado para vuestra marca.',
   },
 ];
@@ -248,7 +248,7 @@ const MiceCorporativos = () => {
       <FormularioEventos
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        defaultTipoEvento="MICE y eventos corporativos"
+        defaultTipoEvento={selectedItem ? `MICE y eventos corporativos · ${selectedItem}` : 'MICE y eventos corporativos'}
       />
     </MainWrapper>
   );

@@ -23,6 +23,7 @@ const crearCata = async (data) => {
   return prisma.cata.create({
     data: {
       titulo: data.titulo,
+      subtitulo: data.subtitulo ? String(data.subtitulo).trim() : null,
       precio: parseFloat(data.precio) || 0,
       descripcion: data.descripcion || '',
       portada: data.portada || null,
@@ -41,6 +42,10 @@ const editarCata = async (id, data) => {
     where: { id: parseInt(id, 10) },
     data: {
       titulo: data.titulo !== undefined ? data.titulo : undefined,
+      subtitulo:
+        data.subtitulo !== undefined
+          ? (data.subtitulo ? String(data.subtitulo).trim() : null)
+          : undefined,
       precio: data.precio !== undefined ? parseFloat(data.precio) : undefined,
       descripcion: data.descripcion !== undefined ? data.descripcion : undefined,
       portada: data.portada !== undefined ? data.portada : undefined,

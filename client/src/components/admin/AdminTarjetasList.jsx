@@ -267,9 +267,9 @@ const AdminTarjetasList = () => {
   };
 
   return (
-    <AdminLayout section="Tarjetas">
-      <Kicker>Tienda & Experiencias para regalar</Kicker>
-      <PageH1>Tarjetas de Regalo</PageH1>
+    <AdminLayout section="Catálogo de Bonos">
+      <Kicker>Enoturismo & Visitas · Experiencias para regalar</Kicker>
+      <PageH1>Catálogo de Bonos</PageH1>
 
       <PanelHead>
         <span style={{ fontSize: 14, color: 'var(--tn-muted)' }}>

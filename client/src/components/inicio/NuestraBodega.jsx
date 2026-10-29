@@ -134,7 +134,7 @@ const NuestraBodega = () => {
   return (
     <Section>
       <Container>
-        <ImageContainer>
+        <ImageContainer data-reveal="media">
           <StyledImage
             src="/inicio/about-image-card.webp"
             alt="Vendimia en Bodega Santa Catarina"
@@ -142,7 +142,7 @@ const NuestraBodega = () => {
           />
         </ImageContainer>
 
-        <ContentWrapper>
+        <ContentWrapper data-reveal="up" data-reveal-delay="110">
           <Eyebrow>NUESTRA BODEGA</Eyebrow>
           <Title>{'UN\nLEGADO\nVIVO'}</Title>
           <Description>

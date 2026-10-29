@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import PageHero from '../components/common/PageHero';
 import FormularioEventos from '../components/eventos/FormularioEventos';
 
 const MainWrapper = styled.main`
@@ -232,7 +233,7 @@ const CATEGORIES_DATA = [
     title: 'Nuestros espacios',
     description:
       'Cuatro espacios versátiles entre la tradición de la casa histórica y la bodega contemporánea: Casa Son Aloy, Bodega, Clastra Exterior y Caseta.',
-    image: '/assets/Santa_Cararina_229-CzSpZpJL.jpg',
+    image: '/images/espacios/espacios-casa-son-aloy.webp',
     path: '/eventos/nuestros-espacios',
     eventType: 'Solicitud de espacio',
     buttonText: 'EXPLORAR ESPACIOS',
@@ -243,7 +244,7 @@ const CATEGORIES_DATA = [
     title: 'MICE y eventos corporativos',
     description:
       'Alquiler de salas, jornadas completas, almuerzos de empresa y regalos corporativos en un entorno inspirador rodeado de viñedos mallorquines.',
-    image: '/assets/CENAELEGANTE_SALABARRICAS2-BnLV_zoJ.jpeg',
+    image: '/images/eventos/eventos-salas.webp',
     path: '/eventos/mice-y-eventos-corporativos',
     eventType: 'MICE y eventos corporativos',
     buttonText: 'VER PROPUESTAS',
@@ -254,7 +255,7 @@ const CATEGORIES_DATA = [
     title: 'Celebraciones privadas',
     description:
       'Cumpleaños, aniversarios, bautizos y comuniones. Composiciones editoriales personalizadas para que tus momentos familiares sean inolvidables.',
-    image: '/assets/Ivan_Pomposo_Photography___Design_-_Bodega_Santa_Catarina_-_0086-BIDckyB8.jpg',
+    image: '/images/eventos/evento-celebraciones-privadas.webp',
     path: '/eventos/celebraciones-privadas',
     eventType: 'Celebraciones privadas',
     buttonText: 'DESCUBRIR CELEBRACIONES',
@@ -265,7 +266,7 @@ const CATEGORIES_DATA = [
     title: 'Bodas',
     description:
       'Vuestra historia merece un escenario único. Ceremonias civiles, cócteles al atardecer, banquetes al aire libre y celebración bajo las estrellas.',
-    image: '/assets/Ivan_Pomposo_Photography___Design_-_Bodega_Santa_Catarina_-_0036-BwbLxc7B.jpg',
+    image: '/images/eventos/bodas-ceremonias.webp',
     path: '/eventos/bodas',
     eventType: 'Bodas',
     buttonText: 'VER BODAS',
@@ -286,7 +287,15 @@ const EventosPage = () => {
   };
 
   return (
-    <MainWrapper id="portada-eventos" className="event-cover">
+    <>
+      <PageHero
+        seccion="eventos"
+        tag="EVENTOS Y BODAS"
+        title="El escenario perfecto"
+        subtitle="Momentos inolvidables en un entorno mágico en Bodega Santa Catarina."
+        image="/images/heros/hero-eventos.webp"
+      />
+      <MainWrapper id="portada-eventos" className="event-cover">
       <IntroSection className="event-page-introduction">
         <Eyebrow className="event-eyebrow">PORTADA EVENTOS Y BODAS</Eyebrow>
         <Heading>El escenario perfecto</Heading>
@@ -356,6 +365,7 @@ const EventosPage = () => {
         defaultTipoEvento={modalEventType}
       />
     </MainWrapper>
+    </>
   );
 };
 

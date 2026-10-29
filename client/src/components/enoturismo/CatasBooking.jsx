@@ -419,7 +419,7 @@ const CatasBooking = ({ catas, cataInicial }) => {
             >
               <option value="">Elige una experiencia</option>
               {catas.map((c) => (
-                <option key={c.id} value={c.id}>{c.titulo} · {Number(c.precio).toFixed(0)} €/pax</option>
+                <option key={c.id} value={c.id}>{c.subtitulo ? `${c.titulo} (${c.subtitulo})` : c.titulo} · {Number(c.precio).toFixed(0)} €/pax</option>
               ))}
             </Select>
 
@@ -506,7 +506,7 @@ const CatasBooking = ({ catas, cataInicial }) => {
             {error && <ErrorNote role="alert">{error}</ErrorNote>}
             <FullText>
               {listo
-                ? `${cata.titulo} · ${fecha} · ${horario} h · ${personas} persona(s)`
+                ? `${cata.subtitulo ? `${cata.titulo} (${cata.subtitulo})` : cata.titulo} · ${fecha} · ${horario} h · ${personas} persona(s)`
                 : 'Selecciona un día y un horario disponibles para continuar.'}
             </FullText>
             <Submit type="submit" disabled={!listo || enviando}>{enviando ? 'CONFIRMANDO…' : 'CONFIRMAR RESERVA'}</Submit>

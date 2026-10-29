@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import api, { getResolvedImageUrl } from '../../services/api';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const SectionWrapper = styled.div`
   max-width: 1280px;
@@ -334,24 +335,34 @@ const DEFAULT_TARJETAS = [
     id: 1,
     titulo: 'Bono regalo 1',
     precio: '150 € / 2 pax',
-    portada: '/assets/bono-regalo-1.jpg',
+    portada: '/images/catas-menus-experiencias/experiencia-3-vinos.webp',
     descripcion: 'Incluye recorrido guiado por la bodega y viñedos, cata de 3 vinos y maridaje de aperitivos típicos mallorquines para dos personas.',
   },
   {
     id: 2,
     titulo: 'Bono regalo 2',
     precio: '250 € / 2 pax',
-    portada: '/assets/bono-regalo-2.jpg',
+    portada: '/images/catas-menus-experiencias/cata-5-vinos.webp',
     descripcion: 'Experiencia enológica y gastronómica completa para dos personas: visita a viñedos, cata de autor y almuerzo maridado en nuestra terraza con vistas a la Sierra de Tramuntana.',
   },
   {
     id: 3,
     titulo: 'Bono personalizado',
     precio: 'Consultar',
-    portada: '/assets/bono-personalizado.jpg',
+    portada: '/images/catas-menus-experiencias/experiencia-5-vinos.webp',
     descripcion: 'Diseña una experiencia a tu medida: catas privadas, almuerzos entre viñas, celebraciones especiales o regalos corporativos. Solicita presupuesto sin compromiso.',
   },
 ];
+
+const resolveBonoImage = (t) => {
+  const title = (t.titulo || '').toLowerCase();
+  if (!t.portada || t.portada.startsWith('/assets/') || t.portada === '/isologo.png') {
+    if (title.includes('personalizado')) return '/images/catas-menus-experiencias/experiencia-5-vinos.webp';
+    if (title.includes('2')) return '/images/catas-menus-experiencias/cata-5-vinos.webp';
+    return '/images/catas-menus-experiencias/experiencia-3-vinos.webp';
+  }
+  return t.portada;
+};
 
 const formatearPrecio = (t) => {
   if (typeof t.precio === 'string' && (t.precio.includes('€') || t.precio.toLowerCase().includes('consultar'))) {
@@ -446,7 +457,7 @@ const TarjetasRegalo = () => {
   return (
     <SectionWrapper id="regala-tu-experiencia" style={{ scrollMarginTop: '110px' }}>
       <Section className="enoturismo-experiences-section">
-        <Heading className="enoturismo-section-heading">
+        <Heading className="enoturismo-section-heading" data-reveal="up">
           <div>
             <Eyebrow className="enoturismo-panel-eyebrow">NUESTRAS EXPERIENCIAS</Eyebrow>
             <Title>Regala una experiencia inolvidable</Title>
@@ -459,10 +470,15 @@ const TarjetasRegalo = () => {
           </Intro>
         </Heading>
 
-        <Grid className="enoturismo-card-grid is-three-columns">
+        <Grid
+          className="enoturismo-card-grid is-three-columns"
+          data-reveal-group="85"
+          data-reveal-group-type="media"
+          data-reveal-cols="3"
+        >
           {tarjetas.map((t) => {
             const isInfoOpen = infoAbierta === t.id;
-            const imgSrc = getResolvedImageUrl(t.portada || '/assets/bono-regalo-1.jpg');
+            const imgSrc = getResolvedImageUrl(resolveBonoImage(t));
             return (
               <Card key={t.id} className="enoturismo-experience-card">
                 <CardImage className="enoturismo-card-image">
@@ -558,48 +574,68 @@ const TarjetasRegalo = () => {
               <div style={{ textAlign: 'center', padding: '2rem 0' }}>
                 <h3>¡Solicitud recibida!</h3>
                 <p>
-                  Gracias <strong>{datosContacto.nombre}</strong>. Nos pondremos en contacto contigo en breve para preparar y personalizar tu <strong>{modalBono.titulo}</strong>.
-                  {codigoSolicitud && <><br />Código de solicitud: <strong>{codigoSolicitud}</strong>. Te hemos enviado un email de confirmación.</>}
+                  Gracias <strong>{datosContacto.nombre}</strong>. Hemos enviado a <strong>{datosContacto.email}</strong> tu <strong>{modalBono.titulo}</strong> personalizado con todos los datos indicados y nos pondremos en contacto contigo en breve para completar su activación.
+                  {codigoSolicitud && (
+                    <>
+                      <br />
+                      N° de Bono: <strong>{codigoSolicitud}</strong>
+                    </>
+                  )}
                 </p>
-                <PrimaryButton type="button" onClick={cerrarModal}>Cerrar</PrimaryButton>
+                <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '1.25rem' }}>
+                  {codigoSolicitud && (
+                    <PrimaryButton
+                      as="a"
+                      href={`${API_BASE_URL}/pedidos-tarjetas/bono/${encodeURIComponent(codigoSolicitud)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ textDecoration: 'none' }}
+                    >
+                      Ver / Imprimir Bono Regalo →
+                    </PrimaryButton>
+                  )}
+                  <SecondaryButton type="button" onClick={cerrarModal}>
+                    Cerrar
+                  </SecondaryButton>
+                </div>
               </div>
             ) : (
               <>
                 <h3>Solicitar {modalBono.titulo}</h3>
                 <p>
-                  Completa tus datos y nos pondremos en contacto contigo para preparar y personalizar tu tarjeta regalo.
+                  Completa tus datos y los de la persona destinataria. Recibirás por email el Bono Regalo personalizado (anverso y reverso).
                 </p>
                 <form onSubmit={handleSubmitSolicitud}>
                   <input
                     type="text"
                     required
-                    placeholder="Tu nombre completo"
+                    placeholder="Tu nombre completo *"
                     value={datosContacto.nombre}
                     onChange={(e) => setDatosContacto({ ...datosContacto, nombre: e.target.value })}
                   />
                   <input
                     type="email"
                     required
-                    placeholder="Tu email de contacto"
+                    placeholder="Tu email de contacto *"
                     value={datosContacto.email}
                     onChange={(e) => setDatosContacto({ ...datosContacto, email: e.target.value })}
                   />
                   <input
                     type="tel"
                     required
-                    placeholder="Teléfono"
+                    placeholder="Teléfono de contacto *"
                     value={datosContacto.telefono}
                     onChange={(e) => setDatosContacto({ ...datosContacto, telefono: e.target.value })}
                   />
                   <input
                     type="text"
-                    placeholder="Nombre del destinatario (opcional)"
+                    placeholder="PARA: Nombre de la persona destinataria"
                     value={datosContacto.destinatario}
                     onChange={(e) => setDatosContacto({ ...datosContacto, destinatario: e.target.value })}
                   />
                   <textarea
                     rows={3}
-                    placeholder="Dedicatoria o comentarios para el bono (opcional)"
+                    placeholder="Dedicatoria para el bono regalo (opcional)"
                     value={datosContacto.mensaje}
                     onChange={(e) => setDatosContacto({ ...datosContacto, mensaje: e.target.value })}
                   />

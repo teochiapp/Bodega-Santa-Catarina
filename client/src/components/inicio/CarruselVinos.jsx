@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { ScrollLink } from '../common/ScrollToTop';
 import { obtenerVinos } from '../../services/vinosService';
+import { getResolvedImageUrl } from '../../services/api';
 
 const Section = styled.section`
   padding: 100px 0;
@@ -196,37 +197,111 @@ const WineImage = styled.img`
   }
 `;
 
-const FALLBACK_BOTTLES = [
-  '/assets/VINOS-02-Ks3neInp.png', // Manto Negro · TINTO
-  '/assets/VINOS-01-CN8tKOST.png', // Callet · TINTO
-  '/assets/VINOS-03-B468iQdg.png', // Prensal · BLANCO
-  '/assets/VINOS-04-ulQYCRB4.png', // Giró Ros · BLANCO
-];
+const COLECCIONES_ORDER = {
+  'Gama sta': 1,
+  'Colección Surant': 2,
+  'Colección ‘Nguany': 3,
+  'Colección \'Nguany': 3,
+};
+
+const DEFAULT_IMAGES = {
+  'Manto Negro': '/assets/VINOS-02.png',
+  'Callet': '/assets/VINOS-01.png',
+  'Prensal': '/assets/VINOS-03.png',
+  'Giró Ros': '/assets/VINOS-04.png',
+  'Surant Blanco': '/assets/VINOS-06.png',
+  'Surant Rosado': '/assets/VINOS-05.png',
+  '‘Nguany Tinto': '/assets/wine-nguany-tinto.png',
+  '\'Nguany Tinto': '/assets/wine-nguany-tinto.png',
+  '‘Nguany Blanco': '/assets/wine-nguany-blanco.png',
+  '\'Nguany Blanco': '/assets/wine-nguany-blanco.png',
+  '‘Nguany Rosado': '/assets/wine-nguany-rosado.png',
+  '\'Nguany Rosado': '/assets/wine-nguany-rosado.png',
+};
+
+const resolveCollectionPath = (coleccion) => {
+  const c = (coleccion || '').toLowerCase();
+  if (c.includes('sta')) return '/vinos#coleccion-sta';
+  if (c.includes('surant')) return '/vinos#coleccion-surant';
+  if (c.includes('nguany')) return '/vinos#coleccion-nguany';
+  return '/vinos';
+};
+
+const resolveWineImage = (v) => {
+  if (v.portada && v.portada !== '/isologo.png' && v.portada.trim() !== '') {
+    return getResolvedImageUrl(v.portada);
+  }
+  const cleanTitle = (v.titulo || '').replace(/[‘’']/g, "'").trim();
+  return (
+    DEFAULT_IMAGES[v.titulo] ||
+    DEFAULT_IMAGES[cleanTitle] ||
+    '/assets/VINOS-01.png'
+  );
+};
 
 const DEFAULT_VINOS = [
   {
-    id: 'vino-1',
+    id: 6,
     nombre: 'Manto Negro · TINTO',
     alt: 'Manto Negro · TINTO',
-    imagen: '/assets/VINOS-02-Ks3neInp.png',
+    imagen: '/assets/VINOS-02.png',
+    path: '/vinos#coleccion-sta',
   },
   {
-    id: 'vino-2',
+    id: 7,
     nombre: 'Callet · TINTO',
     alt: 'Callet · TINTO',
-    imagen: '/assets/VINOS-01-CN8tKOST.png',
+    imagen: '/assets/VINOS-01.png',
+    path: '/vinos#coleccion-sta',
   },
   {
-    id: 'vino-3',
+    id: 8,
     nombre: 'Prensal · BLANCO',
     alt: 'Prensal · BLANCO',
-    imagen: '/assets/VINOS-03-B468iQdg.png',
+    imagen: '/assets/VINOS-03.png',
+    path: '/vinos#coleccion-sta',
   },
   {
-    id: 'vino-4',
+    id: 9,
     nombre: 'Giró Ros · BLANCO',
     alt: 'Giró Ros · BLANCO',
-    imagen: '/assets/VINOS-04-ulQYCRB4.png',
+    imagen: '/assets/VINOS-04.png',
+    path: '/vinos#coleccion-sta',
+  },
+  {
+    id: 10,
+    nombre: 'Surant Blanco · BLANCO',
+    alt: 'Surant Blanco · BLANCO',
+    imagen: '/assets/VINOS-06.png',
+    path: '/vinos#coleccion-surant',
+  },
+  {
+    id: 11,
+    nombre: 'Surant Rosado · ROSADO',
+    alt: 'Surant Rosado · ROSADO',
+    imagen: '/assets/VINOS-05.png',
+    path: '/vinos#coleccion-surant',
+  },
+  {
+    id: 12,
+    nombre: '‘Nguany Tinto · TINTO',
+    alt: '‘Nguany Tinto · TINTO',
+    imagen: '/assets/wine-nguany-tinto.png',
+    path: '/vinos#coleccion-nguany',
+  },
+  {
+    id: 13,
+    nombre: '‘Nguany Blanco · BLANCO',
+    alt: '‘Nguany Blanco · BLANCO',
+    imagen: '/assets/wine-nguany-blanco.png',
+    path: '/vinos#coleccion-nguany',
+  },
+  {
+    id: 14,
+    nombre: '‘Nguany Rosado · ROSADO',
+    alt: '‘Nguany Rosado · ROSADO',
+    imagen: '/assets/wine-nguany-rosado.png',
+    path: '/vinos#coleccion-nguany',
   },
 ];
 
@@ -236,7 +311,7 @@ const CarruselVinos = () => {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  // Carga los vinos directamente desde la API del admin
+  // Carga los vinos directamente desde la API del catálogo
   useEffect(() => {
     let isMounted = true;
     obtenerVinos()
@@ -246,13 +321,17 @@ const CarruselVinos = () => {
           const activos = data.filter((v) => v.activo !== false);
           const listaUsar = activos.length > 0 ? activos : data;
 
-          const mapeados = listaUsar.map((v, index) => {
-            const fallbackImg = FALLBACK_BOTTLES[index % FALLBACK_BOTTLES.length];
-            const hasCustomImg =
-              v.portada &&
-              v.portada !== '/isologo.png' &&
-              v.portada.trim() !== '';
+          const sortedVinos = [...listaUsar].sort((a, b) => {
+            const colA = COLECCIONES_ORDER[a.coleccion] || 99;
+            const colB = COLECCIONES_ORDER[b.coleccion] || 99;
+            if (colA !== colB) return colA - colB;
+            const ordenA = Number(a.orden ?? 0);
+            const ordenB = Number(b.orden ?? 0);
+            if (ordenA !== ordenB) return ordenA - ordenB;
+            return (a.id || 0) - (b.id || 0);
+          });
 
+          const mapeados = sortedVinos.map((v) => {
             const tipoLabel = v.tipo ? ` · ${v.tipo.toUpperCase()}` : '';
             const nombre = v.titulo || v.variedad || 'Vino Santa Catarina';
             const fullLabel = `${nombre}${tipoLabel}`;
@@ -261,7 +340,8 @@ const CarruselVinos = () => {
               id: v.id,
               nombre: fullLabel,
               alt: fullLabel,
-              imagen: hasCustomImg ? v.portada : fallbackImg,
+              imagen: resolveWineImage(v),
+              path: resolveCollectionPath(v.coleccion),
             };
           });
 
@@ -269,7 +349,7 @@ const CarruselVinos = () => {
         }
       })
       .catch((err) => {
-        console.warn('[CarruselVinos] Error cargando vinos de la API, usando catálogo por defecto:', err);
+        console.warn('[CarruselVinos] Error cargando vinos de la API, usando catálogo real por defecto:', err);
       });
 
     return () => {
@@ -324,12 +404,12 @@ const CarruselVinos = () => {
   return (
     <Section>
       <Container>
-        <HeaderRow>
+        <HeaderRow data-reveal="up">
           <SectionTitle>VINOS CON ALMA</SectionTitle>
           <ViewAllButton to="/vinos">VER TODOS</ViewAllButton>
         </HeaderRow>
 
-        <CarouselLayout>
+        <CarouselLayout data-reveal="up" data-reveal-delay="90">
           <ArrowButton
             type="button"
             aria-label="Vinos anteriores"
@@ -350,7 +430,7 @@ const CarruselVinos = () => {
             {vinos.map((vino) => (
               <WineCard
                 key={vino.id}
-                to="/vinos"
+                to={vino.path || '/vinos'}
                 data-wine-card
                 aria-label={`Ver ${vino.nombre}`}
               >
@@ -359,6 +439,13 @@ const CarruselVinos = () => {
                     src={vino.imagen}
                     alt={vino.alt}
                     loading="lazy"
+                    onError={(e) => {
+                      const cleanTitle = (vino.alt || '').split(' · ')[0].replace(/[‘’']/g, "'").trim();
+                      const fallback = DEFAULT_IMAGES[cleanTitle] || '/assets/VINOS-01.png';
+                      if (!e.currentTarget.src.endsWith(fallback)) {
+                        e.currentTarget.src = fallback;
+                      }
+                    }}
                   />
                 </CardInner>
               </WineCard>

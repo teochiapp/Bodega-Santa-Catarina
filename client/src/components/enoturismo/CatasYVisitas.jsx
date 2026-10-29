@@ -28,6 +28,7 @@ const BookingToggle = styled.button`
 const CatasYVisitas = () => {
   const [catas, setCatas] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [errorCarga, setErrorCarga] = useState(false);
   const [bookingAbierto, setBookingAbierto] = useState(false);
   const [cataId, setCataId] = useState('');
   const toggleRef = useRef(null);
@@ -36,12 +37,19 @@ const CatasYVisitas = () => {
     let activo = true;
     api.get('/catas')
       .then((data) => {
-        if (activo) setCatas((Array.isArray(data) ? data : []).filter((c) => c.activo && c.horarios?.length));
+        if (activo) {
+          setCatas((Array.isArray(data) ? data : []).filter((c) => c.activo !== false));
+          setErrorCarga(false);
+        }
       })
-      .catch(() => {})
+      .catch(() => {
+        if (activo) setErrorCarga(true);
+      })
       .finally(() => activo && setCargando(false));
     return () => { activo = false; };
   }, []);
+
+  const catasReservables = catas.filter((c) => !c.horarios || c.horarios.length > 0);
 
   const handleReservar = (id) => {
     setCataId(String(id));
@@ -51,7 +59,12 @@ const CatasYVisitas = () => {
 
   return (
     <div id="catas-y-visitas" style={{ scrollMarginTop: '110px' }}>
-      <CatasCatalogo catas={catas} cargando={cargando} onReservar={handleReservar} />
+      <CatasCatalogo
+        catas={catas}
+        cargando={cargando}
+        usarFallback={errorCarga}
+        onReservar={handleReservar}
+      />
       <BookingToggle
         ref={toggleRef}
         type="button"
@@ -62,7 +75,7 @@ const CatasYVisitas = () => {
         <span>RESERVA ONLINE · CALENDARIO Y DISPONIBILIDAD</span>
         <span aria-hidden="true">{bookingAbierto ? '−' : '+'}</span>
       </BookingToggle>
-      {bookingAbierto && <CatasBooking key={cataId} catas={catas} cataInicial={cataId} />}
+      {bookingAbierto && <CatasBooking key={cataId} catas={catasReservables} cataInicial={cataId} />}
       <CatasFeatures />
     </div>
   );

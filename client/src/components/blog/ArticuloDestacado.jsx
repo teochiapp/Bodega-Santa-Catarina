@@ -395,16 +395,18 @@ const ArticuloDestacado = () => {
 
   return (
     <Section>
-      <MetaRow>
-        <CategoryBadge>
-          {articuloActual.categoria || 'NOTICIAS DE LA BODEGA'}
-        </CategoryBadge>
-        <MetaDate>{fechaFmt}</MetaDate>
-      </MetaRow>
+      <div data-reveal="up">
+        <MetaRow>
+          <CategoryBadge>
+            {articuloActual.categoria || 'NOTICIAS DE LA BODEGA'}
+          </CategoryBadge>
+          <MetaDate>{fechaFmt}</MetaDate>
+        </MetaRow>
 
-      <MainTitle>{articuloActual.titulo}</MainTitle>
+        <MainTitle>{articuloActual.titulo}</MainTitle>
+      </div>
 
-      <ImageWrapper>
+      <ImageWrapper data-reveal="media" data-reveal-delay="85">
         <HeroImage
           src={imgSrc}
           alt={articuloActual.titulo}
@@ -415,7 +417,7 @@ const ArticuloDestacado = () => {
       </ImageWrapper>
 
       <ContentGrid>
-        <ArticleBody>
+        <ArticleBody data-reveal="up">
           {paragraphs.length > 0 ? (
             <>
               <LeadParagraph>{paragraphs[0]}</LeadParagraph>
@@ -470,7 +472,7 @@ const ArticuloDestacado = () => {
           )}
         </ArticleBody>
 
-        <Aside>
+        <Aside data-reveal-group="95" data-reveal-cols="2">
           <CardProxima>
             <CardEyebrow>PRÓXIMA COSECHA</CardEyebrow>
             <CardTitleProxima>Vive la vendimia desde adentro</CardTitleProxima>

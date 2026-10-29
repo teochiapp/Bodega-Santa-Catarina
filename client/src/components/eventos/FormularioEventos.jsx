@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import api from '../../services/api';
 
 const ModalOverlay = styled(motion.div)`
   position: fixed;
@@ -282,6 +283,20 @@ const SuccessAlert = styled(motion.div)`
   margin-bottom: 6px;
 `;
 
+const ErrorAlert = styled(motion.div)`
+  grid-column: 1 / -1;
+  background-color: rgba(140, 29, 29, 0.1);
+  border: 1px solid rgba(140, 29, 29, 0.28);
+  color: #8c1d1d;
+  padding: 0.9rem 1.15rem;
+  border-radius: 4px;
+  font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
+  font-size: 0.86rem;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 6px;
+`;
+
 const FormularioEventos = ({
   isOpen = false,
   onClose,
@@ -293,8 +308,7 @@ const FormularioEventos = ({
     name: '',
     email: '',
     phone: '',
-    eventType: defaultTipoEvento,
-    space: selectedSpace || '',
+    spaceOverride: null,
     date: '',
     guests: '',
     message: '',
@@ -303,19 +317,18 @@ const FormularioEventos = ({
 
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  // Sincronizar datos al abrir el modal o cambiar props
-  useEffect(() => {
-    if (isOpen) {
-      setFormData((prev) => ({
-        ...prev,
-        eventType: defaultTipoEvento || 'Solicitud de espacio',
-        space: selectedSpace || '',
-      }));
-      setSubmitted(false);
-      setIsSubmitting(false);
-    }
-  }, [isOpen, defaultTipoEvento, selectedSpace]);
+  const effectiveEventType = defaultTipoEvento || 'Solicitud de espacio';
+  const effectiveSpace = formData.spaceOverride !== null ? formData.spaceOverride : (selectedSpace || '');
+
+  const handleClose = () => {
+    setSubmitted(false);
+    setIsSubmitting(false);
+    setErrorMsg('');
+    setFormData((prev) => ({ ...prev, spaceOverride: null }));
+    if (onClose) onClose();
+  };
 
   // Manejo de tecla Escape y bloqueo de scroll de la página
   useEffect(() => {
@@ -323,6 +336,10 @@ const FormularioEventos = ({
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && onClose) {
+        setSubmitted(false);
+        setIsSubmitting(false);
+        setErrorMsg('');
+        setFormData((prev) => ({ ...prev, spaceOverride: null }));
         onClose();
       }
     };
@@ -339,21 +356,34 @@ const FormularioEventos = ({
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    if (name === 'space') {
+      setFormData((prev) => ({ ...prev, spaceOverride: value }));
+      if (onSpaceChange) onSpaceChange(value);
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
-    if (name === 'space' && onSpaceChange) {
-      onSpaceChange(value);
-    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMsg('');
 
-    // Simulación de envío limpio y feedback de confirmación
-    setTimeout(() => {
+    try {
+      await api.post('/eventos-solicitud', {
+        nombre: formData.name,
+        email: formData.email,
+        telefono: formData.phone,
+        tipoEvento: effectiveEventType,
+        espacio: effectiveSpace,
+        fechaAproximada: formData.date,
+        invitados: formData.guests,
+        mensaje: formData.message,
+      });
+
       setIsSubmitting(false);
       setSubmitted(true);
       setTimeout(() => {
@@ -362,8 +392,7 @@ const FormularioEventos = ({
           name: '',
           email: '',
           phone: '',
-          eventType: defaultTipoEvento,
-          space: '',
+          spaceOverride: null,
           date: '',
           guests: '',
           message: '',
@@ -373,12 +402,15 @@ const FormularioEventos = ({
           onClose();
         }
       }, 3500);
-    }, 600);
+    } catch (err) {
+      setIsSubmitting(false);
+      setErrorMsg(err.message || 'No se pudo enviar la solicitud. Inténtalo de nuevo en unos instantes.');
+    }
   };
 
   const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget && onClose) {
-      onClose();
+    if (e.target === e.currentTarget) {
+      handleClose();
     }
   };
 
@@ -408,7 +440,7 @@ const FormularioEventos = ({
               className="event-modal-close"
               type="button"
               aria-label="Cerrar formulario"
-              onClick={onClose}
+              onClick={handleClose}
             >
               <span aria-hidden="true">×</span>
             </CloseButton>
@@ -436,8 +468,19 @@ const FormularioEventos = ({
                       transition={{ duration: 0.25 }}
                     >
                       ¡Gracias por contactarnos! Hemos recibido tu solicitud para{' '}
-                      <strong>{formData.space || formData.eventType}</strong>. Nuestro equipo se pondrá en contacto contigo muy pronto.
+                      <strong>{effectiveSpace || effectiveEventType}</strong> y te hemos enviado una confirmación por correo. Nuestro equipo se pondrá en contacto contigo muy pronto.
                     </SuccessAlert>
+                  )}
+                  {errorMsg && (
+                    <ErrorAlert
+                      role="alert"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      {errorMsg}
+                    </ErrorAlert>
                   )}
                 </AnimatePresence>
 
@@ -497,7 +540,7 @@ const FormularioEventos = ({
                   aria-label="Tipo de evento"
                   type="text"
                   name="eventType"
-                  value={formData.eventType}
+                  value={effectiveEventType}
                   title="Tipo de evento"
                   style={{
                     padding: '14px',
@@ -512,7 +555,7 @@ const FormularioEventos = ({
                   required
                   name="space"
                   aria-label="Espacio de interés"
-                  value={formData.space}
+                  value={effectiveSpace}
                   onChange={handleChange}
                   style={{
                     padding: '14px',

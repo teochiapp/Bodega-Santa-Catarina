@@ -211,6 +211,180 @@ const HotspotButton = styled.button`
   }
 `;
 
+const WineryPointButton = styled.button`
+  position: absolute;
+  width: 160px;
+  height: 140px;
+  transform-origin: 80px 91px;
+  transform: translate(-80px, -91px);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  z-index: 18;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s ease, filter 0.25s ease;
+
+  .mallorca-winery-number {
+    font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
+    font-size: 1.42rem;
+    font-weight: 600;
+    line-height: 1;
+    color: #BA7D2C;
+    margin-bottom: 1px;
+    text-shadow: 0 0 6px rgba(245, 235, 217, 0.95);
+    transition: color 0.25s ease, transform 0.25s ease;
+  }
+
+  .mallorca-winery-icon {
+    width: 96px;
+    height: 61px;
+    overflow: visible;
+    margin-bottom: 2px;
+    filter: drop-shadow(0 2px 5px rgba(80, 43, 58, 0.12));
+    transition: transform 0.25s ease, filter 0.25s ease;
+  }
+
+  .mallorca-winery-ground {
+    fill: none;
+    stroke: #9C7438;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+
+  .mallorca-winery-vines {
+    fill: none;
+    stroke: #B68F4C;
+    stroke-width: 1.35;
+    stroke-linecap: round;
+  }
+
+  .mallorca-winery-building {
+    fill: #FAF1E2;
+    stroke: #8A5E2B;
+    stroke-width: 1.75;
+    stroke-linejoin: round;
+    transition: fill 0.25s ease, stroke 0.25s ease;
+  }
+
+  .mallorca-winery-roof {
+    fill: none;
+    stroke: #581826;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .mallorca-winery-door {
+    fill: rgba(186, 125, 44, 0.28);
+    stroke: #581826;
+    stroke-width: 1.65;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .mallorca-winery-detail {
+    fill: rgba(194, 164, 120, 0.34);
+    stroke: #8A5E2B;
+    stroke-width: 1.35;
+    stroke-linejoin: round;
+  }
+
+  .mallorca-winery-tree {
+    fill: rgba(182, 143, 76, 0.22);
+    stroke: #7D5A2B;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .mallorca-winery-dot {
+    position: relative;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background-color: ${({ $isActive }) => ($isActive ? 'rgb(80, 43, 58)' : '#BA6D18')};
+    box-shadow: ${({ $isActive }) =>
+      $isActive
+        ? '0 0 0 5px rgba(194, 164, 120, 0.55), 0 0 14px rgba(194, 164, 120, 0.7)'
+        : '0 0 0 4px rgba(194, 164, 120, 0.34), 0 0 10px rgba(186, 109, 24, 0.4)'};
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+  }
+
+  .mallorca-winery-label {
+    margin-top: 4px;
+    font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', 'Playfair Display', serif"};
+    font-size: 1.16rem;
+    font-weight: 700;
+    line-height: 1.05;
+    color: #502B3A;
+    white-space: nowrap;
+    text-shadow:
+      0 0 7px rgba(245, 235, 217, 0.98),
+      0 1px 2px rgba(245, 235, 217, 0.95);
+  }
+
+  .mallorca-winery-location {
+    margin-top: 2px;
+    font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', 'Raleway', sans-serif"};
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: #8C5E2A;
+    white-space: nowrap;
+    text-shadow: 0 0 6px rgba(245, 235, 217, 0.98);
+  }
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    transform: translate(-80px, -91px) scale(1.05);
+
+    .mallorca-winery-building {
+      fill: #FFF9EF;
+      stroke: #502B3A;
+    }
+
+    .mallorca-winery-dot {
+      transform: scale(1.18);
+      background-color: rgb(80, 43, 58);
+      box-shadow: 0 0 0 5px rgba(194, 164, 120, 0.55), 0 0 14px rgba(194, 164, 120, 0.75);
+    }
+  }
+
+  @media (max-width: 1360px) {
+    transform: translate(-80px, -91px) scale(0.84);
+    &:hover,
+    &:focus-visible {
+      transform: translate(-80px, -91px) scale(0.88);
+    }
+  }
+
+  @media (max-width: 1024px) {
+    transform: translate(-80px, -91px) scale(0.74);
+    &:hover,
+    &:focus-visible {
+      transform: translate(-80px, -91px) scale(0.78);
+    }
+  }
+
+  @media (max-width: 600px) {
+    transform: translate(-80px, -91px) scale(0.56);
+    &:hover,
+    &:focus-visible {
+      transform: translate(-80px, -91px) scale(0.6);
+    }
+  }
+`;
+
 const PopupCard = styled(motion.article)`
   position: absolute;
   z-index: 25;
@@ -224,7 +398,7 @@ const PopupCard = styled(motion.article)`
   flex-direction: column;
   gap: 4px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 960px) {
     display: none;
   }
 
@@ -274,6 +448,10 @@ const PopupCard = styled(motion.article)`
       border-left: 1px solid rgba(194, 164, 120, 0.45);
       border-top: 1px solid rgba(194, 164, 120, 0.45);
     }
+  }
+
+  &.is-winery.popup-bottom {
+    transform: translate(-50%, 38px);
   }
 `;
 
@@ -356,7 +534,7 @@ const MobileCarouselSection = styled.div`
   width: 100%;
   box-sizing: border-box;
 
-  @media (max-width: 768px) {
+  @media (max-width: 960px) {
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -417,6 +595,23 @@ const CarouselDot = styled.button`
   padding: 0;
   transition: all 0.25s ease;
 `;
+
+const WINERY_LOCATION = {
+  id: 7,
+  numero: 7,
+  isWinery: true,
+  isPalma: false,
+  location: 'SENCELLES',
+  label: 'Santa Catarina',
+  subLabel: 'SENCELLES',
+  name: 'Bodega Santa Catarina',
+  address: 'Carretera Inca – Sencelles, Km 3 · 07140 Sencelles (Mallorca) · España',
+  tel: null,
+  url: 'https://maps.google.com/?q=Carretera+Inca+Sencelles+Km3+07140+Sencelles+Mallorca',
+  linkText: 'CÓMO LLEGAR →',
+  coords: { left: '73.4%', top: '47.5%' },
+  popupPlacement: 'bottom',
+};
 
 const PUNTOS_MALLORCA = [
   {
@@ -503,6 +698,7 @@ const PUNTOS_MALLORCA = [
     coords: { left: '66.1%', top: '55.7%' },
     popupPlacement: 'bottom',
   },
+  WINERY_LOCATION,
 ];
 
 const MapaMallorca = () => {
@@ -576,7 +772,7 @@ const MapaMallorca = () => {
       <SectionLayout className="mallorca-section-layout">
         <MapWrap className="mallorca-map-wrap">
           {/* ── COLUMNA TEXTO ── */}
-          <MapCopy className="mallorca-map-copy">
+          <MapCopy className="mallorca-map-copy" data-reveal="up">
             <Eyebrow>MAPA DE DISTRIBUCIÓN</Eyebrow>
             <Line aria-hidden="true" />
             <Title>Encuentra nuestros vinos cerca de ti</Title>
@@ -588,8 +784,10 @@ const MapaMallorca = () => {
           {/* ── ESCENARIO ILUSTRADO CON PUNTOS ── */}
           <MapStage
             className="mallorca-illustrated-map"
+            data-reveal="media"
+            data-reveal-delay="110"
             role="img"
-            aria-label="Mapa ilustrado de Mallorca con seis distribuidores"
+            aria-label="Mapa ilustrado de Mallorca con seis distribuidores y la Bodega Santa Catarina"
           >
             <MapCanvas className="mallorca-map-canvas">
               <MapImage
@@ -602,6 +800,65 @@ const MapaMallorca = () => {
               {/* Puntos interactivos sobre el mapa */}
               {PUNTOS_MALLORCA.map((punto) => {
                 const isActive = activeId === punto.id;
+
+                if (punto.isWinery) {
+                  return (
+                    <WineryPointButton
+                      key={punto.id}
+                      type="button"
+                      className={`mallorca-winery-point ${isActive ? 'is-active' : ''}`}
+                      aria-label="Mostrar Bodega Santa Catarina en Sencelles"
+                      style={{ left: punto.coords.left, top: punto.coords.top }}
+                      $isActive={isActive}
+                      onMouseEnter={() => handleMouseEnter(punto.id)}
+                      onMouseLeave={handleMouseLeave}
+                      onFocus={() => handleMouseEnter(punto.id)}
+                      onBlur={handleMouseLeave}
+                      onClick={() => handlePointSelect(punto.id)}
+                    >
+                      <span className="mallorca-winery-number">{punto.numero}</span>
+                      <svg
+                        className="mallorca-winery-icon"
+                        viewBox="0 0 120 76"
+                        aria-hidden="true"
+                      >
+                        <path className="mallorca-winery-ground" d="M8 67H112" />
+                        <path
+                          className="mallorca-winery-vines"
+                          d="M8 72 38 63M23 74l24-11M112 72 82 63M97 74 73 63"
+                        />
+                        <path
+                          className="mallorca-winery-building"
+                          d="M35 31 60 15 85 31v34H35Z"
+                        />
+                        <path
+                          className="mallorca-winery-building"
+                          d="M18 42 35 31v34H18ZM85 31l17 11v23H85Z"
+                        />
+                        <path
+                          className="mallorca-winery-roof"
+                          d="m31 32 29-19 29 19M15 43l20-14M85 29l20 14"
+                        />
+                        <path
+                          className="mallorca-winery-door"
+                          d="M54 65V48c0-5 12-5 12 0v17"
+                        />
+                        <path
+                          className="mallorca-winery-detail"
+                          d="M44 41h6v7h-6zM70 41h6v7h-6zM57 28h6v7h-6zM24 49h6v7h-6zM90 49h6v7h-6z"
+                        />
+                        <path
+                          className="mallorca-winery-tree"
+                          d="M13 62V28M13 28c-7 10-7 21 0 28 7-7 7-18 0-28ZM107 62V34M107 34c-6 8-6 17 0 23 6-6 6-15 0-23Z"
+                        />
+                      </svg>
+                      <span className="mallorca-winery-dot" />
+                      <span className="mallorca-winery-label">{punto.label}</span>
+                      <span className="mallorca-winery-location">{punto.subLabel}</span>
+                    </WineryPointButton>
+                  );
+                }
+
                 return (
                   <HotspotButton
                     key={punto.id}
@@ -613,6 +870,8 @@ const MapaMallorca = () => {
                     aria-label={`${punto.numero}. ${punto.label}`}
                     onMouseEnter={() => handleMouseEnter(punto.id)}
                     onMouseLeave={handleMouseLeave}
+                    onFocus={() => handleMouseEnter(punto.id)}
+                    onBlur={handleMouseLeave}
                     onClick={() => handlePointSelect(punto.id)}
                   >
                     <span className="halo" />
@@ -620,19 +879,19 @@ const MapaMallorca = () => {
                 );
               })}
 
-              {/* Popup flotante en el mapa (Desktop al hacer hover) */}
+              {/* Popup flotante en el mapa (Desktop al hacer hover/click/focus) */}
               <AnimatePresence mode="wait">
                 {activePunto && (
                   <PopupCard
                     key={activePunto.id}
-                    className={`mallorca-map-popup popup-${activePunto.popupPlacement}`}
+                    className={`mallorca-map-popup ${activePunto.isWinery ? 'is-winery' : ''} popup-${activePunto.popupPlacement} is-active`}
                     style={{
                       left: activePunto.coords.left,
                       top: activePunto.coords.top,
                     }}
-                    initial={{ opacity: 0, scale: 0.94 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.94 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                     transition={{ duration: 0.2, ease: 'easeOut' }}
                     onMouseEnter={handleCardMouseEnter}
                     onMouseLeave={handleMouseLeave}
@@ -654,7 +913,7 @@ const MapaMallorca = () => {
                     </PopupHeader>
                     <PopupTitle>{activePunto.name}</PopupTitle>
                     <PopupText>{activePunto.address}</PopupText>
-                    <PopupText>{activePunto.tel}</PopupText>
+                    {activePunto.tel && <PopupText>{activePunto.tel}</PopupText>}
                     <PopupLink
                       href={activePunto.url}
                       target="_blank"
@@ -688,7 +947,7 @@ const MapaMallorca = () => {
                     <PopupLocation>{punto.location}</PopupLocation>
                     <PopupTitle>{punto.name}</PopupTitle>
                     <PopupText>{punto.address}</PopupText>
-                    <PopupText>{punto.tel}</PopupText>
+                    {punto.tel && <PopupText>{punto.tel}</PopupText>}
                     <PopupLink
                       href={punto.url}
                       target="_blank"
@@ -707,7 +966,7 @@ const MapaMallorca = () => {
                   key={punto.id}
                   type="button"
                   $isActive={(activeId || 1) === punto.id}
-                  aria-label={`Ver distribuidor de ${punto.label}`}
+                  aria-label={`Ver ${punto.isWinery ? 'Bodega' : 'distribuidor de'} ${punto.label}`}
                   onClick={() => handlePointSelect(punto.id)}
                 />
               ))}

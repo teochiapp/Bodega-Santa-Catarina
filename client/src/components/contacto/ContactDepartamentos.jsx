@@ -112,8 +112,8 @@ const ContactDepartamentos = () => {
   return (
     <SectionWrapper>
       <Container>
-        <SectionTitle>Contactos por departamento</SectionTitle>
-        <DeptList>
+        <SectionTitle data-reveal="up">Contactos por departamento</SectionTitle>
+        <DeptList data-reveal-group="55" data-reveal-cols="6">
           {departamentos.map((dept) => (
             <DeptRow key={dept.nombre}>
               <DeptName>{dept.nombre}</DeptName>

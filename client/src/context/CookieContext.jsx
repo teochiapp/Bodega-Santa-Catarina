@@ -16,6 +16,30 @@ const DEFAULT_PREFERENCES = {
   [COOKIE_CATEGORIES.MARKETING]: false,
 };
 
+// Sincronización oficial con Google Consent Mode v2 (RGPD UE / DMA)
+const syncGoogleConsentMode = (preferences) => {
+  if (typeof window === 'undefined') return;
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    window.dataLayer.push(arguments);
+  }
+
+  if (!window.gtag) {
+    window.gtag = gtag;
+  }
+
+  window.gtag('consent', 'update', {
+    analytics_storage: preferences?.analytics ? 'granted' : 'denied',
+    ad_storage: preferences?.marketing ? 'granted' : 'denied',
+    ad_user_data: preferences?.marketing ? 'granted' : 'denied',
+    ad_personalization: preferences?.marketing ? 'granted' : 'denied',
+    functionality_storage: preferences?.preferences ? 'granted' : 'denied',
+    personalization_storage: preferences?.preferences ? 'granted' : 'denied',
+    security_storage: 'granted',
+  });
+};
+
 const CookieContext = createContext(null);
 
 export const CookieProvider = ({ children }) => {
@@ -32,8 +56,16 @@ export const CookieProvider = ({ children }) => {
         const parsed = JSON.parse(stored);
         setConsent(parsed);
         setIsBannerVisible(false);
+        syncGoogleConsentMode(parsed);
       } else {
-        // Si no hay consentimiento previo, mostrar banner tras un breve retardo para no saturar
+        // Enfoque estricto RGPD / Consent Mode v2: denegado por defecto hasta interacción
+        syncGoogleConsentMode({
+          analytics: false,
+          marketing: false,
+          preferences: false,
+        });
+
+        // Mostrar banner tras un breve retardo para no saturar
         const timer = setTimeout(() => {
           setIsBannerVisible(true);
         }, 800);
@@ -64,7 +96,10 @@ export const CookieProvider = ({ children }) => {
     setIsBannerVisible(false);
     setIsModalOpen(false);
 
-    // Disparar evento personalizado para servicios externos (Google Analytics, Pixel, etc.)
+    // Actualizar señales para Google Analytics / Google Ads (Consent Mode v2)
+    syncGoogleConsentMode(payload);
+
+    // Disparar evento personalizado para servicios externos (Pixel, GTM, etc.)
     if (typeof window !== 'undefined') {
       window.dispatchEvent(
         new CustomEvent('santacatarina_cookie_consent_update', {

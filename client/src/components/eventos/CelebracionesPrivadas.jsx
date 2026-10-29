@@ -1,89 +1,13 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import PageHero from '../common/PageHero';
 import FormularioEventos from './FormularioEventos';
 
 const PageWrapper = styled.div`
   background-color: ${({ theme }) => theme.colors?.background || '#F2ECE4'};
   width: 100%;
   box-sizing: border-box;
-`;
-
-const HeroSection = styled.section`
-  position: relative;
-  width: 100%;
-  height: 500px;
-  min-height: 500px;
-  overflow: hidden;
-
-  @media (max-width: 768px) {
-    height: 400px;
-    min-height: 400px;
-  }
-`;
-
-const HeroImage = styled.img`
-  position: static;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(1) contrast(1.02);
-`;
-
-const HeroOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to right top,
-    rgba(35, 15, 25, 0.45) 0%,
-    rgba(35, 15, 25, 0.22) 46%,
-    rgba(35, 15, 25, 0.05) 78%,
-    rgba(35, 15, 25, 0) 100%
-  );
-  pointer-events: none;
-`;
-
-const HeroContent = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  max-width: 820px;
-  height: auto;
-  padding: 2rem clamp(1.5rem, 5vw, 3.5rem);
-  box-sizing: border-box;
-  color: #FAF7F2;
-
-  .event-hero-eyebrow {
-    font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-    font-size: 0.68rem;
-    letter-spacing: 0.24em;
-    font-weight: 700;
-    color: #FAF7F2;
-    opacity: 0.92;
-    text-transform: uppercase;
-    margin: 0 0 10px 0;
-  }
-
-  .event-hero-title {
-    font-family: ${({ theme }) => theme.typography?.fontFamily?.heading || "'Cormorant Garamond', serif"};
-    font-size: clamp(2.6rem, 5vw, 4rem);
-    font-weight: 400;
-    color: #FAF7F2;
-    margin: 0 0 12px 0;
-    line-height: 1.1;
-  }
-
-  .event-hero-description {
-    font-family: ${({ theme }) => theme.typography?.fontFamily?.body || "'Manrope', sans-serif"};
-    font-size: 0.98rem;
-    line-height: 1.6;
-    color: #FAF7F2;
-    opacity: 0.92;
-    margin: 0;
-    max-width: 620px;
-  }
 `;
 
 const MainContent = styled.main`
@@ -230,22 +154,13 @@ const CelebracionesPrivadas = () => {
 
   return (
     <PageWrapper className="eventos-page">
-      {/* Hero section */}
-      <HeroSection>
-        <HeroImage
-          alt="Paisaje de viñedos y finca Bodega Santa Catarina"
-          src="/assets/Santa_Catarina_442-CiFOov63.jpg"
-          loading="eager"
-        />
-        <HeroOverlay aria-hidden="true" />
-        <HeroContent>
-          <p className="event-hero-eyebrow">CELEBRACIONES PRIVADAS</p>
-          <h1 className="event-hero-title">Celebraciones privadas</h1>
-          <p className="event-hero-description">
-            Celebraciones personales en un entorno mallorquín lleno de historia y naturaleza.
-          </p>
-        </HeroContent>
-      </HeroSection>
+      <PageHero
+        seccion="eventos-celebraciones"
+        tag="CELEBRACIONES PRIVADAS"
+        title="Celebraciones privadas"
+        subtitle="Celebraciones personales en un entorno mallorquín lleno de historia y naturaleza."
+        image="/images/heros/hero-eventos.webp"
+      />
 
       {/* Main content with celebrations editorial card */}
       <MainContent id="eventos-celebraciones">
@@ -260,7 +175,7 @@ const CelebracionesPrivadas = () => {
             <CardImage
               className="bodega-content-image"
               alt="Celebración privada en Bodega Santa Catarina"
-              src="/assets/Santa_Catarina_261-BH88SUbG.jpg"
+              src="/images/eventos/evento-celebraciones-privadas.webp"
               loading="lazy"
             />
           </CardImageContainer>

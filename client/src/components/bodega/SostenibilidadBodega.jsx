@@ -178,7 +178,7 @@ const SostenibilidadBodega = () => {
           <ImageWrapper className="bodega-content-image bodega-feature-image">
             <Image
               alt="Cultivo sostenible durante la vendimia"
-              src="/assets/WhatsApp_Image_2026-10-13_at_10.46.51-C-a9veEx.jpeg"
+              src="/images/elaboracion/elaboracion-sostenibilidad-hoja.webp"
               loading="lazy"
             />
           </ImageWrapper>

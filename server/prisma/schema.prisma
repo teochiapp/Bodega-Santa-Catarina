@@ -43,6 +43,7 @@ model Cata {
   id            Int      @id @default(autoincrement())
   portada       String?  @db.Text
   titulo        String
+  subtitulo     String?
   precio        Decimal  @db.Decimal(10, 2)
   descripcion   String   @db.Text
   diaSemana     String?  // ej: "Lunes a Sábado"

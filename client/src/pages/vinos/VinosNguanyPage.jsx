@@ -5,6 +5,7 @@ const VinosNguanyPage = () => {
   return (
     <>
       <PageHero
+        seccion="vinos-nguany"
         tag="NUESTRA COLECCIÓN · COLECCIÓN ‘NGUANY"
         title={
           <>
@@ -14,7 +15,7 @@ const VinosNguanyPage = () => {
           </>
         }
         description="Ediciones limitadas de autor. Complejidad, estructura y el cuidado minucioso de cada añada bajo el clima único de Mallorca."
-        image="/assets/Santa_Catarina_Vendimia_284.jpg"
+        image="/images/heros/hero-vinos.webp"
       />
       <CatalogoVinos filtroColeccion="nguany" />
     </>

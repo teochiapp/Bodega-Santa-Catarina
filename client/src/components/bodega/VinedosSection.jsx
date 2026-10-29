@@ -228,7 +228,7 @@ const VinedosSection = () => {
           <SplitCard className="bodega-content-section bodega-soil-section" {...cardMotionProps}>
             <ImageWrapper className="bodega-content-image">
               <Image
-                src="/assets/tierra-CsW18gzK.png"
+                src="/images/elaboracion/elaboracion-tierra.webp"
                 alt="Call Vermell – Tierra roja de la finca Son Aloy"
                 loading="lazy"
               />
@@ -274,7 +274,7 @@ const VinedosSection = () => {
           <SplitCard className="bodega-content-section bodega-vineyards-detail" {...cardMotionProps}>
             <ImageWrapper className="bodega-content-image">
               <Image
-                src="/assets/Santa_Cararina_134-Cvw_fLHy.jpg"
+                src="/images/elaboracion/elaboracion-hsitoria-viñedos.webp"
                 alt="Viñedos de Bodega Santa Catarina en Son Aloy"
                 loading="lazy"
               />

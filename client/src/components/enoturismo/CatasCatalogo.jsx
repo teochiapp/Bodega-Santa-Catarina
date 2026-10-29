@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getResolvedImageUrl } from '../../services/api';
 
 const Section = styled.section`
   max-width: 1280px;
@@ -224,8 +225,8 @@ const EXPERIENCIAS_DEFINIDAS = [
     titulo: 'Cata de 3 vinos',
     subtitulo: null,
     precio: 20,
-    portada: '/assets/Santa_Catarina_403-DKszSTsA.jpg',
-    portadaFallback: '/assets/Santa_Catarina_Vendimia_284.jpg',
+    portada: '/images/catas-menus-experiencias/cata-3-vinos.webp',
+    portadaFallback: '/images/catas-menus-experiencias/cata-3-vinos.webp',
     descripcion:
       'Recorrido por la bodega y cata guiada de 3 de nuestros vinos más representativos en Son Aloy para descubrir la tradición y autenticidad de Santa Catarina.',
   },
@@ -234,8 +235,8 @@ const EXPERIENCIAS_DEFINIDAS = [
     titulo: 'Cata de 5 vinos',
     subtitulo: null,
     precio: 25,
-    portada: '/assets/para_video-CuiWMN-P.png',
-    portadaFallback: '/assets/card-vinos-CQrSZDMP.jpg',
+    portada: '/images/catas-menus-experiencias/cata-5-vinos.webp',
+    portadaFallback: '/images/catas-menus-experiencias/cata-5-vinos.webp',
     descripcion:
       'Una experiencia de degustación profunda con 5 vinos seleccionados de nuestras diferentes colecciones, profundizando en las variedades autóctonas y el terruño mallorquín.',
   },
@@ -244,8 +245,8 @@ const EXPERIENCIAS_DEFINIDAS = [
     titulo: 'Visita al viñedo',
     subtitulo: 'Bodega + cata de 3 vinos + pa amb oli mallorquín',
     precio: 40,
-    portada: '/assets/Santa_Catarina_492-B_Kb9mBD.jpg',
-    portadaFallback: '/assets/card-enoturismo-5P0pKmf9.jpg',
+    portada: '/images/catas-menus-experiencias/experiencia-3-vinos.webp',
+    portadaFallback: '/images/catas-menus-experiencias/experiencia-3-vinos.webp',
     descripcion:
       'Paseo guiado entre los viñedos de Son Aloy, visita completa a la bodega de elaboración y cata de 3 vinos maridados con un auténtico pa amb oli mallorquín tradicional.',
   },
@@ -254,19 +255,43 @@ const EXPERIENCIAS_DEFINIDAS = [
     titulo: 'Visita al viñedo',
     subtitulo: 'Bodega + cata de 5 vinos + pa amb oli mallorquín',
     precio: 45,
-    portada: '/assets/Santa_Catarina_447-1-DsZnvgvD.jpg',
-    portadaFallback: '/assets/Santa_Catarina_526-yhzhdQ3t.jpg',
+    portada: '/images/catas-menus-experiencias/experiencia-5-vinos.webp',
+    portadaFallback: '/images/catas-menus-experiencias/experiencia-5-vinos.webp',
     descripcion:
       'Nuestra vivencia enoturística más completa: paseo entre cepas, recorrido técnico por las instalaciones, cata de 5 vinos de autor y almuerzo con pa amb oli en la finca.',
   },
 ];
 
-const CatasCatalogo = ({ onReservar }) => {
+const resolveCataImage = (item) => {
+  const title = `${item.titulo || ''} ${item.subtitulo || ''}`.toLowerCase();
+  if (!item.portada || item.portada.startsWith('/assets/') || item.portada === '/isologo.png') {
+    if (title.includes('visita') && title.includes('5')) {
+      return '/images/catas-menus-experiencias/experiencia-5-vinos.webp';
+    }
+    if (title.includes('visita')) {
+      return '/images/catas-menus-experiencias/experiencia-3-vinos.webp';
+    }
+    if (title.includes('5')) {
+      return '/images/catas-menus-experiencias/cata-5-vinos.webp';
+    }
+    return '/images/catas-menus-experiencias/cata-3-vinos.webp';
+  }
+  return item.portada;
+};
+
+const CatasCatalogo = ({ catas = [], cargando = false, usarFallback = false, onReservar }) => {
   const [infoAbierta, setInfoAbierta] = useState(null);
+
+  const listaExperiencias =
+    Array.isArray(catas) && catas.length > 0
+      ? catas
+      : usarFallback
+        ? EXPERIENCIAS_DEFINIDAS
+        : [];
 
   return (
     <Section id="experiencias-enoturismo" className="enoturismo-experiences-section">
-      <Heading className="enoturismo-section-heading">
+      <Heading className="enoturismo-section-heading" data-reveal="up">
         <div>
           <Eyebrow className="enoturismo-panel-eyebrow">NUESTRAS EXPERIENCIAS</Eyebrow>
           <Title>Descubre el vino desde su origen</Title>
@@ -283,20 +308,32 @@ const CatasCatalogo = ({ onReservar }) => {
         </Intro>
       </Heading>
 
-      <Grid className="enoturismo-card-grid is-three-columns">
-        {EXPERIENCIAS_DEFINIDAS.map((item) => {
+      <Grid
+        className="enoturismo-card-grid is-three-columns"
+        data-reveal-group="85"
+        data-reveal-group-type="media"
+        data-reveal-cols="3"
+      >
+        {cargando && listaExperiencias.length === 0 && (
+          <p style={{ gridColumn: '1 / -1', opacity: 0.7, fontSize: '0.88rem' }}>
+            Cargando experiencias...
+          </p>
+        )}
+        {listaExperiencias.map((item) => {
           const isInfoOpen = infoAbierta === item.id;
+          const imgSrc = getResolvedImageUrl(resolveCataImage(item));
 
           return (
             <Card key={item.id} className="enoturismo-experience-card">
               <CardImageWrapper className="enoturismo-card-image">
                 <img
-                  src={item.portada}
+                  src={imgSrc}
                   alt={item.titulo}
                   loading="lazy"
                   onError={(e) => {
-                    if (e.currentTarget.src !== item.portadaFallback) {
-                      e.currentTarget.src = item.portadaFallback;
+                    const fallback = '/images/catas-menus-experiencias/cata-3-vinos.webp';
+                    if (!e.currentTarget.src.endsWith(fallback)) {
+                      e.currentTarget.src = fallback;
                     }
                   }}
                 />

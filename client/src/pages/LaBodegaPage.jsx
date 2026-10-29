@@ -37,6 +37,14 @@ const SECTION_ALIASES = {
   sostenibilidad: 'sostenibilidad',
 };
 
+const HERO_SECCION_MAP = {
+  historia: 'bodega-historia',
+  'vinedos-elaboracion': 'bodega-vinedos',
+  bodega: 'bodega-instalaciones',
+  'filosofia-valores': 'bodega-filosofia',
+  sostenibilidad: 'bodega-sostenibilidad',
+};
+
 const PageContainer = styled.div`
   width: 100%;
   background-color: rgb(242, 236, 228);
@@ -73,19 +81,26 @@ const LaBodegaPage = () => {
     return 'historia';
   }, [routeSection, location.hash, searchParams]);
 
-  // En "Viñedos", el título principal se oculta expresamente
-  const heroTitle =
-    activeSection === 'vinedos-elaboracion'
-      ? null
-      : 'La esencia de la tierra en cada botella';
+  // Si se visita la raíz /elaboracion sin sub-ruta, consulta primero 'la-bodega';
+  // en cada subsección consulta su hero específico editable en /admin/heroes.
+  const esRaizElaboracion =
+    !routeSection &&
+    !searchParams.get('section') &&
+    !searchParams.get('seccion') &&
+    !location.hash;
+
+  const heroSeccionKey = esRaizElaboracion
+    ? 'la-bodega'
+    : (HERO_SECCION_MAP[activeSection] || 'la-bodega');
 
   return (
     <PageContainer className="bodega-page">
-      {/* ── Hero común para todas las vistas ── */}
+      {/* ── Hero dinámico gestionado desde /admin/heroes ── */}
       <PageHero
+        seccion={heroSeccionKey}
         tag="SON ALOY · MALLORCA"
-        title={heroTitle}
-        image="/assets/Santa_Catarina_372.jpg"
+        title="La esencia de la tierra en cada botella"
+        image="/images/heros/hero-neustra-historia.webp"
         imageAlt="Finca Son Aloy, Bodega Santa Catarina"
         objectPosition="center 20%"
         height="500px"

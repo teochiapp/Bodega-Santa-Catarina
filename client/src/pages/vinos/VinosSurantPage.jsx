@@ -5,6 +5,7 @@ const VinosSurantPage = () => {
   return (
     <>
       <PageHero
+        seccion="vinos-surant"
         tag="NUESTRA COLECCIÓN · COLECCIÓN SURANT"
         title={
           <>
@@ -14,7 +15,7 @@ const VinosSurantPage = () => {
           </>
         }
         description="Vinos frescos, aromáticos y seductores nacidos bajo el influjo del sol mediterráneo y la brisa de nuestras viñas."
-        image="/assets/Santa_Catarina_353-4.jpg"
+        image="/images/heros/hero-vinos.webp"
       />
       <CatalogoVinos filtroColeccion="surant" />
     </>

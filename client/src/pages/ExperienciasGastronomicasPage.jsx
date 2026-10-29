@@ -4,7 +4,12 @@ import ExperienciasGastronomicas from '../components/enoturismo/ExperienciasGast
 const ExperienciasGastronomicasPage = () => {
   return (
     <>
-      <PageHero title="Vive el viñedo" subtitle="Experiencias gastronómicas entre viñas en Mallorca" />
+      <PageHero
+        seccion="enoturismo-gastronomia"
+        title="Vive el viñedo"
+        subtitle="Experiencias gastronómicas entre viñas en Mallorca"
+        image="/images/heros/hero-enoturismo.webp"
+      />
       <ExperienciasGastronomicas />
     </>
   );

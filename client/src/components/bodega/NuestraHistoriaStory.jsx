@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import historiaImg from '../../imports/DSCF1443.jpg';
 
 const Section = styled.section`
   width: 100%;
@@ -343,7 +342,7 @@ const NuestraHistoriaStory = () => {
           <ImageWrapper className="bodega-content-image bodega-story-image">
             <Image
               alt="Vendimia y selección de uva en Son Aloy"
-              src={historiaImg}
+              src="/images/elaboracion/elaboracion-nuestra-historia.webp"
               loading="lazy"
             />
           </ImageWrapper>

@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
 import { ScrollLink } from '../common/ScrollToTop';
+import { useHeroes } from '../../context/HeroesContext';
+import { getResolvedImageUrl } from '../../services/api';
 
 import HeroOverlay from '../HeroOverlay';
 
@@ -29,7 +31,18 @@ const BackgroundVideo = styled.video`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 55%;
+  object-position: ${({ $objectPosition }) => $objectPosition || 'center 55%'};
+  filter: brightness(1) contrast(1.02);
+  pointer-events: none;
+`;
+
+const BackgroundFallbackImage = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: ${({ $objectPosition }) => $objectPosition || 'center 55%'};
   filter: brightness(1) contrast(1.02);
   pointer-events: none;
 `;
@@ -180,9 +193,24 @@ const MuteButton = styled.button`
   }
 `;
 
+const DEFAULT_POSTER = '/assets/Santa_Catarina_Vendimia_296-BNFQEO6C.jpg';
+
 const HeroVideo = () => {
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef(null);
+  const { getHero } = useHeroes();
+
+  const dbHero = getHero('inicio') || getHero('/');
+  const displayTag = dbHero ? dbHero.tag : 'TRADICIÓN QUE PERDURA';
+  const displayTitle = dbHero ? (dbHero.titulo || 'Bodega\nSanta Catarina') : 'Bodega\nSanta Catarina';
+  const displaySub = dbHero
+    ? dbHero.subtitulo
+    : '40 años elaborando vinos únicos\nen el corazón de Mallorca.';
+  const displayPosition = dbHero?.posicion || 'center 55%';
+  const rawImage = dbHero?.imagen || DEFAULT_POSTER;
+  const resolvedPoster = getResolvedImageUrl(rawImage);
+  // Si en el admin suben una imagen propia (/uploads/...), se prioriza esa imagen; si no, reproduce el vídeo oficial con su poster
+  const usarImagenPersonalizada = Boolean(dbHero?.imagen && dbHero.imagen.startsWith('/uploads/'));
 
   const toggleSound = () => {
     if (videoRef.current) {
@@ -198,18 +226,27 @@ const HeroVideo = () => {
   };
 
   return (
-    <HeroContainer>
-      <BackgroundVideo
-        ref={videoRef}
-        src="/inicio/hero-video.mp4"
-        poster="/assets/Santa_Catarina_Vendimia_296-BNFQEO6C.jpg"
-        autoPlay
-        loop
-        muted={isMuted}
-        playsInline
-        preload="metadata"
-        aria-hidden="true"
-      />
+    <HeroContainer data-no-scroll-reveal="true" data-inicio-hero="true">
+      {usarImagenPersonalizada ? (
+        <BackgroundFallbackImage
+          src={resolvedPoster}
+          alt={dbHero?.imagenAlt || 'Bodega Santa Catarina'}
+          $objectPosition={displayPosition}
+        />
+      ) : (
+        <BackgroundVideo
+          ref={videoRef}
+          src="/inicio/hero-video.mp4"
+          poster={resolvedPoster}
+          $objectPosition={displayPosition}
+          autoPlay
+          loop
+          muted={isMuted}
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        />
+      )}
 
       {/* Overlay compartido con degradado vino suave */}
       <HeroOverlay />
@@ -220,13 +257,9 @@ const HeroVideo = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
       >
-        <Eyebrow>TRADICIÓN QUE PERDURA</Eyebrow>
-        <Title>
-          Bodega{'\n'}Santa Catarina
-        </Title>
-        <Description>
-          40 años elaborando vinos únicos{'\n'}en el corazón de Mallorca.
-        </Description>
+        {displayTag && <Eyebrow>{displayTag}</Eyebrow>}
+        {displayTitle && <Title>{displayTitle}</Title>}
+        {displaySub && <Description>{displaySub}</Description>}
         <ButtonGroup>
           <PrimaryLink to="/enoturismo">
             RESERVAR EXPERIENCIAS
@@ -247,14 +280,16 @@ const HeroVideo = () => {
       </ContentContainer>
 
       {/* Botón flotante para silenciar / activar audio en la esquina inferior derecha */}
-      <MuteButton
-        type="button"
-        onClick={toggleSound}
-        aria-label={isMuted ? 'Activar sonido del video' : 'Silenciar video'}
-        title={isMuted ? 'Activar sonido' : 'Silenciar'}
-      >
-        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-      </MuteButton>
+      {!usarImagenPersonalizada && (
+        <MuteButton
+          type="button"
+          onClick={toggleSound}
+          aria-label={isMuted ? 'Activar sonido del video' : 'Silenciar video'}
+          title={isMuted ? 'Activar sonido' : 'Silenciar'}
+        >
+          {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+        </MuteButton>
+      )}
     </HeroContainer>
   );
 };

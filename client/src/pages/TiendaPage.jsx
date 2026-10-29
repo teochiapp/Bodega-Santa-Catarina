@@ -6,9 +6,10 @@ const TiendaPage = () => {
   return (
     <>
       <PageHero
+        seccion="tienda-fisica"
         tag="SON ALOY · SENCELLES"
         title="Tienda física"
-        image="/assets/tienda-fisica-01.jpg"
+        image="/images/heros/hero-tienda-fisica.webp"
         objectPosition="center 58%"
         height="500px"
       />

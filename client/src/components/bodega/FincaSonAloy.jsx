@@ -322,7 +322,7 @@ const FincaSonAloy = () => {
         <SplitCard className="bodega-content-section bodega-vineyard-intro" {...cardMotionProps}>
           <SplitImageWrapper>
             <SplitImage
-              src="/assets/Santa_Cararina_360-D8zUx32I.jpg"
+              src="/images/elaboracion/viñedo-finca.webp"
               alt="Viñedos de Son Aloy en vendimia"
               loading="lazy"
               className="bodega-content-image"
@@ -359,7 +359,7 @@ const FincaSonAloy = () => {
           <SplitCard as="article" id="vinedos" style={{ scrollMarginTop: '110px' }} {...cardMotionProps}>
             <SplitImageWrapper>
               <SplitImage
-                src="/assets/Santa_Cararina_134-Cvw_fLHy.jpg"
+                src="/images/elaboracion/elaboracion-hsitoria-viñedos.webp"
                 alt="Viñedos de Son Aloy"
                 loading="lazy"
                 className="bodega-content-image"
@@ -404,7 +404,7 @@ const FincaSonAloy = () => {
           <SplitCard as="article" id="elaboracion" style={{ scrollMarginTop: '110px' }} {...cardMotionProps}>
             <SplitImageWrapper>
               <SplitImage
-                src="/assets/elaboracion-uvas-BofYQazS.jpg"
+                src="/images/elaboracion/elaboracion-viñedo-uvas.webp"
                 alt="Elaboración y vendimia en Santa Catarina"
                 loading="lazy"
                 className="bodega-content-image"
@@ -458,7 +458,7 @@ const FincaSonAloy = () => {
         <SplitCard as="section" className="bodega-content-section bodega-soil-section" {...cardMotionProps}>
           <SplitImageWrapper>
             <SplitImage
-              src="/assets/tierra-CsW18gzK.png"
+              src="/images/elaboracion/elaboracion-tierra.webp"
               alt="Tierra roja de la finca Son Aloy"
               loading="lazy"
               className="bodega-content-image"

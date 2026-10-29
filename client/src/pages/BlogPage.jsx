@@ -6,6 +6,7 @@ const BlogPage = () => {
   return (
     <>
       <PageHero
+        seccion="blog"
         tag="HISTORIAS DE LA BODEGA"
         title="Blog"
         image="/breadcrumbs/breadcrumb-blog.webp"
